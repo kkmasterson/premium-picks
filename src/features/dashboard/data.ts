@@ -21,7 +21,7 @@ function mulberry32(seed: number) {
 const rngFor = (key: string) => mulberry32(hash(key));
 
 // ---------- static data ----------
-export const SPORTS: Sport[] = ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA', 'NCAAB', 'NCAAF'];
+export const SPORTS: Sport[] = ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA', 'NCAAB', 'NCAAF', 'SOCCER', 'TENNIS', 'LOL', 'CS2', 'VALORANT'];
 
 export const BOOKS: Record<string, string> = {
   DK: 'DraftKings', FD: 'FanDuel', MGM: 'BetMGM', CZR: 'Caesars', FAN: 'Fanatics', B365: 'bet365',
@@ -35,6 +35,11 @@ const TEAMS: Record<Sport, string[]> = {
   WNBA: ['LV', 'NY', 'CON', 'CHI', 'IND', 'SEA'],
   NCAAB: ['DUKE', 'KU', 'UNC', 'UCONN', 'UK', 'GONZ'],
   NCAAF: ['UGA', 'ALA', 'OSU', 'MICH', 'TEX', 'USC'],
+  SOCCER: ['ARS', 'MCI', 'RMA', 'BAR', 'BAY', 'PSG', 'LIV', 'CHE'],
+  TENNIS: ['USA', 'ESP', 'POL', 'BLR', 'ITA', 'SRB', 'GBR', 'GRE'],
+  LOL: ['T1', 'GEN', 'G2', 'FNC', 'TL', 'C9'],
+  CS2: ['NAVI', 'VIT', 'G2E', 'FZE', 'MOUZ', 'SPIR'],
+  VALORANT: ['SEN', 'LOUD', 'FNCV', 'PRX', 'GENG', 'LEV'],
 };
 
 const TEAM_NAMES: Record<string, string> = {
@@ -52,6 +57,11 @@ const TEAM_NAMES: Record<string, string> = {
   UK: 'Kentucky Wildcats', GONZ: 'Gonzaga Bulldogs',
   UGA: 'Georgia Bulldogs', ALA: 'Alabama Crimson Tide', OSU: 'Ohio State Buckeyes', MICH: 'Michigan Wolverines',
   TEX: 'Texas Longhorns', USC: 'USC Trojans',
+  ARS: 'Arsenal', MCI: 'Manchester City', RMA: 'Real Madrid', BAR: 'Barcelona', BAY: 'Bayern Munich', PSG: 'Paris Saint-Germain', LIV: 'Liverpool', CHE: 'Chelsea',
+  USA: 'United States', ESP: 'Spain', POL: 'Poland', BLR: 'Belarus', ITA: 'Italy', SRB: 'Serbia', GBR: 'Great Britain', GRE: 'Greece',
+  T1: 'T1', GEN: 'Gen.G', G2: 'G2 Esports', FNC: 'Fnatic', TL: 'Team Liquid', C9: 'Cloud9',
+  NAVI: 'Natus Vincere', VIT: 'Vitality', G2E: 'G2 Esports', FZE: 'FaZe Clan', MOUZ: 'MOUZ', SPIR: 'Team Spirit',
+  SEN: 'Sentinels', LOUD: 'LOUD', FNCV: 'Fnatic', PRX: 'Paper Rex', GENG: 'Gen.G', LEV: 'Leviatán',
 };
 export const teamName = (abbr: string) => TEAM_NAMES[abbr] ?? abbr;
 
@@ -85,6 +95,8 @@ const PLAYER_SEEDS: Record<Sport, PlayerSeed[]> = {
     { name: 'Lamar Jackson', team: 'BAL', pos: 'QB', jersey: 8 },
     { name: 'Tyreek Hill', team: 'MIA', pos: 'WR', jersey: 10 },
     { name: "Ja'Marr Chase", team: 'CIN', pos: 'WR', jersey: 1 },
+    { name: 'Travis Kelce', team: 'KC', pos: 'TE', jersey: 87 },
+    { name: 'Justin Tucker', team: 'BAL', pos: 'K', jersey: 9 },
   ],
   MLB: [
     { name: 'Aaron Judge', team: 'NYY', pos: 'RF', jersey: 99 },
@@ -127,6 +139,50 @@ const PLAYER_SEEDS: Record<Sport, PlayerSeed[]> = {
     { name: 'Andre Coleman', team: 'MICH', pos: 'QB', jersey: 12 },
     { name: 'Trey Marshall', team: 'TEX', pos: 'RB', jersey: 5 },
     { name: 'Isaiah Ford', team: 'USC', pos: 'WR', jersey: 9 },
+    { name: 'Evan Brooks', team: 'MICH', pos: 'TE', jersey: 86 },
+    { name: 'Luke Hayes', team: 'ALA', pos: 'K', jersey: 39 },
+  ],
+  SOCCER: [
+    { name: 'Bukayo Saka', team: 'ARS', pos: 'F', jersey: 7 },
+    { name: 'Erling Haaland', team: 'MCI', pos: 'F', jersey: 9 },
+    { name: 'Jude Bellingham', team: 'RMA', pos: 'M', jersey: 5 },
+    { name: 'Pedri', team: 'BAR', pos: 'M', jersey: 8 },
+    { name: 'Virgil van Dijk', team: 'LIV', pos: 'D', jersey: 4 },
+    { name: 'William Saliba', team: 'ARS', pos: 'D', jersey: 2 },
+    { name: 'Thibaut Courtois', team: 'RMA', pos: 'GK', jersey: 1 },
+    { name: 'Gianluigi Donnarumma', team: 'PSG', pos: 'GK', jersey: 99 },
+  ],
+  TENNIS: [
+    { name: 'Coco Gauff', team: 'USA', pos: 'Singles', jersey: 1 },
+    { name: 'Carlos Alcaraz', team: 'ESP', pos: 'Singles', jersey: 1 },
+    { name: 'Iga Swiatek', team: 'POL', pos: 'Singles', jersey: 1 },
+    { name: 'Aryna Sabalenka', team: 'BLR', pos: 'Singles', jersey: 1 },
+    { name: 'Jannik Sinner', team: 'ITA', pos: 'Singles', jersey: 1 },
+    { name: 'Novak Djokovic', team: 'SRB', pos: 'Singles', jersey: 1 },
+  ],
+  LOL: [
+    { name: 'Zeus', team: 'T1', pos: 'Top', jersey: 1 },
+    { name: 'Faker', team: 'T1', pos: 'Mid', jersey: 1 },
+    { name: 'Chovy', team: 'GEN', pos: 'Mid', jersey: 1 },
+    { name: 'Caps', team: 'G2', pos: 'Mid', jersey: 1 },
+    { name: 'Impact', team: 'TL', pos: 'Top', jersey: 1 },
+    { name: 'Blaber', team: 'C9', pos: 'Jungle', jersey: 1 },
+  ],
+  CS2: [
+    { name: 's1mple', team: 'NAVI', pos: 'AWP', jersey: 1 },
+    { name: 'ZywOo', team: 'VIT', pos: 'AWP', jersey: 1 },
+    { name: 'm0NESY', team: 'G2E', pos: 'AWP', jersey: 1 },
+    { name: 'NiKo', team: 'G2E', pos: 'Rifler', jersey: 1 },
+    { name: 'ropz', team: 'FZE', pos: 'Rifler', jersey: 1 },
+    { name: 'donk', team: 'SPIR', pos: 'Rifler', jersey: 1 },
+  ],
+  VALORANT: [
+    { name: 'TenZ', team: 'SEN', pos: 'Duelist', jersey: 1 },
+    { name: 'aspas', team: 'LEV', pos: 'Duelist', jersey: 1 },
+    { name: 'Less', team: 'LOUD', pos: 'Sentinel', jersey: 1 },
+    { name: 'Boaster', team: 'FNCV', pos: 'Controller', jersey: 1 },
+    { name: 'something', team: 'PRX', pos: 'Duelist', jersey: 1 },
+    { name: 't3xture', team: 'GENG', pos: 'Duelist', jersey: 1 },
   ],
 };
 
@@ -134,11 +190,33 @@ const PLAYER_SEEDS: Record<Sport, PlayerSeed[]> = {
 interface MarketDef { market: string; min: number; max: number; step: number; variance: number; }
 function marketsFor(sport: Sport, pos: string): MarketDef[] {
   const bball: MarketDef[] = [
+    { market: 'Minutes', min: 24, max: 38, step: 1, variance: 5 },
     { market: 'Points', min: 14, max: 33, step: 0.5, variance: 6 },
     { market: 'Rebounds', min: 3.5, max: 12.5, step: 0.5, variance: 2.5 },
+    { market: 'Offensive Rebounds', min: 0.5, max: 4.5, step: 0.5, variance: 1.5 },
+    { market: 'Defensive Rebounds', min: 2.5, max: 9.5, step: 0.5, variance: 2.2 },
     { market: 'Assists', min: 2.5, max: 10.5, step: 0.5, variance: 2 },
+    { market: 'Points + Assists', min: 18, max: 42, step: 0.5, variance: 7 },
+    { market: 'Points + Rebounds', min: 20, max: 44, step: 0.5, variance: 7 },
+    { market: 'Rebounds + Assists', min: 7, max: 20, step: 0.5, variance: 4 },
     { market: 'Points + Rebounds + Assists', min: 24, max: 50, step: 0.5, variance: 8 },
+    { market: 'Blocks', min: 0.5, max: 3.5, step: 0.5, variance: 1 },
+    { market: 'Steals', min: 0.5, max: 2.5, step: 0.5, variance: 1 },
+    { market: 'Turnovers', min: 1.5, max: 5.5, step: 0.5, variance: 1.5 },
     { market: '3-Pointers Made', min: 0.5, max: 5.5, step: 0.5, variance: 1.2 },
+    { market: '3-Point Attempts', min: 2, max: 11, step: 1, variance: 3 },
+    { market: '2-Pointers Made', min: 2.5, max: 10.5, step: 0.5, variance: 2.5 },
+    { market: '2-Point Attempts', min: 5.5, max: 18.5, step: 0.5, variance: 4 },
+    { market: 'Free Throws Made', min: 1.5, max: 8.5, step: 0.5, variance: 2 },
+    { market: 'Free Throw Attempts', min: 2.5, max: 10.5, step: 0.5, variance: 2.5 },
+    { market: 'Field Goals Made', min: 4.5, max: 13.5, step: 0.5, variance: 3 },
+    { market: 'Field Goal Attempts', min: 10.5, max: 24.5, step: 0.5, variance: 5 },
+    { market: 'Blocks + Steals', min: 1.5, max: 5.5, step: 0.5, variance: 1.5 },
+    { market: 'Fantasy Points', min: 22, max: 55, step: 0.5, variance: 9 },
+    { market: 'Dunk Attempts', min: 0.5, max: 4.5, step: 0.5, variance: 1.5 },
+    { market: 'Personal Fouls', min: 1.5, max: 4.5, step: 0.5, variance: 1.2 },
+    { market: 'Double Double', min: 0, max: 1, step: 1, variance: 0.5 },
+    { market: 'Triple Double', min: 0, max: 1, step: 1, variance: 0.4 },
   ];
   switch (sport) {
     case 'NBA': case 'WNBA': case 'NCAAB': return bball;
@@ -146,20 +224,37 @@ function marketsFor(sport: Sport, pos: string): MarketDef[] {
       if (pos === 'QB') return [
         { market: 'Passing Yards', min: 210, max: 320, step: 0.5, variance: 45 },
         { market: 'Rushing Yards', min: 18, max: 55, step: 0.5, variance: 15 },
+        { market: 'Passing Touchdowns', min: 1, max: 4, step: 1, variance: 1.4 },
+        { market: 'Completions', min: 18.5, max: 29.5, step: 0.5, variance: 4 },
       ];
       if (pos === 'RB') return [
         { market: 'Rushing Yards', min: 45, max: 105, step: 0.5, variance: 25 },
         { market: 'Receiving Yards', min: 15, max: 55, step: 0.5, variance: 15 },
+        { market: 'Receptions', min: 2.5, max: 7.5, step: 0.5, variance: 2 },
+        { market: 'Touches', min: 12.5, max: 25.5, step: 0.5, variance: 5 },
+      ];
+      if (pos === 'K') return [
+        { market: 'Kicking Points', min: 5.5, max: 11.5, step: 0.5, variance: 3 },
+        { market: 'Field Goals Made', min: 1, max: 4, step: 1, variance: 1.3 },
       ];
       return [
         { market: 'Receiving Yards', min: 45, max: 105, step: 0.5, variance: 25 },
         { market: 'Receptions', min: 3.5, max: 8.5, step: 0.5, variance: 1.8 },
+        { market: 'Targets', min: 5.5, max: 12.5, step: 0.5, variance: 3 },
       ];
     case 'MLB':
-      if (pos === 'SP') return [{ market: 'Strikeouts', min: 4.5, max: 9.5, step: 0.5, variance: 2.2 }];
+      if (pos === 'SP') return [
+        { market: 'Strikeouts', min: 4.5, max: 9.5, step: 0.5, variance: 2.2 },
+        { market: 'Pitching Outs', min: 14.5, max: 20.5, step: 0.5, variance: 3 },
+        { market: 'Hits Allowed', min: 3.5, max: 7.5, step: 0.5, variance: 2 },
+        { market: 'Walks Allowed', min: 1.5, max: 4.5, step: 0.5, variance: 1.4 },
+      ];
       return [
         { market: 'Hits', min: 0.5, max: 1.5, step: 0.5, variance: 0.7 },
         { market: 'Total Bases', min: 0.5, max: 2.5, step: 0.5, variance: 1.2 },
+        { market: 'Runs', min: 0.5, max: 1.5, step: 0.5, variance: 0.7 },
+        { market: 'Runs Batted In', min: 0.5, max: 1.5, step: 0.5, variance: 0.7 },
+        { market: 'Home Runs', min: 0.5, max: 0.5, step: 0.5, variance: 0.5 },
       ];
     case 'NHL':
       return [
@@ -167,6 +262,52 @@ function marketsFor(sport: Sport, pos: string): MarketDef[] {
         { market: 'Shots on Goal', min: 1.5, max: 4.5, step: 0.5, variance: 1.2 },
         { market: 'Goals', min: 0.5, max: 0.5, step: 0.5, variance: 0.5 },
         { market: 'Assists', min: 0.5, max: 1.5, step: 0.5, variance: 0.8 },
+      ];
+    case 'SOCCER':
+      if (pos === 'GK') return [
+        { market: 'Saves', min: 1.5, max: 6.5, step: 0.5, variance: 2 },
+        { market: 'Goals Allowed', min: 0.5, max: 3.5, step: 0.5, variance: 1.2 },
+        { market: 'Clean Sheet', min: 0, max: 1, step: 1, variance: 0.5 },
+      ];
+      if (pos === 'D') return [
+        { market: 'Fouls', min: 0.5, max: 3.5, step: 0.5, variance: 1.2 },
+        { market: 'Tackles', min: 1.5, max: 5.5, step: 0.5, variance: 1.5 },
+        { market: 'Clearances', min: 2.5, max: 7.5, step: 0.5, variance: 2 },
+      ];
+      if (pos === 'M') return [
+        { market: 'Shots Attempted', min: 0.5, max: 4.5, step: 0.5, variance: 1.5 },
+        { market: 'Passes', min: 35.5, max: 82.5, step: 0.5, variance: 14 },
+        { market: 'Tackles', min: 0.5, max: 4.5, step: 0.5, variance: 1.5 },
+      ];
+      return [
+        { market: 'Shots on Target', min: 0.5, max: 3.5, step: 0.5, variance: 1.2 },
+        { market: 'Goals', min: 0.5, max: 1.5, step: 0.5, variance: 0.7 },
+        { market: 'Shots Attempted', min: 1.5, max: 5.5, step: 0.5, variance: 1.8 },
+      ];
+    case 'TENNIS':
+      return [
+        { market: 'Games Won', min: 9.5, max: 16.5, step: 0.5, variance: 3 },
+        { market: 'Aces', min: 2.5, max: 12.5, step: 0.5, variance: 4 },
+        { market: 'Double Faults', min: 1.5, max: 5.5, step: 0.5, variance: 1.5 },
+        { market: 'Break Points Won', min: 2.5, max: 7.5, step: 0.5, variance: 2 },
+      ];
+    case 'LOL':
+      return [
+        { market: 'Kills', min: 2.5, max: 7.5, step: 0.5, variance: 2 },
+        { market: 'Assists', min: 4.5, max: 12.5, step: 0.5, variance: 3 },
+        { market: 'CS', min: 210.5, max: 340.5, step: 0.5, variance: 40 },
+      ];
+    case 'CS2':
+      return [
+        { market: 'Kills', min: 28.5, max: 48.5, step: 0.5, variance: 8 },
+        { market: 'Headshots', min: 10.5, max: 24.5, step: 0.5, variance: 5 },
+        { market: 'Assists', min: 7.5, max: 15.5, step: 0.5, variance: 3 },
+      ];
+    case 'VALORANT':
+      return [
+        { market: 'Kills', min: 28.5, max: 48.5, step: 0.5, variance: 8 },
+        { market: 'Headshots', min: 9.5, max: 23.5, step: 0.5, variance: 5 },
+        { market: 'Assists', min: 8.5, max: 18.5, step: 0.5, variance: 4 },
       ];
   }
 }

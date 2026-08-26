@@ -1,9 +1,7 @@
 import { AnnouncementBar } from '@/features/landing/sections/AnnouncementBar'
 import { Navbar } from '@/features/landing/sections/Navbar'
 import { Hero } from '@/features/landing/sections/Hero'
-import { StatsStrip } from '@/features/landing/sections/StatsStrip'
 import { ProductPreview } from '@/features/landing/sections/ProductPreview'
-import { Features } from '@/features/landing/sections/Features'
 import { Workflow } from '@/features/landing/sections/Workflow'
 import { SportsCoverage } from '@/features/landing/sections/SportsCoverage'
 import { Comparison } from '@/features/landing/sections/Comparison'
@@ -19,9 +17,7 @@ function LandingPage() {
       <Navbar />
       <main>
         <Hero />
-        <StatsStrip />
         <ProductPreview />
-        <Features />
         <Workflow />
         <SportsCoverage />
         <Comparison />

@@ -5,6 +5,7 @@ import { bestBook, formatOdds, playerById } from '@/features/dashboard/data';
 import { useDashboard, type Density } from '@/features/dashboard/DashboardProvider';
 import { cn } from '@/lib/utils';
 import { DiffBadge, HitRateBadge, PlayerAvatar, hitTone } from './common';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 type SortKey = 'line' | 'avg' | 'projection' | 'diff' | 'l5' | 'l10' | 'l15' | 'season' | 'h2h' | 'streak' | 'time';
@@ -25,9 +26,9 @@ const TOOLTIPS: Partial<Record<SortKey, string>> = {
 };
 
 const DENSITY_ROW: Record<Density, string> = {
-  comfortable: 'py-3.5',
-  standard: 'py-2.5',
-  compact: 'py-1.5',
+  comfortable: 'py-2.5',
+  standard: 'py-1.5',
+  compact: 'py-1',
 };
 
 interface Column { key: string; sortKey?: SortKey; label: string; align?: 'left' | 'right' | 'center'; optional?: boolean; }
@@ -66,44 +67,50 @@ function sortValue(p: Prop, key: SortKey): number | string {
 }
 
 function BooksCell({ prop, density }: { prop: Prop; density: Density }) {
-  const [expanded, setExpanded] = useState(false);
   const best = bestBook(prop, 'over');
-  const shown = expanded ? prop.books : prop.books.slice(0, 2);
   return (
-    <div className={cn('flex flex-col', density === 'compact' ? 'gap-0.5' : 'gap-1')}>
-      {shown.map((b) => {
-        const isBest = b.book === best.book;
-        return (
-          <div
-            key={b.book}
-            className={cn(
-              'flex items-center gap-1.5 whitespace-nowrap rounded border px-1.5 py-0.5 text-[11px] tabular-nums w-fit',
-              isBest ? 'border-[#F5C542]/50 bg-[#F5C542]/5' : 'border-[#242424] bg-[#161616]',
-            )}
+    <div className="flex items-center gap-1.5">
+      <div className="flex w-fit items-center gap-1.5 whitespace-nowrap rounded border border-[#F5C542]/50 bg-[#F5C542]/5 px-1.5 py-px text-[10px] tabular-nums">
+        <span className="w-7 font-bold text-[#F5C542]">{best.book}</span>
+        <span className="text-zinc-200">{best.line}</span>
+        <span className="text-zinc-500">O {formatOdds(best.over)}</span>
+        {density !== 'compact' && <span className="text-zinc-500">U {formatOdds(best.under)}</span>}
+        <span className="rounded bg-[#F5C542] px-1 text-[8px] font-bold text-black">BEST</span>
+      </div>
+      {prop.books.length > 1 && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="shrink-0 rounded text-[10px] font-medium text-[#F5C542] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542]"
+              aria-label={`Show ${prop.books.length - 1} more sportsbook lines`}
+            >
+              +{prop.books.length - 1}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            className="w-max min-w-56 space-y-1 border-[#2a2a2a] bg-[#111] p-2 shadow-2xl shadow-black/70"
+            onClick={(e) => e.stopPropagation()}
           >
-            <span className={cn('w-7 font-bold', isBest ? 'text-[#F5C542]' : 'text-zinc-300')}>{b.book}</span>
-            <span className="text-zinc-200">{b.line}</span>
-            <span className="text-zinc-500">O {formatOdds(b.over)}</span>
-            <span className="text-zinc-500">U {formatOdds(b.under)}</span>
-            {isBest && <span className="ml-0.5 rounded bg-[#F5C542] px-1 text-[9px] font-bold text-black">BEST</span>}
-          </div>
-        );
-      })}
-      {prop.books.length > 2 && (
-        <button
-          onClick={(e) => { e.stopPropagation(); setExpanded((x) => !x); }}
-          className="w-fit text-[11px] font-medium text-[#F5C542] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542] rounded"
-          aria-expanded={expanded}
-        >
-          {expanded ? 'Show less' : `+${prop.books.length - 2} more`}
-        </button>
+            {prop.books.map((book) => (
+              <div key={book.book} className={cn('flex items-center gap-2 rounded border px-2 py-1 text-[10px] tabular-nums', book.book === best.book ? 'border-[#F5C542]/40 bg-[#F5C542]/5' : 'border-[#242424] bg-[#161616]')}>
+                <span className={cn('w-8 font-bold', book.book === best.book ? 'text-[#F5C542]' : 'text-zinc-300')}>{book.book}</span>
+                <span className="w-8 text-zinc-200">{book.line}</span>
+                <span className="text-zinc-500">O {formatOdds(book.over)}</span>
+                <span className="text-zinc-500">U {formatOdds(book.under)}</span>
+                {book.book === best.book && <span className="rounded bg-[#F5C542] px-1 text-[8px] font-bold text-black">BEST</span>}
+              </div>
+            ))}
+          </PopoverContent>
+        </Popover>
       )}
     </div>
   );
 }
 
 export function PropsTable({ props, showSport = false }: { props: Prop[]; showSport?: boolean }) {
-  const { openDrawer, density, saved, toggleSave } = useDashboard();
+  const { openDrawer, density, setDensity, saved, toggleSave } = useDashboard();
   const [sortKey, setSortKey] = useState<SortKey>('l10');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(0);
@@ -141,9 +148,22 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
   return (
     <TooltipProvider>
       <div className="overflow-hidden rounded-xl border border-[#1f1f1f] bg-[#101010]">
-        <div className="flex items-center justify-between border-b border-[#1f1f1f] px-3 py-2">
+        <div className="flex items-center justify-between border-b border-[#1f1f1f] px-3 py-1.5">
           <p className="text-xs text-zinc-500">{sorted.length} props</p>
-          <div className="relative">
+          <div className="flex items-center gap-2">
+            <div className="flex rounded-md border border-[#2a2a2a] bg-[#111] p-0.5" role="group" aria-label="Table density">
+              {(['compact', 'standard', 'comfortable'] as Density[]).map((option) => (
+                <button
+                  key={option}
+                  onClick={() => setDensity(option)}
+                  aria-pressed={density === option}
+                  className={cn('rounded px-2 py-1 text-[10px] capitalize focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542]', density === option ? 'bg-[#F5C542]/15 text-[#F5C542]' : 'text-zinc-500 hover:text-zinc-300')}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+            <div className="relative">
             <button
               onClick={() => setColMenu((c) => !c)}
               className="rounded-md border border-[#2a2a2a] px-2.5 py-1 text-xs text-zinc-300 hover:bg-[#1a1a1a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]"
@@ -170,19 +190,20 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
                 ))}
               </div>
             )}
+            </div>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[980px] border-collapse text-sm">
+          <table className="w-full min-w-[980px] border-collapse text-xs">
             <thead className="sticky top-0 z-10">
               <tr className="bg-[#141414] text-left">
-                <th className="w-8 px-2 py-2" aria-label="Save" />
+                <th className="w-8 px-2 py-1.5" aria-label="Save" />
                 {cols.map((c) => (
                   <th
                     key={c.key}
                     className={cn(
-                      'whitespace-nowrap px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-500',
+                      'whitespace-nowrap px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500',
                       c.align === 'right' && 'text-right', c.align === 'center' && 'text-center',
                     )}
                     aria-sort={c.sortKey === sortKey ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined}
@@ -241,14 +262,13 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
                           return (
                             <td key={c.key} className={cn('px-3', rowPad)}>
                               <div className="flex items-center gap-2.5">
-                                <PlayerAvatar name={pl.name} size={density === 'compact' ? 'sm' : 'md'} />
+                                <PlayerAvatar name={pl.name} size={density === 'comfortable' ? 'md' : 'sm'} />
                                 <div className="min-w-0">
-                                  <p className="truncate font-medium text-zinc-100">
+                                  <p className="truncate text-xs font-semibold text-zinc-100">
                                     {pl.name}
                                     {showSport && <span className="ml-1.5 rounded bg-[#1d1d1d] px-1 text-[10px] font-semibold text-zinc-400">{pl.sport}</span>}
                                   </p>
-                                  <p className="text-xs text-zinc-500">{pl.team} · {pl.pos}</p>
-                                  <p className="text-xs text-zinc-600">{pl.home ? 'vs' : '@'} {pl.opponent} · {pl.gameTime}</p>
+                                  <p className="truncate text-[10px] text-zinc-500">{pl.team} · {pl.pos} · {pl.home ? 'vs' : '@'} {pl.opponent} · {pl.gameTime}</p>
                                 </div>
                               </div>
                             </td>

@@ -5,7 +5,8 @@ const columns = [
   {
     title: 'Product',
     links: [
-      { label: 'Features', href: '#features' },
+      { label: 'Product Tour', href: '#product-tour' },
+      { label: 'Sports', href: '#sports' },
       { label: 'Pricing', href: '#pricing' },
       { label: 'Log In', href: '/dashboard/props' },
       { label: 'Get Started', href: '#pricing' },

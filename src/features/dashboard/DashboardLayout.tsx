@@ -3,6 +3,7 @@ import { DashboardProvider } from '@/features/dashboard/DashboardProvider';
 import { TopSportNav } from '@/features/dashboard/components/TopSportNav';
 import { MobileBottomNav, Sidebar } from '@/features/dashboard/components/Sidebar';
 import { PlayerDrawer } from '@/features/dashboard/components/PlayerDrawer';
+import { PickBuilderDrawer, PickBuilderRail } from '@/features/dashboard/components/PickBuilder';
 
 function Shell() {
   return (
@@ -13,8 +14,10 @@ function Shell() {
         <main className="min-w-0 flex-1 px-3 pb-24 pt-4 sm:px-5 md:pb-8">
           <Outlet />
         </main>
+        <PickBuilderRail />
       </div>
       <MobileBottomNav />
+      <PickBuilderDrawer />
       <PlayerDrawer />
     </div>
   );

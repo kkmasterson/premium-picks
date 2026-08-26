@@ -61,8 +61,8 @@ export function PlayersPage() {
               {filtered.map((p) => (
                 <tr
                   key={p.id}
-                  onClick={() => navigate('player', { playerId: p.id })}
-                  onKeyDown={(e) => e.key === 'Enter' && navigate('player', { playerId: p.id })}
+                  onClick={() => navigate('player', { playerId: p.id, sport: p.sport })}
+                  onKeyDown={(e) => e.key === 'Enter' && navigate('player', { playerId: p.id, sport: p.sport })}
                   tabIndex={0}
                   className="cursor-pointer hover:bg-[#161616] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[#F5C542]"
                 >

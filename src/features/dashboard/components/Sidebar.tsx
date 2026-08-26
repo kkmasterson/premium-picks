@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  BarChart3, Bookmark, CircleHelp, ListFilter, PanelLeftClose, PanelLeftOpen, TrendingUp, Users, Swords, User,
+  BarChart3, Bookmark, CircleHelp, Flame, GitCompareArrows, ListFilter, Menu, PanelLeftClose, PanelLeftOpen, TrendingUp, Users, Swords, User,
 } from 'lucide-react';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { cn } from '@/lib/utils';
@@ -12,11 +12,13 @@ interface Item { key: PageKey; label: string; icon: React.ElementType; }
 
 const ANALYSIS: Item[] = [
   { key: 'props', label: 'Props', icon: ListFilter },
+  { key: 'discrepancies', label: 'Discrepancies', icon: GitCompareArrows },
   { key: 'players', label: 'Players', icon: Users },
   { key: 'trends', label: 'Trends', icon: TrendingUp },
   { key: 'matchups', label: 'Matchups', icon: Swords },
   { key: 'projections', label: 'Projections', icon: BarChart3 },
 ];
+const COMMUNITY: Item[] = [{ key: 'popular', label: 'Popular', icon: Flame }];
 const PERSONAL: Item[] = [{ key: 'saved', label: 'Saved', icon: Bookmark }];
 const SUPPORT: Item[] = [{ key: 'help', label: 'Help / Guide', icon: CircleHelp }];
 
@@ -73,6 +75,7 @@ export function Sidebar() {
       >
         <div className="flex-1 overflow-y-auto no-scrollbar">
           <Group label="Analysis" items={ANALYSIS} collapsed={collapsed} />
+          <Group label="Community" items={COMMUNITY} collapsed={collapsed} />
           <Group label="Personal" items={PERSONAL} collapsed={collapsed} />
           <Group label="Support" items={SUPPORT} collapsed={collapsed} />
         </div>
@@ -105,15 +108,23 @@ export function Sidebar() {
 
 export function MobileBottomNav() {
   const { page, navigate } = useDashboard();
+  const [moreOpen, setMoreOpen] = useState(false);
   const items: Item[] = [
     { key: 'props', label: 'Props', icon: ListFilter },
     { key: 'players', label: 'Players', icon: Users },
-    { key: 'trends', label: 'Trends', icon: TrendingUp },
+    { key: 'popular', label: 'Popular', icon: Flame },
     { key: 'saved', label: 'Saved', icon: Bookmark },
-    { key: 'matchups', label: 'Games', icon: Swords },
   ];
+  const moreItems: Item[] = [
+    { key: 'discrepancies', label: 'Discrepancies', icon: GitCompareArrows },
+    { key: 'trends', label: 'Trends', icon: TrendingUp },
+    { key: 'matchups', label: 'Matchups', icon: Swords },
+    { key: 'projections', label: 'Projections', icon: BarChart3 },
+    { key: 'help', label: 'Help / Guide', icon: CircleHelp },
+  ];
+  const moreActive = moreItems.some((item) => item.key === page);
   return (
-    <nav aria-label="Mobile" className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[#1c1c1c] bg-[#0B0B0B]/95 backdrop-blur md:hidden">
+    <><nav aria-label="Mobile" className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[#1c1c1c] bg-[#0B0B0B]/95 backdrop-blur md:hidden">
       {items.map((i) => {
         const active = page === i.key;
         const Icon = i.icon;
@@ -132,6 +143,8 @@ export function MobileBottomNav() {
           </button>
         );
       })}
-    </nav>
+      <button onClick={() => setMoreOpen((open) => !open)} aria-expanded={moreOpen} className={cn('flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#F5C542]', moreActive || moreOpen ? 'text-[#F5C542]' : 'text-zinc-500')}><Menu className="h-5 w-5" />More</button>
+    </nav>{moreOpen && <><button aria-label="Close more navigation" className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => setMoreOpen(false)} /><div role="dialog" aria-modal="true" aria-label="More navigation" className="fixed inset-x-3 bottom-20 z-40 grid grid-cols-2 gap-2 rounded-xl border border-[#292929] bg-[#101010] p-3 shadow-2xl md:hidden">{moreItems.map((item) => { const Icon = item.icon; return <button key={item.key} onClick={() => { navigate(item.key); setMoreOpen(false); }} className={cn('flex items-center gap-2 rounded-lg border px-3 py-3 text-left text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]', page === item.key ? 'border-[#F5C542]/40 bg-[#F5C542]/10 text-[#F5C542]' : 'border-[#252525] text-zinc-400')}><Icon className="h-4 w-4" />{item.label}</button>; })}</div></>}
+    </>
   );
 }

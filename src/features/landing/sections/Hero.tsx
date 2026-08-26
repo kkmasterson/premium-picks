@@ -1,5 +1,7 @@
-import { DashboardMockup } from '@/features/landing/components/DashboardMockup'
+import { HeroDashboardStack } from '@/features/landing/components/HeroDashboardStack'
+import { HeroRatingBadge } from '@/features/landing/components/HeroRatingBadge'
 import { Reveal } from '@/features/landing/hooks/Reveal'
+import { StatsStrip } from '@/features/landing/sections/StatsStrip'
 
 const trustPoints = ['Real-Time Data', 'Multi-Sport Coverage', 'Advanced Research Tools']
 
@@ -14,7 +16,7 @@ function CheckIcon() {
 
 export function Hero() {
   return (
-    <section id="top" className="texture-diagonal relative overflow-hidden">
+    <section id="top" className="hero-stage texture-diagonal relative overflow-hidden">
       {/* Background effects */}
       <div className="hero-glow glow-drift pointer-events-none absolute inset-0" aria-hidden="true" />
       <div className="vignette pointer-events-none absolute inset-0" aria-hidden="true" />
@@ -23,14 +25,18 @@ export function Hero() {
         aria-hidden="true"
       />
 
-      <div className="container-site relative grid grid-cols-1 items-center gap-14 pb-20 pt-14 md:pb-28 md:pt-20 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+      <div className="hero-primary hero-shell relative grid grid-cols-1 items-center gap-10 pb-14 pt-14 md:pb-20 md:pt-20 lg:grid-cols-[480px_minmax(0,1fr)] lg:gap-16 lg:pb-24 lg:pt-8 xl:gap-20">
         {/* Copy */}
-        <div className="min-w-0">
+        <div className="hero-copy relative min-w-0">
           <Reveal>
             <p className="eyebrow rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
               Smarter Sports Research Starts Here
             </p>
+          </Reveal>
+
+          <Reveal delay={40} className="hero-rating-placement">
+            <HeroRatingBadge />
           </Reveal>
 
           <Reveal delay={80}>
@@ -57,8 +63,8 @@ export function Hero() {
                   <path d="m13 6 6 6-6 6" />
                 </svg>
               </a>
-              <a href="#platform" className="btn-secondary px-8 text-base">
-                See How It Works
+              <a href="#product-tour" className="btn-secondary px-8 text-base">
+                Tour the Platform
               </a>
             </div>
           </Reveal>
@@ -76,43 +82,16 @@ export function Hero() {
         </div>
 
         {/* Product visual */}
-        <Reveal delay={200} className="relative min-w-0">
+        <Reveal delay={200} direction="right" className="relative min-w-0">
           <div
-            className="pointer-events-none absolute -inset-10 rounded-full opacity-80"
-            style={{ background: 'radial-gradient(ellipse at center, rgba(245,197,66,0.16), transparent 62%)' }}
+            className="pointer-events-none absolute -inset-16 rounded-full opacity-70"
+            style={{ background: 'radial-gradient(ellipse at center, rgba(245,197,66,0.13), transparent 66%)' }}
             aria-hidden="true"
           />
-          <div className="float-soft relative">
-            <DashboardMockup compact />
-
-            {/* Floating hit-rate card */}
-            <div className="absolute -bottom-6 -left-4 hidden rounded-xl border border-line bg-ink-800/95 p-4 shadow-card backdrop-blur-sm sm:block md:-left-10">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-mist-muted">
-                Hit Rate · L10
-              </p>
-              <p className="mt-1 text-2xl font-extrabold text-pos">80%</p>
-              <div className="mt-2 flex items-end gap-1" aria-hidden="true">
-                {[35, 55, 40, 70, 60, 85, 75, 95].map((h, i) => (
-                  <span
-                    key={i}
-                    className={`w-1.5 rounded-sm ${h >= 60 ? 'bg-pos/80' : 'bg-neg/70'}`}
-                    style={{ height: `${h * 0.28}px` }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Floating edge card */}
-            <div className="absolute -right-3 -top-6 hidden rounded-xl border border-gold/30 bg-ink-800/95 p-4 shadow-gold-soft backdrop-blur-sm sm:block md:-right-6">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-mist-muted">
-                Projection Edge
-              </p>
-              <p className="mt-1 text-2xl font-extrabold text-gold">+3.3</p>
-              <p className="text-[11px] text-mist-muted">vs. sportsbook line</p>
-            </div>
-          </div>
+          <HeroDashboardStack />
         </Reveal>
       </div>
+      <StatsStrip />
     </section>
   )
 }

@@ -8,6 +8,7 @@ import { ProjectionsPage } from '@/features/dashboard/pages/ProjectionsPage'
 import { PropsPage } from '@/features/dashboard/pages/PropsPage'
 import { HelpPage, SavedPage } from '@/features/dashboard/pages/SavedPage'
 import { TrendsPage } from '@/features/dashboard/pages/TrendsPage'
+import { DiscrepanciesPage, PopularPage } from '@/features/dashboard/pages/DiscoveryPages'
 import LandingPage from '@/features/landing/LandingPage'
 
 const landingDescription =
@@ -47,6 +48,7 @@ export default function App() {
       <Route path="/dashboard" element={<DashboardRoute />}>
         <Route index element={<Navigate to="props" replace />} />
         <Route path="props" element={<PropsPage />} />
+        <Route path="discrepancies" element={<DiscrepanciesPage />} />
         <Route path="players" element={<PlayersPage />} />
         <Route path="players/:playerId" element={<PlayerPage />} />
         <Route path="trends" element={<TrendsPage />} />
@@ -54,6 +56,7 @@ export default function App() {
         <Route path="matchups/:gameId" element={<GamePage />} />
         <Route path="projections" element={<ProjectionsPage />} />
         <Route path="saved" element={<SavedPage />} />
+        <Route path="popular" element={<PopularPage />} />
         <Route path="help" element={<HelpPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

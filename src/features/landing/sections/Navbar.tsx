@@ -4,7 +4,8 @@ import { Logo } from '@/features/landing/components/Logo'
 
 const navLinks = [
   { label: 'Home', href: '#top' },
-  { label: 'Features', href: '#features' },
+  { label: 'Product Tour', href: '#product-tour' },
+  { label: 'Sports', href: '#sports' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'FAQ', href: '#faq' },
 ]
@@ -41,7 +42,7 @@ export function Navbar() {
         </a>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-8 lg:flex">
+        <ul className="hidden items-center gap-6 lg:flex">
           {navLinks.map((l) => (
             <li key={l.label}>
               <a

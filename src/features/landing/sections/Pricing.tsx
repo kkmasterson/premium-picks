@@ -15,14 +15,6 @@ interface Tier {
 
 const tiers: Tier[] = [
   {
-    name: 'Free',
-    monthly: 0,
-    yearly: 0,
-    tagline: 'Explore the platform',
-    features: ['Limited props', 'Limited sports', 'Basic player stats', 'Limited daily research'],
-    cta: 'Start Free',
-  },
-  {
     name: 'Premium',
     monthly: 29,
     yearly: 23,
@@ -78,6 +70,12 @@ export function Pricing() {
           copy="Choose the level of research that fits how you use Premium Picks."
         />
 
+        <Reveal delay={80} className="mt-6 text-center">
+          <p className="inline-flex rounded-full border border-gold/30 bg-gold/5 px-4 py-2 text-xs font-semibold text-gold">
+            Pre-launch pricing — all prices and plan details are subject to change.
+          </p>
+        </Reveal>
+
         {/* Billing toggle */}
         <Reveal delay={100} className="mt-10 flex items-center justify-center gap-3">
           <span className={`text-sm font-medium ${!yearly ? 'text-mist' : 'text-mist-muted'}`}>Monthly</span>
@@ -107,7 +105,7 @@ export function Pricing() {
           </span>
         </Reveal>
 
-        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 lg:grid-cols-2">
           {tiers.map((t, i) => {
             const price = yearly ? t.yearly : t.monthly
             return (
@@ -135,7 +133,7 @@ export function Pricing() {
                     <span className="text-sm text-mist-muted">/ month</span>
                   </div>
                   <p className="mt-1.5 h-4 text-[12px] text-mist-muted">
-                    {price > 0 ? (yearly ? 'Billed yearly' : 'Billed monthly') : 'Free forever'}
+                    {yearly ? 'Billed yearly' : 'Billed monthly'}
                   </p>
 
                   <ul className="mt-6 flex-1 space-y-3 border-t border-line pt-6">

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { propRows } from '@/features/landing/data'
 
 function hitClass(v: number) {
@@ -24,8 +25,21 @@ function SportPills() {
   )
 }
 
-export function DashboardMockup({ compact = false }: { compact?: boolean }) {
-  const rows = compact ? propRows.slice(0, 4) : propRows
+export function DashboardMockup({ compact = false, onInteraction }: { compact?: boolean; onInteraction?: () => void }) {
+  const [pointsOnly, setPointsOnly] = useState(false)
+  const [highHitRate, setHighHitRate] = useState(false)
+  const baseRows = compact ? propRows.slice(0, 4) : propRows
+  const rows = baseRows.filter((row) => (!pointsOnly || row.prop === 'Points') && (!highHitRate || row.l10 >= 60))
+
+  const togglePoints = () => {
+    setPointsOnly((value) => !value)
+    onInteraction?.()
+  }
+
+  const toggleHitRate = () => {
+    setHighHitRate((value) => !value)
+    onInteraction?.()
+  }
   return (
     <div className="w-full min-w-0 overflow-hidden rounded-xl border border-line bg-ink-900 text-left shadow-card">
       {/* App top bar */}
@@ -51,17 +65,26 @@ export function DashboardMockup({ compact = false }: { compact?: boolean }) {
           </svg>
           <span className="text-xs text-mist-muted">Search players, teams, props…</span>
         </div>
-        {['Market: Points', 'Odds: -200 to +150', 'Hit Rate ≥ 60%'].map((f) => (
-          <span
-            key={f}
-            className="hidden rounded-md border border-line bg-ink-800 px-2.5 py-1.5 text-[11px] text-mist-secondary md:block"
-          >
-            {f}
-          </span>
-        ))}
+        <button
+          type="button"
+          aria-pressed={pointsOnly}
+          onClick={togglePoints}
+          className={`hidden rounded-md border px-2.5 py-1.5 text-[11px] transition-colors md:block ${pointsOnly ? 'border-gold/45 bg-gold/10 text-gold' : 'border-line bg-ink-800 text-mist-secondary hover:border-gold/30'}`}
+        >
+          Market: {pointsOnly ? 'Points' : 'All'}
+        </button>
+        <span className="hidden rounded-md border border-line bg-ink-800 px-2.5 py-1.5 text-[11px] text-mist-secondary md:block">Odds: demo range</span>
+        <button
+          type="button"
+          aria-pressed={highHitRate}
+          onClick={toggleHitRate}
+          className={`hidden rounded-md border px-2.5 py-1.5 text-[11px] transition-colors md:block ${highHitRate ? 'border-gold/45 bg-gold/10 text-gold' : 'border-line bg-ink-800 text-mist-secondary hover:border-gold/30'}`}
+        >
+          Hit Rate: {highHitRate ? '60%+' : 'All'}
+        </button>
         <span className="hidden items-center gap-1 rounded-md border border-gold/40 bg-gold/10 px-2.5 py-1.5 text-[11px] font-medium text-gold md:flex">
           <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          Live Lines
+          Demo Lines
         </span>
       </div>
 
@@ -131,10 +154,10 @@ export function DashboardMockup({ compact = false }: { compact?: boolean }) {
 
       {/* Footer strip */}
       <div className="flex items-center justify-between border-t border-line bg-ink-850 px-4 py-2">
-        <span className="text-[10px] text-mist-muted">Lines from 15 sportsbooks · Updated 12s ago</span>
-        <span className="flex items-center gap-1 text-[10px] font-medium text-pos">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-pos" />
-          Synced
+        <span className="text-[10px] text-mist-muted">{rows.length} fixed demo results · No live connection</span>
+        <span className="flex items-center gap-1 text-[10px] font-medium text-gold">
+          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+          Mock Data
         </span>
       </div>
     </div>

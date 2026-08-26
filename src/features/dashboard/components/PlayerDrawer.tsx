@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
-import { ArrowRight, Bookmark, X } from 'lucide-react';
+import { ArrowRight, Bookmark, ListPlus, X } from 'lucide-react';
 import { bestBook, formatOdds, playerById, propById } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { cn } from '@/lib/utils';
 import { DiffBadge, HitRateBadge, PlayerAvatar } from './common';
 import { TrendChart } from './TrendChart';
+import { marketKeyForName } from '@/features/dashboard/player-screen/profiles';
 
 export function PlayerDrawer() {
-  const { drawerPropId, closeDrawer, navigate, saved, toggleSave } = useDashboard();
+  const { drawerPropId, closeDrawer, navigate, saved, toggleSave, togglePick, isInPickBuilder } = useDashboard();
   const prop = drawerPropId ? propById(drawerPropId) : null;
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export function PlayerDrawer() {
   const player = playerById(prop.playerId)!;
   const best = bestBook(prop, 'over');
   const isSaved = saved.props.includes(prop.id);
+  const inBuilder = isInPickBuilder(prop.id);
 
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={`${player.name} research`}>
@@ -103,10 +105,10 @@ export function PlayerDrawer() {
           </section>
         </div>
 
-        <div className="flex gap-2 border-t border-[#1c1c1c] p-4">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-2 border-t border-[#1c1c1c] p-4 max-[430px]:grid-cols-2">
           <button
-            onClick={() => navigate('player', { playerId: player.id })}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-[#F5C542] py-2.5 text-sm font-bold text-black hover:bg-[#FFD95A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD95A]"
+            onClick={() => navigate('player', { playerId: player.id, marketKey: marketKeyForName(prop.market, player.sport, player.pos), line: prop.line, periodKey: 'full', sport: player.sport })}
+            className="flex min-w-0 items-center justify-center gap-1.5 rounded-md bg-[#F5C542] py-2.5 text-sm font-bold text-black hover:bg-[#FFD95A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD95A] max-[430px]:col-span-2"
           >
             Open Player <ArrowRight className="h-4 w-4" />
           </button>
@@ -120,6 +122,13 @@ export function PlayerDrawer() {
           >
             <Bookmark className={cn('h-4 w-4', isSaved && 'fill-[#F5C542]')} />
             {isSaved ? 'Saved' : 'Save'}
+          </button>
+          <button
+            onClick={() => togglePick(prop.id, 'over', best.book)}
+            aria-pressed={inBuilder}
+            className={cn('flex items-center justify-center gap-1.5 rounded-md border px-3 py-2.5 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]', inBuilder ? 'border-[#F5C542]/50 bg-[#F5C542]/10 text-[#F5C542]' : 'border-[#2a2a2a] text-zinc-300 hover:bg-[#181818]')}
+          >
+            <ListPlus className="h-4 w-4" /> {inBuilder ? 'Added' : 'Picks'}
           </button>
         </div>
       </div>

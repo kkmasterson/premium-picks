@@ -1,4 +1,16 @@
-export type Sport = 'NBA' | 'NFL' | 'MLB' | 'NHL' | 'WNBA' | 'NCAAB' | 'NCAAF';
+export type Sport =
+  | 'NBA'
+  | 'NFL'
+  | 'MLB'
+  | 'NHL'
+  | 'WNBA'
+  | 'NCAAB'
+  | 'NCAAF'
+  | 'SOCCER'
+  | 'TENNIS'
+  | 'LOL'
+  | 'CS2'
+  | 'VALORANT';
 
 export interface BookLine {
   book: string;
@@ -62,14 +74,22 @@ export interface Game {
 
 export type PageKey =
   | 'props'
+  | 'discrepancies'
   | 'players'
   | 'trends'
   | 'matchups'
   | 'projections'
   | 'saved'
+  | 'popular'
   | 'player'
   | 'game'
   | 'help';
+
+export interface PickBuilderItem {
+  propId: string;
+  side: 'over' | 'under';
+  book?: string;
+}
 
 export interface Filters {
   gameId: string | null;

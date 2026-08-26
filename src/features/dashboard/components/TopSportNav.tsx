@@ -1,6 +1,6 @@
 import { Bell, Bookmark, ChevronDown, CircleHelp, LogOut, Settings, User, CreditCard } from 'lucide-react';
 import { Link } from 'react-router';
-import { SPORTS } from '@/features/dashboard/data';
+import { playerById, SPORTS } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { cn } from '@/lib/utils';
 import type { Sport } from '@/features/dashboard/types';
@@ -13,7 +13,8 @@ import { Badge } from '@/components/ui/badge';
 const ALL_SPORTS: (Sport | 'All')[] = ['All', ...SPORTS];
 
 export function TopSportNav() {
-  const { sport, setSport, navigate, saved } = useDashboard();
+  const { sport, setSport, navigate, saved, playerId } = useDashboard();
+  const activeSport = playerId ? playerById(playerId)?.sport ?? sport : sport;
   const savedCount = saved.props.length + saved.players.length + saved.games.length;
 
   return (
@@ -34,11 +35,11 @@ export function TopSportNav() {
           {ALL_SPORTS.map((s) => (
             <button
               key={s}
-              onClick={() => setSport(s)}
-              aria-current={sport === s ? 'page' : undefined}
+              onClick={() => { setSport(s); if (playerId) navigate('props'); }}
+              aria-current={activeSport === s ? 'page' : undefined}
               className={cn(
                 'relative shrink-0 px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542] rounded-t',
-                sport === s
+                activeSport === s
                   ? 'text-[#F5C542] after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full after:bg-[#F5C542]'
                   : 'text-zinc-400 hover:text-zinc-100',
               )}
