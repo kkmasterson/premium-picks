@@ -1,0 +1,137 @@
+import { useState } from 'react';
+import {
+  BarChart3, Bookmark, CircleHelp, ListFilter, PanelLeftClose, PanelLeftOpen, TrendingUp, Users, Swords, User,
+} from 'lucide-react';
+import { useDashboard } from '@/features/dashboard/DashboardProvider';
+import { cn } from '@/lib/utils';
+import type { PageKey } from '@/features/dashboard/types';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
+interface Item { key: PageKey; label: string; icon: React.ElementType; }
+
+const ANALYSIS: Item[] = [
+  { key: 'props', label: 'Props', icon: ListFilter },
+  { key: 'players', label: 'Players', icon: Users },
+  { key: 'trends', label: 'Trends', icon: TrendingUp },
+  { key: 'matchups', label: 'Matchups', icon: Swords },
+  { key: 'projections', label: 'Projections', icon: BarChart3 },
+];
+const PERSONAL: Item[] = [{ key: 'saved', label: 'Saved', icon: Bookmark }];
+const SUPPORT: Item[] = [{ key: 'help', label: 'Help / Guide', icon: CircleHelp }];
+
+function NavItem({ item, collapsed }: { item: Item; collapsed: boolean }) {
+  const { page, navigate } = useDashboard();
+  const active = page === item.key || (item.key === 'players' && page === 'player') || (item.key === 'matchups' && page === 'game');
+  const Icon = item.icon;
+  const btn = (
+    <button
+      onClick={() => navigate(item.key)}
+      aria-current={active ? 'page' : undefined}
+      className={cn(
+        'group relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]',
+        collapsed && 'justify-center px-0',
+        active ? 'bg-[#1a1a1a] font-medium text-white' : 'text-zinc-400 hover:bg-[#141414] hover:text-zinc-200',
+      )}
+    >
+      {active && <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-[#F5C542]" aria-hidden />}
+      <Icon className={cn('h-[18px] w-[18px] shrink-0', active ? 'text-[#F5C542]' : 'text-zinc-500 group-hover:text-zinc-300')} />
+      {!collapsed && item.label}
+    </button>
+  );
+  if (!collapsed) return btn;
+  return (
+    <Tooltip delayDuration={150}>
+      <TooltipTrigger asChild>{btn}</TooltipTrigger>
+      <TooltipContent side="right" className="border-[#2a2a2a] bg-[#171717] text-zinc-100">{item.label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+function Group({ label, items, collapsed }: { label: string; items: Item[]; collapsed: boolean }) {
+  return (
+    <div>
+      {!collapsed && <p className="px-3 pb-1 pt-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-600">{label}</p>}
+      {collapsed && <div className="mx-3 my-3 border-t border-[#1c1c1c]" />}
+      <div className="space-y-0.5">
+        {items.map((i) => <NavItem key={i.key} item={i} collapsed={collapsed} />)}
+      </div>
+    </div>
+  );
+}
+
+export function Sidebar() {
+  const [collapsed, setCollapsed] = useState(false);
+  return (
+    <TooltipProvider>
+      <aside
+        className={cn(
+          'sticky top-14 hidden h-[calc(100vh-3.5rem)] shrink-0 flex-col border-r border-[#161616] bg-[#0B0B0B] px-2 py-3 transition-all md:flex',
+          collapsed ? 'w-14' : 'w-52',
+        )}
+        aria-label="Primary"
+      >
+        <div className="flex-1 overflow-y-auto no-scrollbar">
+          <Group label="Analysis" items={ANALYSIS} collapsed={collapsed} />
+          <Group label="Personal" items={PERSONAL} collapsed={collapsed} />
+          <Group label="Support" items={SUPPORT} collapsed={collapsed} />
+        </div>
+
+        <div className="mt-2 border-t border-[#1c1c1c] pt-3">
+          <div className={cn('flex items-center gap-2.5 rounded-md px-2 py-2', collapsed && 'justify-center px-0')}>
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5C542] text-xs font-bold text-black">JD</span>
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="flex items-center gap-1.5 truncate text-xs font-medium text-zinc-200">
+                  Jordan Davis
+                  <Badge className="h-4 border border-[#F5C542]/30 bg-[#F5C542]/10 px-1 text-[9px] text-[#F5C542] hover:bg-[#F5C542]/10">PRO</Badge>
+                </p>
+                <p className="flex items-center gap-1 text-[10px] text-zinc-500"><User className="h-2.5 w-2.5" /> Premium plan</p>
+              </div>
+            )}
+          </div>
+          <button
+            onClick={() => setCollapsed((c) => !c)}
+            className="mt-1 flex w-full items-center justify-center gap-2 rounded-md py-1.5 text-xs text-zinc-500 hover:bg-[#141414] hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]"
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <><PanelLeftClose className="h-4 w-4" /> Collapse</>}
+          </button>
+        </div>
+      </aside>
+    </TooltipProvider>
+  );
+}
+
+export function MobileBottomNav() {
+  const { page, navigate } = useDashboard();
+  const items: Item[] = [
+    { key: 'props', label: 'Props', icon: ListFilter },
+    { key: 'players', label: 'Players', icon: Users },
+    { key: 'trends', label: 'Trends', icon: TrendingUp },
+    { key: 'saved', label: 'Saved', icon: Bookmark },
+    { key: 'matchups', label: 'Games', icon: Swords },
+  ];
+  return (
+    <nav aria-label="Mobile" className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[#1c1c1c] bg-[#0B0B0B]/95 backdrop-blur md:hidden">
+      {items.map((i) => {
+        const active = page === i.key;
+        const Icon = i.icon;
+        return (
+          <button
+            key={i.key}
+            onClick={() => navigate(i.key)}
+            aria-current={active ? 'page' : undefined}
+            className={cn(
+              'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#F5C542]',
+              active ? 'text-[#F5C542]' : 'text-zinc-500',
+            )}
+          >
+            <Icon className="h-5 w-5" />
+            {i.label}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}

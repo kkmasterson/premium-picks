@@ -1,0 +1,268 @@
+import { SectionHeader } from '@/features/landing/components/SectionHeader'
+import { Reveal } from '@/features/landing/hooks/Reveal'
+import { lineComparison, matchupRows, propRows, trendGames } from '@/features/landing/data'
+
+function hitClass(v: number) {
+  if (v >= 70) return 'text-pos'
+  if (v >= 50) return 'text-gold'
+  return 'text-neg'
+}
+
+/* ---------- Mini visuals ---------- */
+
+function PropsTableVisual() {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-line bg-ink-950">
+      <table className="w-full min-w-[440px] text-[11px]">
+        <thead>
+          <tr className="border-b border-line text-[9px] uppercase tracking-[0.14em] text-mist-muted">
+            {['Player', 'Prop', 'Line', 'Avg', 'L5', 'L10', 'Season'].map((h) => (
+              <th key={h} className="px-3 py-2 text-left font-medium first:pl-4 last:pr-4">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {propRows.slice(0, 4).map((r) => (
+            <tr key={r.player} className="border-b border-line/50 last:border-0">
+              <td className="px-3 py-2 pl-4 font-semibold text-mist">{r.player}</td>
+              <td className="px-3 py-2 text-mist-secondary">{r.prop}</td>
+              <td className="px-3 py-2 font-medium text-mist">{r.line}</td>
+              <td className="px-3 py-2 text-mist-secondary">{r.avg}</td>
+              <td className={`px-3 py-2 font-semibold ${hitClass(r.l5)}`}>{r.l5}%</td>
+              <td className={`px-3 py-2 font-semibold ${hitClass(r.l10)}`}>{r.l10}%</td>
+              <td className={`px-3 py-2 pr-4 font-semibold ${hitClass(r.season)}`}>{r.season}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function FiltersVisual() {
+  const filters = [
+    ['Sport', 'NBA'],
+    ['Game', 'NYK @ BOS'],
+    ['Player', 'All Players'],
+    ['Props', 'Points'],
+    ['Sportsbooks', '15 selected'],
+    ['Min Odds', '-200'],
+    ['Max Odds', '+150'],
+    ['Hit Rate', '≥ 60%'],
+    ['Date', 'Today'],
+  ]
+  return (
+    <div className="rounded-lg border border-line bg-ink-950 p-4">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        {filters.map(([k, v]) => (
+          <div key={k} className="rounded-md border border-line bg-ink-850 px-3 py-2">
+            <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">{k}</p>
+            <p className="mt-0.5 truncate text-[11px] font-semibold text-mist">{v}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 flex items-center justify-between rounded-md border border-gold/30 bg-gold/5 px-3 py-2">
+        <span className="text-[11px] font-medium text-gold">38 matching props found</span>
+        <span className="text-[10px] text-mist-muted">Filters applied: 6</span>
+      </div>
+    </div>
+  )
+}
+
+function TrendsVisual() {
+  const max = 40
+  const line = 27.5
+  return (
+    <div className="rounded-lg border border-line bg-ink-950 p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-[11px] font-semibold text-mist">J. Brunson · Points · Last 8</span>
+        <span className="rounded border border-gold/30 bg-gold/10 px-2 py-0.5 text-[10px] font-semibold text-gold">
+          Line {line}
+        </span>
+      </div>
+      <div className="relative flex h-32 items-end justify-between gap-2 border-b border-line pb-0">
+        {/* line marker */}
+        <div
+          className="pointer-events-none absolute left-0 right-0 border-t border-dashed border-gold/50"
+          style={{ bottom: `${(line / max) * 100}%` }}
+          aria-hidden="true"
+        />
+        {trendGames.map((g) => (
+          <div key={g.label} className="flex flex-1 flex-col items-center gap-1.5">
+            <span className="text-[9px] font-semibold text-mist-muted">{g.value}</span>
+            <div
+              className={`w-full max-w-[26px] rounded-t-sm ${g.over ? 'bg-pos/80' : 'bg-neg/70'}`}
+              style={{ height: `${(g.value / max) * 96}px` }}
+            />
+            <span className="text-[9px] text-mist-disabled">{g.label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 flex items-center gap-4 text-[10px] text-mist-muted">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-sm bg-pos/80" /> Over
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-sm bg-neg/70" /> Under
+        </span>
+        <span className="ml-auto font-semibold text-pos">5/8 over (63%)</span>
+      </div>
+    </div>
+  )
+}
+
+function LineComparisonVisual() {
+  return (
+    <div className="overflow-hidden rounded-lg border border-line bg-ink-950">
+      <div className="border-b border-line bg-ink-850 px-4 py-2">
+        <span className="text-[11px] font-semibold text-mist">J. Brunson · Points</span>
+      </div>
+      <table className="w-full text-[11px]">
+        <thead>
+          <tr className="border-b border-line text-[9px] uppercase tracking-[0.14em] text-mist-muted">
+            {['Sportsbook', 'Line', 'Over', 'Under'].map((h) => (
+              <th key={h} className="px-3 py-2 text-left font-medium first:pl-4 last:pr-4">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {lineComparison.map((l) => (
+            <tr
+              key={l.book}
+              className={`border-b border-line/50 last:border-0 ${l.best ? 'bg-gold/5' : ''}`}
+            >
+              <td className="px-3 py-2 pl-4 font-semibold text-mist">
+                {l.book}
+                {l.best && (
+                  <span className="ml-2 rounded border border-gold/40 bg-gold/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-gold">
+                    Best Price
+                  </span>
+                )}
+              </td>
+              <td className="px-3 py-2 text-mist">{l.line}</td>
+              <td className={`px-3 py-2 font-medium ${l.best ? 'text-pos' : 'text-mist-secondary'}`}>{l.over}</td>
+              <td className="px-3 py-2 pr-4 text-mist-secondary">{l.under}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function MatchupVisual() {
+  return (
+    <div className="overflow-hidden rounded-lg border border-line bg-ink-950">
+      {matchupRows.map((m) => (
+        <div key={m.opponent} className="flex items-center gap-3 border-b border-line/50 px-4 py-3 last:border-0">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-line bg-ink-800 text-[11px] font-bold text-gold">
+            {m.opponent}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[11px] font-semibold text-mist">
+              {m.posDefense} <span className="font-normal text-mist-muted">· {m.meetings}</span>
+            </p>
+            <p className="text-[10px] text-mist-muted">Avg {m.avg} pts in meetings</p>
+          </div>
+          <span className={`text-[12px] font-bold ${hitClass(m.hitRate)}`}>{m.hitRate}%</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ProjectionsVisual() {
+  return (
+    <div className="rounded-lg border border-line bg-ink-950 p-5">
+      <p className="text-[11px] font-semibold text-mist">S. Gilgeous-Alexander · Points</p>
+      <div className="mt-4 flex items-end justify-between gap-4">
+        <div>
+          <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">PP Projection</p>
+          <p className="mt-1 text-3xl font-extrabold text-gold">34.8</p>
+        </div>
+        <div className="pb-1 text-right">
+          <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">Sportsbook Line</p>
+          <p className="mt-1 text-2xl font-bold text-mist-secondary">31.5</p>
+        </div>
+      </div>
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-ink-700">
+        <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-gold-muted via-gold to-gold-bright" />
+      </div>
+      <div className="mt-4 flex items-center justify-between rounded-md border border-pos/30 bg-pos/10 px-3 py-2">
+        <span className="text-[11px] font-medium text-mist-secondary">Difference</span>
+        <span className="text-sm font-extrabold text-pos">+3.3</span>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Feature cards ---------- */
+
+const features = [
+  {
+    title: 'Player Props Research',
+    copy: 'View player props alongside recent performance, averages, hit rates, and sportsbook lines.',
+    visual: <PropsTableVisual />,
+  },
+  {
+    title: 'Advanced Filters',
+    copy: 'Filter by sport, game, player, prop market, sportsbook, odds, date, and hit rate.',
+    visual: <FiltersVisual />,
+  },
+  {
+    title: 'Player Trends',
+    copy: 'See game-by-game performance and how frequently a player has cleared the current line.',
+    visual: <TrendsVisual />,
+  },
+  {
+    title: 'Line Comparison',
+    copy: 'Compare the same prop across multiple sportsbooks without opening each sportsbook individually.',
+    visual: <LineComparisonVisual />,
+  },
+  {
+    title: 'Matchup Insights',
+    copy: 'Review matchup context, opponent history, and relevant defensive information.',
+    visual: <MatchupVisual />,
+  },
+  {
+    title: 'Projections',
+    copy: 'Compare Premium Picks projections against current sportsbook lines and historical performance.',
+    visual: <ProjectionsVisual />,
+  },
+]
+
+export function Features() {
+  return (
+    <section id="features" className="border-t border-line bg-ink-900 py-20 md:py-28">
+      <div className="container-site">
+        <SectionHeader
+          eyebrow="Powerful Research Tools"
+          title="Built to Make Research Faster"
+          copy="Every tool is designed to help you find useful information quickly without digging through multiple sites."
+        />
+
+        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {features.map((f, i) => (
+            <Reveal key={f.title} delay={(i % 2) * 100}>
+              <article className="group card-surface flex h-full flex-col p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 md:p-7">
+                <h3 className="text-xl font-bold text-mist">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-mist-muted">{f.copy}</p>
+                <div className="mt-6 flex-1">{f.visual}</div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={150} className="mt-10 text-center">
+          <p className="text-sm text-mist-muted">
+            On the roadmap: <span className="text-mist-secondary">+EV tools, arbitrage, line movement, alerts, and more.</span>
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
