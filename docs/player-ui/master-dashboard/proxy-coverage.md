@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Some planned leagues are currently blocked from direct inspection. Premium Picks can still plan their page structure by inheriting a validated same-sport reference while keeping league-specific behavior unconfirmed.
+Some planned leagues are currently blocked from direct inspection. Arena Props can still plan their page structure by inheriting a validated same-sport reference while keeping league-specific behavior unconfirmed.
 
 This is a planning fallback, not evidence that every market, period, ranking, or contextual module is identical.
 

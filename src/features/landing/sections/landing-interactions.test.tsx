@@ -38,18 +38,18 @@ describe('landing page interactive product tour', () => {
     expect(screen.getByRole('tab', { name: /Analyze a Player/i })).toHaveAttribute('aria-selected', 'true')
   })
 
-  it('filters only the fixed prop demo and labels the preview as disconnected', () => {
+  it('filters the prop preview and labels its data state', () => {
     render(
       <MemoryRouter>
         <ProductPreview />
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('6 fixed demo results · No live connection')).toBeInTheDocument()
+    expect(screen.getByText('6 matching results · Preview data')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Market: All' }))
 
     expect(screen.getByRole('button', { name: 'Market: Points' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByText('2 fixed demo results · No live connection')).toBeInTheDocument()
+    expect(screen.getByText('2 matching results · Preview data')).toBeInTheDocument()
     expect(screen.getByText(/not connected to live dashboards, accounts, APIs/i)).toBeInTheDocument()
     expect(screen.getByText('✓ Tried')).toBeInTheDocument()
     expect(screen.queryByText('Synced')).not.toBeInTheDocument()

@@ -67,7 +67,7 @@ export function Pricing() {
         <SectionHeader
           eyebrow="Pricing"
           title="Simple Plans. Serious Tools."
-          copy="Choose the level of research that fits how you use Premium Picks."
+          copy="Choose the level of research that fits how you use Arena Props."
         />
 
         <Reveal delay={80} className="mt-6 text-center">
@@ -156,7 +156,7 @@ export function Pricing() {
 
         <Reveal delay={200} className="mt-10 text-center">
           <p className="text-sm text-mist-muted">
-            Cancel anytime. Premium Picks is a research platform and does not process wagers.
+            Cancel anytime. Arena Props is a research platform and does not process wagers.
           </p>
         </Reveal>
       </div>

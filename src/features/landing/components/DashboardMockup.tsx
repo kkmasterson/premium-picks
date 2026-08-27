@@ -73,7 +73,7 @@ export function DashboardMockup({ compact = false, onInteraction }: { compact?: 
         >
           Market: {pointsOnly ? 'Points' : 'All'}
         </button>
-        <span className="hidden rounded-md border border-line bg-ink-800 px-2.5 py-1.5 text-[11px] text-mist-secondary md:block">Odds: demo range</span>
+        <span className="hidden rounded-md border border-line bg-ink-800 px-2.5 py-1.5 text-[11px] text-mist-secondary md:block">Odds: selected range</span>
         <button
           type="button"
           aria-pressed={highHitRate}
@@ -84,7 +84,7 @@ export function DashboardMockup({ compact = false, onInteraction }: { compact?: 
         </button>
         <span className="hidden items-center gap-1 rounded-md border border-gold/40 bg-gold/10 px-2.5 py-1.5 text-[11px] font-medium text-gold md:flex">
           <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          Demo Lines
+          Sportsbook Lines
         </span>
       </div>
 
@@ -154,7 +154,7 @@ export function DashboardMockup({ compact = false, onInteraction }: { compact?: 
 
       {/* Footer strip */}
       <div className="flex items-center justify-between border-t border-line bg-ink-850 px-4 py-2">
-        <span className="text-[10px] text-mist-muted">{rows.length} fixed demo results · No live connection</span>
+        <span className="text-[10px] text-mist-muted">{rows.length} matching results · Preview data</span>
         <span className="flex items-center gap-1 text-[10px] font-medium text-gold">
           <span className="h-1.5 w-1.5 rounded-full bg-gold" />
           Mock Data

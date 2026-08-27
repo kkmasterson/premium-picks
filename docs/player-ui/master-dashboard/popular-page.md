@@ -4,7 +4,7 @@
 
 - Required top-level Community page.
 - Planned route: `/dashboard/popular`.
-- Not currently implemented in the Premium Picks prototype.
+- Not currently implemented in the Arena Props prototype.
 - Desktop reference confirmed; mobile composition remains unconfirmed.
 
 ## Purpose in the UI

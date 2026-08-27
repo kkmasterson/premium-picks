@@ -25,7 +25,7 @@ export function HeroRatingBadge() {
     <div
       className="flex items-center gap-1.5"
       role="img"
-      aria-label="97 percent of users give Premium Picks a five-star rating"
+      aria-label="97 percent of users give Arena Props a five-star rating"
     >
       <Laurel />
       <div className="min-w-[105px] text-center">

@@ -74,7 +74,7 @@ export function Footer() {
       <div className="container-site grid grid-cols-1 gap-12 py-14 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:py-16">
         {/* Brand */}
         <div>
-          <a href="#top" aria-label="Premium Picks home">
+          <a href="#top" aria-label="Arena Props home">
             <Logo size={46} />
           </a>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-mist-muted">
@@ -127,9 +127,9 @@ export function Footer() {
 
       <div className="border-t border-line">
         <div className="container-site flex flex-col gap-3 py-6 text-[12px] leading-relaxed text-mist-disabled md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Premium Picks. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Arena Props. All rights reserved.</p>
           <p className="max-w-2xl">
-            Premium Picks is an independent sports research and analytics platform. Premium Picks
+            Arena Props is an independent sports research and analytics platform. Arena Props
             does not accept wagers or operate as a sportsbook. Information is provided for research
             and entertainment purposes only.
           </p>

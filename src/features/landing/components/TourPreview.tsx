@@ -15,19 +15,19 @@ const sampleData: Record<Sample, { rate: string; games: number; over: number }> 
 
 const opponents = [
   { team: 'BOS', name: 'Boston', rank: '4th vs PG', meetings: '3 games', average: '30.7', rate: '67%', note: 'Boston ranks 4th in this fixed opponent sample.' },
-  { team: 'MIA', name: 'Miami', rank: '11th vs PG', meetings: '4 games', average: '28.1', rate: '50%', note: 'Miami shows the closest result to the selected 27.5 demo line.' },
+  { team: 'MIA', name: 'Miami', rank: '11th vs PG', meetings: '4 games', average: '28.1', rate: '50%', note: 'Miami shows the closest result to the selected 27.5 line.' },
   { team: 'CHI', name: 'Chicago', rank: '27th vs PG', meetings: '3 games', average: '34.3', rate: '100%', note: 'Chicago has the highest hit rate in this fixed three-team sample.' },
 ] as const
 
 function PreviewShell({ children, path }: { children: ReactNode; path: string }) {
   return (
-    <div data-demo-source="landing-static" className="overflow-hidden rounded-2xl border border-line bg-ink-850 shadow-gold-glow">
+    <div data-preview-source="landing-static" className="overflow-hidden rounded-2xl border border-line bg-ink-850 shadow-gold-glow">
       <div className="flex items-center gap-2 border-b border-line px-4 py-3">
         <span className="h-2.5 w-2.5 rounded-full bg-ink-700" />
         <span className="h-2.5 w-2.5 rounded-full bg-ink-700" />
         <span className="h-2.5 w-2.5 rounded-full bg-gold/70" />
         <div className="ml-2 min-w-0 flex-1 truncate rounded-md border border-line bg-ink-950 px-3 py-1.5 text-[11px] text-mist-muted">
-          demo.premiumpicks.com/{path}
+          Arena Props / {path}
         </div>
         <span className="hidden items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold sm:flex">
           <span className="h-1.5 w-1.5 rounded-full bg-gold" />
@@ -57,7 +57,7 @@ function PlayerPreview({ onInteraction }: { onInteraction?: () => void }) {
             <span className="flex h-12 w-12 items-center justify-center rounded-full border border-gold/25 bg-gold/10 text-sm font-extrabold text-gold">JB</span>
             <div>
               <p className="text-base font-bold text-mist">Jalen Brunson</p>
-              <p className="text-xs text-mist-muted">NYK · PG · Fixed demo profile</p>
+              <p className="text-xs text-mist-muted">NYK · PG · Player research profile</p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -87,7 +87,7 @@ function PlayerPreview({ onInteraction }: { onInteraction?: () => void }) {
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.55fr_0.8fr]">
           <div className="rounded-lg border border-line bg-ink-950 p-4">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-mist">{activeSample} demo performance</span>
+              <span className="font-semibold text-mist">{activeSample} performance</span>
               <span className="rounded border border-gold/30 bg-gold/10 px-2 py-1 font-semibold text-gold">Line 27.5</span>
             </div>
             <div className="relative mt-4 flex h-36 items-end gap-2 border-b border-line">
@@ -105,7 +105,7 @@ function PlayerPreview({ onInteraction }: { onInteraction?: () => void }) {
             <div className="rounded-lg border border-line bg-ink-950 p-4">
               <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">Selected sample</p>
               <p className="mt-2 text-sm font-bold text-mist">{activeSample} · {selected.rate} hit rate</p>
-              <p className="mt-1 text-xs text-mist-muted">{selected.over} of {selected.games} fixed demo results</p>
+              <p className="mt-1 text-xs text-mist-muted">{selected.over} of {selected.games} matching results</p>
             </div>
             <div className="rounded-lg border border-gold/30 bg-gold/5 p-4">
               <p className="text-[9px] uppercase tracking-[0.14em] text-gold">Mock research</p>
@@ -136,7 +136,7 @@ function TrendsPreview({ onInteraction }: { onInteraction?: () => void }) {
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Mock trend explorer</p>
             <h3 className="mt-1 text-lg font-bold text-mist">Jalen Brunson · Points</h3>
-            <p className="text-xs text-mist-muted">Fixed results against a fixed demo line</p>
+            <p className="text-xs text-mist-muted">Recent results against the selected line</p>
           </div>
           <div className="flex gap-2" aria-label="Select a fixed trend sample">
             {samples.map((sample) => {
@@ -162,7 +162,7 @@ function TrendsPreview({ onInteraction }: { onInteraction?: () => void }) {
           </div>
           <div className="relative mt-5 flex h-52 items-end gap-3 border-b border-line">
             <div className="absolute inset-x-0 bottom-[64%] flex items-center border-t border-dashed border-gold/60">
-              <span className="ml-auto -translate-y-3 rounded bg-gold px-2 py-0.5 text-[9px] font-bold text-ink-950">27.5 demo line</span>
+              <span className="ml-auto -translate-y-3 rounded bg-gold px-2 py-0.5 text-[9px] font-bold text-ink-950">27.5 line</span>
             </div>
             {chartValues.map((value, index) => (
               <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center justify-end gap-1.5">
@@ -195,7 +195,7 @@ function MatchupsPreview({ onInteraction }: { onInteraction?: () => void }) {
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Mock matchup context</p>
             <h3 className="mt-1 text-lg font-bold text-mist">Jalen Brunson vs {selected.name}</h3>
           </div>
-          <span className="hidden rounded-md border border-line bg-ink-950 px-3 py-2 text-xs font-semibold text-mist-secondary sm:block">Fixed demo event</span>
+          <span className="hidden rounded-md border border-line bg-ink-950 px-3 py-2 text-xs font-semibold text-mist-secondary sm:block">Selected event</span>
         </div>
         <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
           <div className="overflow-hidden rounded-lg border border-line bg-ink-950">

@@ -109,7 +109,7 @@ Selecting `Team Form` replaces the right-column odds view with recent team resul
 
 ## Role sensitivity
 
-No agent role is shown for this player. If Premium Picks uses Duelist, Initiator, Controller, or Sentinel groupings, we need explicit UI or product confirmation before making those groupings part of the player page.
+No agent role is shown for this player. If Arena Props uses Duelist, Initiator, Controller, or Sentinel groupings, we need explicit UI or product confirmation before making those groupings part of the player page.
 
 ## Additional reference needed
 

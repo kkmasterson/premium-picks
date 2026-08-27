@@ -17,7 +17,7 @@ export function ProjectionsPage() {
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         <div>
           <h1 className="text-sm font-semibold text-zinc-200">Projections</h1>
-          <p className="text-xs text-zinc-500">Premium Picks model projections vs. current sportsbook lines.</p>
+          <p className="text-xs text-zinc-500">Arena Props model projections vs. current sportsbook lines.</p>
         </div>
         <div className="flex gap-1.5" role="group" aria-label="Sort projections">
           <button

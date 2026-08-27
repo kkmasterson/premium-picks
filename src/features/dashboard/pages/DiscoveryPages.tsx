@@ -144,7 +144,7 @@ export function PopularPage() {
     return true;
   }).sort((a, b) => communityFavorites(b) - communityFavorites(a)).slice(0, 30), [books, sport, sports]);
 
-  return <div className="min-w-0 space-y-3"><PageHeading title="Popular" description="Community-favorited player props across sports and providers." /><section className="grid min-w-0 gap-3 rounded-xl border border-[#202020] bg-[#0e0e0e] p-3 lg:grid-cols-2"><MultiFilter label="Sports" values={sports} options={sportOptions} onChange={setSports} /><MultiFilter label="Apps" values={books} options={bookOptions} onChange={setBooks} /></section><div className="flex items-center justify-between px-1"><p className="text-xs font-semibold text-zinc-300">Most saved props</p><p className="text-[10px] text-zinc-600">{results.length} results</p></div>{results.length ? <div className="grid min-w-0 gap-3 xl:grid-cols-2">{results.map((prop) => <PopularCard key={prop.id} prop={prop} />)}</div> : <div className="rounded-xl border border-dashed border-[#292929] py-16 text-center text-xs text-zinc-500">No popular props match the selected filters.</div>}</div>;
+  return <div className="min-w-0 space-y-3"><PageHeading title="Popular" description="Community-favorited player props across sports and providers." /><section className="grid min-w-0 gap-3 rounded-xl border border-[#202020] bg-[#0e0e0e] p-3 lg:grid-cols-2"><MultiFilter label="Sports" values={sports} options={sportOptions} onChange={setSports} /><MultiFilter label="Apps" values={books} options={bookOptions} onChange={setBooks} /></section><div className="flex items-center justify-between px-1"><p className="text-xs font-semibold text-zinc-300">Most saved props</p><p className="text-[10px] text-zinc-600">{results.length} results</p></div>{results.length ? <div className="grid min-w-0 gap-3 min-[1600px]:grid-cols-2">{results.map((prop) => <PopularCard key={prop.id} prop={prop} />)}</div> : <div className="rounded-xl border border-dashed border-[#292929] py-16 text-center text-xs text-zinc-500">No popular props match the selected filters.</div>}</div>;
 }
 
 export function DiscrepanciesPage() {
@@ -171,6 +171,6 @@ export function DiscrepanciesPage() {
       </div>
     </section>
     <div className="flex items-center justify-between px-1"><p className="text-xs font-semibold text-zinc-300">Largest differences first</p><p className="text-[10px] text-zinc-600">{results.length} results</p></div>
-    {results.length ? <div className="grid gap-3 xl:grid-cols-2">{results.map((result) => <DiscrepancyCard key={result.prop.id} result={result} />)}</div> : <div className="rounded-xl border border-dashed border-[#292929] py-16 text-center text-xs text-zinc-500">No line discrepancies match the selected filters.</div>}
+    {results.length ? <div className="grid min-w-0 gap-3 min-[1600px]:grid-cols-2">{results.map((result) => <DiscrepancyCard key={result.prop.id} result={result} />)}</div> : <div className="rounded-xl border border-dashed border-[#292929] py-16 text-center text-xs text-zinc-500">No line discrepancies match the selected filters.</div>}
   </div>;
 }

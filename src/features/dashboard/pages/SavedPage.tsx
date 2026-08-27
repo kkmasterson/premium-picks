@@ -134,13 +134,13 @@ export function HelpPage() {
         <dl className="space-y-3 text-sm">
           <div><dt className="font-semibold text-zinc-200">L5 / L10 / L15</dt><dd className="text-zinc-400">Percentage of the player's last 5, 10, or 15 games in which the result cleared the listed line.</dd></div>
           <div><dt className="font-semibold text-zinc-200">SZN</dt><dd className="text-zinc-400">Season-long hit rate against the listed line.</dd></div>
-          <div><dt className="font-semibold text-zinc-200">Proj / Diff</dt><dd className="text-zinc-400">The Premium Picks projection and its difference from the current sportsbook line.</dd></div>
+          <div><dt className="font-semibold text-zinc-200">Proj / Diff</dt><dd className="text-zinc-400">The Arena Props projection and its difference from the current sportsbook line.</dd></div>
           <div><dt className="font-semibold text-zinc-200">Best Price</dt><dd className="text-zinc-400">The strongest available over price across supported sportsbooks.</dd></div>
         </dl>
       </SectionCard>
       <SectionCard title="Responsible Research">
         <p className="text-sm leading-relaxed text-zinc-400">
-          Premium Picks is a sports research and analytics platform. Hit rates describe historical performance only
+          Arena Props is a sports research and analytics platform. Hit rates describe historical performance only
           and do not guarantee future results. Nothing in this dashboard is a guarantee of any outcome.
         </p>
       </SectionCard>

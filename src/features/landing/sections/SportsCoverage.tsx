@@ -55,9 +55,9 @@ export function SportsCoverage() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(245,197,66,0.07),transparent_65%)]" aria-hidden="true" />
       <div className="container-site relative">
         <SectionHeader
-          eyebrow="Sport Lab"
-          title="Choose a Sport. Watch the Research Adapt."
-          copy="Every sport keeps the same focused Premium Picks workspace while changing the markets, samples, and context that matter."
+          eyebrow="12-Sport Coverage Map"
+          title="Traditional Sports and Esports. One Research Language."
+          copy="The current Arena Props experience spans 12 sport categories, with the same focused workflow adapting to each market, sample, and matchup context."
         />
 
         <Reveal delay={80} className="mt-10">

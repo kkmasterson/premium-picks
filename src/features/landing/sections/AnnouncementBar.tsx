@@ -3,8 +3,8 @@ export function AnnouncementBar() {
     <div className="border-b border-gold/25 bg-gradient-to-r from-ink-900 via-[#171204] to-ink-900">
       <div className="container-site flex min-h-[40px] flex-wrap items-center justify-center gap-x-4 gap-y-1 py-1.5 text-center">
         <p className="text-[13px] text-mist-secondary">
-          <span className="font-semibold text-gold">Limited Launch Offer:</span> Save 20% on Premium
-          Picks Pro
+          <span className="font-semibold text-gold">Limited Launch Offer:</span> Save 20% on Arena
+          Props Pro
         </p>
         <a
           href="#pricing"

@@ -49,7 +49,7 @@ function FilterStage() {
         ))}
       </div>
       <div className="mt-4 flex items-center justify-between rounded-lg border border-gold/30 bg-gold/10 px-4 py-3 text-xs">
-        <span className="font-semibold text-gold">6 filters active</span><span className="text-mist-muted">Demo research state</span>
+        <span className="font-semibold text-gold">6 filters active</span><span className="text-mist-muted">Preview research state</span>
       </div>
     </div>
   )

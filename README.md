@@ -1,6 +1,6 @@
-# Premium Picks
+# Arena Props
 
-Premium Picks is a single React application containing the public marketing site and the sports-research dashboard.
+Arena Props is a single React application containing the public marketing site and the sports-research dashboard.
 
 ## Requirements
 
@@ -63,7 +63,7 @@ Invalid or unavailable query values are replaced with the profile's canonical de
 
 Current profiles cover basketball (WNBA plus NBA/NCAAB proxies), football roles, MLB hitters and starting pitchers, the NHL shared-shell placeholder, soccer field and goalkeeper roles, tennis singles, and LoL/CS2/Valorant series layouts. Dota 2 and Call of Duty are intentionally excluded.
 
-Popular, Discrepancies, and player-research cards feed one persistent Pick Builder. Selections retain the chosen Over/Under side and provider across dashboard navigation and browser refreshes. The builder is a fixed desktop rail and becomes an accessible drawer at tablet and phone widths.
+Popular, Discrepancies, and player-research cards feed one persistent Pick Builder. Selections retain the chosen Over/Under side and provider across dashboard navigation and browser refreshes. The builder is a fixed wide-screen rail and becomes an accessible drawer when the viewport cannot fit the rail without squeezing the research workspace.
 
 ## Checks
 

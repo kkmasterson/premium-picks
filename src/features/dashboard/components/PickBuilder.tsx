@@ -48,7 +48,7 @@ function BuilderContent({ onClose }: { onClose?: () => void }) {
 }
 
 export function PickBuilderRail() {
-  return <aside aria-label="Pick Builder" className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-72 shrink-0 border-l border-[#1b1b1b] bg-[#0b0b0b] xl:block"><BuilderContent /></aside>;
+  return <aside aria-label="Pick Builder" className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-72 min-w-[18rem] max-w-[18rem] shrink-0 overflow-hidden border-l border-[#1b1b1b] bg-[#0b0b0b] xl:block"><BuilderContent /></aside>;
 }
 
 export function PickBuilderDrawer() {

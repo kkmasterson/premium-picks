@@ -5,6 +5,7 @@ import { Logo } from '@/features/landing/components/Logo'
 const navLinks = [
   { label: 'Home', href: '#top' },
   { label: 'Product Tour', href: '#product-tour' },
+  { label: 'Features', href: '#features' },
   { label: 'Sports', href: '#sports' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'FAQ', href: '#faq' },
@@ -37,7 +38,7 @@ export function Navbar() {
       }`}
     >
       <nav className="container-site flex h-[68px] items-center justify-between" aria-label="Main navigation">
-        <a href="#top" aria-label="Premium Picks home" className="shrink-0">
+        <a href="#top" aria-label="Arena Props home" className="shrink-0">
           <Logo size={42} />
         </a>
 

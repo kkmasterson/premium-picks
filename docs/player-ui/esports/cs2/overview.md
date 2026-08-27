@@ -103,7 +103,7 @@ Selecting `Team Form` keeps the player chart and Last 15 Games table in place wh
 
 ## Role sensitivity
 
-The supplied UI does not display a CS2 role, so no position-specific behavior is confirmed. If Premium Picks uses role-aware comparisons, likely role labels must come from another source and should not be assumed from this screenshot.
+The supplied UI does not display a CS2 role, so no position-specific behavior is confirmed. If Arena Props uses role-aware comparisons, likely role labels must come from another source and should not be assumed from this screenshot.
 
 ## Additional reference needed
 

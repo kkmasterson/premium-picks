@@ -12,16 +12,16 @@ import { DiscrepanciesPage, PopularPage } from '@/features/dashboard/pages/Disco
 import LandingPage from '@/features/landing/LandingPage'
 
 const landingDescription =
-  'Research player props, compare sportsbook lines, analyze trends, and explore sports data with Premium Picks.'
+  'Research player props, compare sportsbook lines, analyze trends, and explore sports data with Arena Props.'
 
 const dashboardDescription =
-  'Explore player props, sportsbook lines, projections, matchups, and saved research in Premium Picks.'
+  'Explore player props, sportsbook lines, projections, matchups, and saved research in Arena Props.'
 
 function LandingRoute() {
   return (
     <RouteTheme
       surface="landing"
-      title="Premium Picks | Sports Props Research & Analytics"
+      title="Arena Props | Sports Props Research & Analytics"
       description={landingDescription}
     >
       <LandingPage />
@@ -33,7 +33,7 @@ function DashboardRoute() {
   return (
     <RouteTheme
       surface="dashboard"
-      title="Premium Picks Dashboard"
+      title="Arena Props Dashboard"
       description={dashboardDescription}
     >
       <DashboardLayout />

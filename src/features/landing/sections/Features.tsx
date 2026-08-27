@@ -181,7 +181,7 @@ function ProjectionsVisual() {
       <p className="text-[11px] font-semibold text-mist">S. Gilgeous-Alexander · Points</p>
       <div className="mt-4 flex items-end justify-between gap-4">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">PP Projection</p>
+          <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">AP Projection</p>
           <p className="mt-1 text-3xl font-extrabold text-gold">34.8</p>
         </div>
         <div className="pb-1 text-right">
@@ -196,6 +196,53 @@ function ProjectionsVisual() {
         <span className="text-[11px] font-medium text-mist-secondary">Difference</span>
         <span className="text-sm font-extrabold text-pos">+3.3</span>
       </div>
+    </div>
+  )
+}
+
+function DiscrepanciesVisual() {
+  const rows = [
+    { player: 'J. Brunson', market: 'Points', spread: '2.0', strength: 'Strong' },
+    { player: 'P. Mahomes', market: 'Pass Yds', spread: '8.5', strength: 'Watch' },
+    { player: 'A. Judge', market: 'Total Bases', spread: '0.5', strength: 'Strong' },
+  ]
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-line bg-ink-950">
+      <div className="flex items-center justify-between border-b border-line bg-ink-850 px-4 py-2.5">
+        <span className="text-[11px] font-semibold text-mist">Largest line gaps</span>
+        <span className="rounded border border-gold/30 bg-gold/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-gold">Scan</span>
+      </div>
+      {rows.map((row) => (
+        <div key={row.player} className="grid grid-cols-[1fr_auto] items-center gap-4 border-b border-line/50 px-4 py-3 last:border-0">
+          <div>
+            <p className="text-[11px] font-semibold text-mist">{row.player} · {row.market}</p>
+            <p className="mt-0.5 text-[10px] text-mist-muted">Sportsbook range · {row.spread}</p>
+          </div>
+          <span className={`rounded-md border px-2 py-1 text-[10px] font-bold ${row.strength === 'Strong' ? 'border-pos/25 bg-pos/10 text-pos' : 'border-gold/25 bg-gold/10 text-gold'}`}>{row.strength}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ResearchSignalsVisual() {
+  return (
+    <div className="rounded-lg border border-line bg-ink-950 p-4">
+      <div className="grid grid-cols-3 gap-2">
+        {[
+          ['Popular', 'Community'],
+          ['Saved', 'Your board'],
+          ['Builder', '3 selections'],
+        ].map(([title, detail], index) => (
+          <div key={title} className={`rounded-lg border p-3 ${index === 0 ? 'border-gold/35 bg-gold/10' : 'border-line bg-ink-850'}`}>
+            <span className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold ${index === 0 ? 'bg-gold text-ink-950' : 'bg-ink-700 text-mist-secondary'}`}>{index + 1}</span>
+            <p className="mt-3 text-[11px] font-bold text-mist">{title}</p>
+            <p className="mt-0.5 text-[9px] text-mist-muted">{detail}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 rounded-md border border-pos/25 bg-pos/10 px-3 py-2 text-center text-[10px] font-semibold text-pos">Move from discovery to a saved research decision</div>
     </div>
   )
 }
@@ -230,8 +277,18 @@ const features = [
   },
   {
     title: 'Projections',
-    copy: 'Compare Premium Picks projections against current sportsbook lines and historical performance.',
+    copy: 'Compare Arena Props projections against current sportsbook lines and historical performance.',
     visual: <ProjectionsVisual />,
+  },
+  {
+    title: 'Line Discrepancies',
+    copy: 'Surface meaningful differences between available lines so the best research starting points rise to the top.',
+    visual: <DiscrepanciesVisual />,
+  },
+  {
+    title: 'Popular, Saved & Pick Builder',
+    copy: 'Combine community momentum, your saved research, and a persistent selection builder in one workflow.',
+    visual: <ResearchSignalsVisual />,
   },
 ]
 
@@ -240,9 +297,9 @@ export function Features() {
     <section id="features" className="border-t border-line bg-ink-900 py-20 md:py-28">
       <div className="container-site">
         <SectionHeader
-          eyebrow="Powerful Research Tools"
-          title="Built to Make Research Faster"
-          copy="Every tool is designed to help you find useful information quickly without digging through multiple sites."
+          eyebrow="The Full Research Stack"
+          title="Core Capabilities Are Already in the Arena"
+          copy="The baseline tools people expect from leading prop-research platforms are connected with Arena Props discovery, saving, and pick-building workflows."
         />
 
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -259,7 +316,7 @@ export function Features() {
 
         <Reveal delay={150} className="mt-10 text-center">
           <p className="text-sm text-mist-muted">
-            On the roadmap: <span className="text-mist-secondary">+EV tools, arbitrage, line movement, alerts, and more.</span>
+            MVP build track: <span className="text-mist-secondary">+EV engine, arbitrage scanner, line movement detection, user alerts, injury impact models, and market movement alerts.</span>
           </p>
         </Reveal>
       </div>

@@ -46,5 +46,6 @@ describe('expanded dashboard destinations', () => {
     renderRoute('/dashboard/props');
     expect(await screen.findByRole('button', { name: 'Discrepancies' })).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Popular' }).length).toBeGreaterThan(0);
+    expect(screen.getByLabelText('Pick Builder')).toHaveClass('w-72', 'min-w-[18rem]', 'max-w-[18rem]', 'shrink-0');
   });
 });

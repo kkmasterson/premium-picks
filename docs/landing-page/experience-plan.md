@@ -1,10 +1,10 @@
-# Premium Picks Landing Page Experience Plan
+# Arena Props Landing Page Experience Plan
 
 ## Status
 
 - Living design and implementation roadmap.
 - The first interactive build slice was implemented on 2026-08-26.
-- Based on the seven competitor-reference images supplied on 2026-08-26 and a live review of the current Premium Picks landing page.
+- Based on the seven competitor-reference images supplied on 2026-08-26 and a live review of the current Arena Props landing page.
 - The references are inspiration for interaction patterns and information hierarchy, not a visual template to copy.
 - Product availability, sportsbook coverage, prices, testimonials, user counts, and performance claims must be verified before publication.
 
@@ -39,10 +39,10 @@
 - [x] Remove the Free pricing tier and mark all displayed pre-launch prices and plan details as subject to change.
 - [x] Convert the statistics block into a short transparent overlay with the dashboard artwork continuing behind it.
 - [x] Pin the metrics overlay to the bottom of the hero viewport across desktop browser zoom levels.
-- [x] Add a Premium Picks-styled `97% of users` five-star trust badge to the hero; verify the claim source before publication.
+- [x] Add an Arena Props-styled `97% of users` five-star trust badge to the hero; verify the claim source before publication.
 - [ ] Replace or verify the statistics strip so every published count has a production source.
 - [ ] Build the verified Line Coverage section after the supported provider list and trademark usage are confirmed.
-- [ ] Expand the comparison into Premium Picks versus manual research versus a typical multi-tool workflow.
+- [ ] Expand the comparison into Arena Props versus manual research versus a typical multi-tool workflow.
 - [ ] Separate available-now and planned features inside pricing.
 - [ ] Connect plan buttons to the final signup or checkout flow instead of the prototype dashboard destination.
 - [ ] Preserve the selected sport or tool in the final call to action.
@@ -50,11 +50,11 @@
 
 ## Goal
 
-Make the landing page feel like a short, guided product experience instead of a long stack of marketing sections. A first-time visitor should understand what Premium Picks does, see how the dashboard supports a research decision, explore the sports and tools that matter to them, and reach pricing without needing to interpret dense copy.
+Make the landing page feel like a short, guided product experience instead of a long stack of marketing sections. A first-time visitor should understand what Arena Props does, see how the dashboard supports a research decision, explore the sports and tools that matter to them, and reach pricing without needing to interpret dense copy.
 
 The desired visitor takeaway is:
 
-> Premium Picks brings the research workflow together, shows me the product before I sign up, and makes it easy to see whether it fits how I research.
+> Arena Props brings the research workflow together, shows me the product before I sign up, and makes it easy to see whether it fits how I research.
 
 ## Experience principles
 
@@ -67,31 +67,31 @@ The desired visitor takeaway is:
 
 ## What the reference page does well
 
-| Reference pattern | What works | Why it helps the visitor | What Premium Picks should learn from it |
+| Reference pattern | What works | Why it helps the visitor | What Arena Props should learn from it |
 | --- | --- | --- | --- |
 | Dashboard collage behind the hero | The product is the main visual rather than a generic sports image. | Visitors see the depth of the platform immediately. | Keep our dashboard-led hero, but make the active screen easier to read and tie it to the headline. |
 | Visual tool cards | Each feature is paired with a purpose-built mini interface. | A visitor can understand a tool before reading the description. | Our current feature visuals are a strong start; give them active states and connect them into a workflow. |
-| Alternating scroll entrances | Content arrives from the left and right as the visitor moves down the page. | The page feels paced and each step receives a moment of focus. | Use a four-step alternating research sequence with a Premium Picks gold data trail. |
+| Alternating scroll entrances | Content arrives from the left and right as the visitor moves down the page. | The page feels paced and each step receives a moment of focus. | Use a four-step alternating research sequence with an Arena Props gold data trail. |
 | Sportsbook logo wall | Many providers surround one central value statement. | Coverage feels tangible without a long paragraph. | Create a verified line-coverage section only after the supported provider list is confirmed. Do not use placeholder logos or imply unsupported coverage. |
-| Clickable sport selector | Choosing a sport changes league logos, dashboard art, and listed capabilities. | Visitors can personalize the pitch around what they follow. | Replace our static sport cards with an interactive Sport Lab that changes a real Premium Picks preview. |
+| Clickable sport selector | Choosing a sport changes league logos, dashboard art, and listed capabilities. | Visitors can personalize the pitch around what they follow. | Replace our static sport cards with an interactive Sport Lab that changes a real Arena Props preview. |
 | Clickable dashboard/tool showcase | A side list controls a large dashboard preview. | It demonstrates multiple product areas without making the visitor scroll through repeated screenshots. | Turn our Product Preview into the central interactive product tour. |
-| Competitor comparison beside social proof | The comparison answers objections while quotes add reassurance. | It makes the value proposition easier to evaluate. | Compare Premium Picks with manual research and a typical multi-tool workflow. Use named competitors, exact prices, or testimonials only when verified and approved. |
+| Competitor comparison beside social proof | The comparison answers objections while quotes add reassurance. | It makes the value proposition easier to evaluate. | Compare Arena Props with manual research and a typical multi-tool workflow. Use named competitors, exact prices, or testimonials only when verified and approved. |
 | Standard pricing cards after the comparison | Visitors first understand value, then see the plans. | Price appears in context instead of being the first decision. | Keep our pricing cards and billing toggle, but connect each tier to the tools demonstrated above it. |
 
-## Current Premium Picks landing page audit
+## Current Arena Props landing page audit
 
 The current page already contains most of the right content. Its primary weakness is that the sections behave like static exhibits rather than one connected experience.
 
 | Current section | What is already strong | Current limitation | Recommended direction |
 | --- | --- | --- | --- |
 | Announcement and navigation | Clear launch offer, simple anchors, visible Log In and Get Started actions. | Navigation does not help visitors jump to sport coverage or the product tour. | Add Product Tour and Sports anchors; keep the main navigation compact. |
-| Hero | Strong black-and-gold identity, clear headline, dashboard preview, and two focused calls to action. | The dashboard was a fixed, fully readable table and the floating stat cards made the hero feel like a generated dashboard demo. | Use one dominant, angled product surface with two supporting dashboard layers behind it. Crop the stack through the right edge so it reads as visual product atmosphere; keep detailed interaction in the Product Tour below. |
+| Hero | Strong black-and-gold identity, clear headline, dashboard preview, and two focused calls to action. | The dashboard was a fixed, fully readable table and the floating stat cards made the hero feel like a generated dashboard preview. | Use one dominant, angled product surface with two supporting dashboard layers behind it. Crop the stack through the right edge so it reads as visual product atmosphere; keep detailed interaction in the Product Tour below. |
 | Statistics strip | Quickly communicates scale and recency. | Counts can look like claims without context or verification. | Show only verified metrics and add precise labels such as `sports supported` or `data refreshed`, not ambiguous vanity numbers. |
 | Platform preview | Large browser frame, realistic dashboard, and four concise callouts. | It repeats the hero table and the callouts are not clickable. | Convert it into a clickable dashboard tour with a controlled preview and contextual copy. |
 | Research tools | Six detailed mini interfaces explain features better than icon-only cards. | The two-column grid is long, visually even, and disconnected from a decision sequence. | Keep the strongest visuals, then reorganize them into four alternating workflow moments plus an expandable tool gallery. |
 | Three-step workflow | Simple and easy to scan. | The steps are generic cards and do not demonstrate what changes at each step. | Merge the workflow and feature story so each step changes the dashboard state. |
 | Sports coverage | The supported leagues and sample markets are easy to scan. | Cards are static, repeated sport names dilute the hierarchy, and the preview does not react. | Replace the grid with accessible sport tabs and a changing league/market/dashboard panel. |
-| Comparison | The Premium Picks versus manual-research framing is credible and useful. | It compares only two choices and is visually separated from proof or product context. | Compare three workflows: Premium Picks, manual research, and a typical multi-tool stack. Keep wording qualitative unless facts are substantiated. |
+| Comparison | The Arena Props versus manual-research framing is credible and useful. | It compares only two choices and is visually separated from proof or product context. | Compare three workflows: Arena Props, manual research, and a typical multi-tool stack. Keep wording qualitative unless facts are substantiated. |
 | Pricing | Monthly/yearly toggle, clear hierarchy, and feature lists are already functional. | Roadmap tools appear inside a paid tier, which can imply they are available now. | Add `Available now` and `Coming later` groupings or hold roadmap features until launch status is confirmed. |
 | FAQ and final call to action | Good safety language and a clear close. | The final action sends visitors back to pricing instead of reflecting their chosen sport or tool. | Preserve the selection context in the final message and route the primary action to the appropriate signup/dashboard entry. |
 
@@ -104,11 +104,11 @@ The new page should feel like the visitor is building a research view as they sc
 3. Compare the market.
 4. Understand the context.
 
-The line, step numbers, and dashboard state make the sequence feel uniquely Premium Picks. This takes the useful left/right reveal idea from the reference without reproducing its card layout, purple styling, wording, or exact composition.
+The line, step numbers, and dashboard state make the sequence feel uniquely Arena Props. This takes the useful left/right reveal idea from the reference without reproducing its card layout, purple styling, wording, or exact composition.
 
 ### Signature visual language
 
-- Premium Picks black, warm gold, off-white, green, and red remain the core palette.
+- Arena Props black, warm gold, off-white, green, and red remain the core palette.
 - Gold represents the visitor's selected path or active control—not every border on the page.
 - Real dashboard surfaces replace generic decorative illustrations.
 - A subtle field-grid or data-grid texture can sit behind major preview areas.
@@ -125,7 +125,7 @@ The line, step numbers, and dashboard state make the sequence feel uniquely Prem
 | 4 | Four-step Research Trail | How does this help me make a research decision? | Scroll activates four alternating scenes from left and right. |
 | 5 | Sport Lab | Does it support what I follow? | Select a sport; league marks, markets, and dashboard content update together. |
 | 6 | Line Coverage | Which books or apps can I compare? | Filter or reveal verified providers; link to full coverage details. |
-| 7 | Workflow comparison | Why not keep using my current process? | Compare Premium Picks, manual research, and a typical multi-tool stack. |
+| 7 | Workflow comparison | Why not keep using my current process? | Compare Arena Props, manual research, and a typical multi-tool stack. |
 | 8 | Plans | Which option fits me? | Monthly/yearly control and clear available-now entitlements. |
 | 9 | FAQ and final call to action | What do I need to know before starting? | Context-aware Start Researching action. |
 
@@ -135,7 +135,7 @@ The line, step numbers, and dashboard state make the sequence feel uniquely Prem
 
 #### Purpose
 
-Explain Premium Picks in one sentence and make the dashboard the immediate proof.
+Explain Arena Props in one sentence and make the dashboard the immediate proof.
 
 #### Recommended composition
 
@@ -184,7 +184,7 @@ This becomes the main product demonstration and replaces the current repeated st
 | Tour item | Preview focus | Intended route | Publication rule |
 | --- | --- | --- | --- |
 | Props | Filters, live line, L5/L10/L15/season columns | `/dashboard/props` | Available now. |
-| Player Analysis | Player header, market selection, performance chart, contextual panel | `/dashboard/players/:playerId` | Use a stable demo player and supported sport profile. |
+| Player Analysis | Player header, market selection, performance chart, contextual panel | `/dashboard/players/:playerId` | Use a stable sample player and supported sport profile. |
 | Trends | Recent performance and threshold line | `/dashboard/trends` | Available now. |
 | Matchups | Event and opponent context | `/dashboard/matchups` | Available now. |
 | Popular | Community-favorited props | `/dashboard/popular` | Do not link until the documented page is implemented. |
@@ -200,7 +200,7 @@ This becomes the main product demonstration and replaces the current repeated st
 
 ### 4. Four-step Research Trail
 
-This is the original Premium Picks spin on the reference's numbered left/right scroll entrances.
+This is the original Arena Props spin on the reference's numbered left/right scroll entrances.
 
 #### Step 01: Choose the market
 
@@ -218,7 +218,7 @@ This is the original Premium Picks spin on the reference's numbered left/right s
 
 - Copy enters from the left; line-comparison results enter from the right.
 - Highlight the minimum and maximum available line or the best currently displayed price using labels in addition to color.
-- Provider data must use verified, current sample or clearly labeled demo data.
+- Provider data must use verified current data or clearly labeled sample data.
 
 #### Step 04: Add the context
 
@@ -257,13 +257,13 @@ The live landing page currently describes soccer, tennis, MMA, and esports as `c
 
 #### Original visual direction
 
-Use a `field-to-data` transition: a subtle sport-specific field, court, diamond, rink, pitch, or map grid sits behind the preview, while the foreground remains the same Premium Picks dashboard shell. This shows that the platform adapts to each sport without becoming a collection of unrelated mini-sites.
+Use a `field-to-data` transition: a subtle sport-specific field, court, diamond, rink, pitch, or map grid sits behind the preview, while the foreground remains the same Arena Props dashboard shell. This shows that the platform adapts to each sport without becoming a collection of unrelated mini-sites.
 
 ### 6. Line Coverage
 
 This section can borrow the reference's sense of scale without duplicating its centered logo wall.
 
-#### Premium Picks treatment
+#### Arena Props treatment
 
 - Place a horizontal `data lane` through the section.
 - Verified provider marks arrive from alternating sides and lock into comparable line columns.
@@ -274,9 +274,9 @@ Only use provider trademarks the product is permitted to display. Do not imply a
 
 ### 7. Workflow comparison
 
-The current Premium Picks-versus-manual table should expand to three columns:
+The current Arena Props-versus-manual table should expand to three columns:
 
-| Evaluation area | Premium Picks | Manual research | Typical multi-tool workflow |
+| Evaluation area | Arena Props | Manual research | Typical multi-tool workflow |
 | --- | --- | --- | --- |
 | Player and prop context | Connected in one research view | Gathered by hand | Split across separate products |
 | Line comparison | Side-by-side where supported | Books checked individually | May require a separate odds tool |
@@ -369,7 +369,7 @@ The final action should use the visitor's context:
 - The reference's purple gradient, logo treatment, pricing-card styling, exact layouts, slogans, or wording.
 - Its exact stagger timing, rotations, or dashboard collage composition.
 - Named competitor claims or prices without current evidence.
-- Testimonials, ratings, user totals, profit screenshots, urgency timers, or discount claims that Premium Picks cannot substantiate.
+- Testimonials, ratings, user totals, profit screenshots, urgency timers, or discount claims that Arena Props cannot substantiate.
 - Tools such as arbitrage, +EV, alerts, or community features presented as live before implementation is complete.
 
 ## Recommended reuse of the current code
@@ -422,11 +422,11 @@ Track only enough to learn whether the experience helps:
 - Which plan call to action is chosen after a sport or tool selection?
 - Where do visitors leave the page?
 
-Event names should describe the interaction, not the visitor. Avoid logging player searches, betting interests, or other potentially sensitive free-form content from a landing-page demo.
+Event names should describe the interaction, not the visitor. Avoid logging player searches, betting interests, or other potentially sensitive free-form content from a landing-page preview.
 
 ## Release acceptance criteria
 
-- A new visitor can explain Premium Picks after the hero and first product-tour interaction.
+- A new visitor can explain Arena Props after the hero and first product-tour interaction.
 - Product Tour, Sport Lab, pricing toggle, FAQ, and all calls to action work with mouse, touch, and keyboard.
 - Every public sport, provider, feature, price, and metric is verified as current.
 - Available and planned tools are visibly separated.
@@ -449,9 +449,9 @@ This slice is now implemented and tested. Comparison, pricing refinement, verifi
 
 ### Fixed mock-data boundary for the product tour
 
-- Every Product Tour value is defined in landing-page code as a fixed demo constant.
+- Every Product Tour value is defined in landing-page code as a fixed preview constant.
 - The preview does not call dashboard APIs, subscribe to sportsbook feeds, read account state, or import production dashboard data.
 - Interactive filters, sample windows, charts, and matchup rows only select among the fixed mock values bundled with the landing page.
-- The demo browser uses a `demo.premiumpicks.com` label and displays `Fixed Mock Data` instead of live-status language.
+- The preview browser uses an Arena Props label and clearly distinguishes sample data from connected production feeds.
 - A persistent disclosure states that the tour is not connected to live dashboards, accounts, APIs, sportsbook feeds, or real user data.
 - Visitors may use the Product Tour to understand the workflow, but cannot operate the real dashboard through the landing page.

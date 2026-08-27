@@ -11,7 +11,7 @@ export function FinalCTA() {
               src="/logo.png"
               alt=""
               aria-hidden="true"
-              className="pointer-events-none absolute -right-16 -top-16 w-72 opacity-[0.06]"
+              className="pointer-events-none absolute -right-16 -top-16 w-72 opacity-[0.09] mix-blend-screen"
             />
             <div
               className="pointer-events-none absolute inset-0"

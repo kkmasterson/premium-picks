@@ -4,7 +4,6 @@ import { playerById, SPORTS } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { cn } from '@/lib/utils';
 import type { Sport } from '@/features/dashboard/types';
-import { GoldShield } from './common';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -23,11 +22,11 @@ export function TopSportNav() {
         <button
           className="flex shrink-0 items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542] rounded"
           onClick={() => navigate('props')}
-          aria-label="Premium Picks home"
+          aria-label="Arena Props home"
         >
-          <GoldShield className="h-7 w-7" />
+          <img src="/logo.png" alt="" aria-hidden="true" className="h-9 w-9 rounded-md object-contain" />
           <span className="hidden sm:block text-sm font-bold tracking-wide text-white">
-            Premium <span className="text-[#F5C542]">Picks</span>
+            Arena <span className="text-[#F5C542]">Props</span>
           </span>
         </button>
 

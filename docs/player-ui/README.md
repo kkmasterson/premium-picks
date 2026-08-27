@@ -1,4 +1,4 @@
-# Premium Picks Player UI Catalog
+# Arena Props Player UI Catalog
 
 ## Purpose
 

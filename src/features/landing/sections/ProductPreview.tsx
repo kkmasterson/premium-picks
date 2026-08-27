@@ -52,7 +52,7 @@ export function ProductPreview() {
         <SectionHeader
           eyebrow="Interactive Product Tour"
           title="Explore the Research Before You Sign Up"
-          copy="Choose a research view to see how Premium Picks keeps the market, player, trend, and matchup connected."
+          copy="Choose a research view to see how Arena Props keeps the market, player, trend, and matchup connected."
         />
 
         <div className="mt-14 grid min-w-0 items-start gap-6 lg:grid-cols-[330px_minmax(0,1fr)] lg:gap-8">
@@ -60,7 +60,7 @@ export function ProductPreview() {
             <div className="min-w-0 lg:sticky lg:top-28">
               <div
                 role="tablist"
-                aria-label="Premium Picks product views"
+                aria-label="Arena Props product views"
                 className="no-scrollbar flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible"
               >
                 {productTourItems.map((item, index) => {
@@ -88,7 +88,7 @@ export function ProductPreview() {
                         <span className="min-w-0">
                           <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-gold">
                             {item.step}
-                            {isComplete && <span aria-label="Demo step tried" className="text-pos">✓ Tried</span>}
+                            {isComplete && <span aria-label="Preview step tried" className="text-pos">✓ Tried</span>}
                             {selected && !isComplete && <span className="text-mist-muted">Try it →</span>}
                           </span>
                           <span className="mt-0.5 block text-sm font-bold text-mist">{item.label}</span>

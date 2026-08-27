@@ -1,4 +1,4 @@
-# Premium Picks Data Requirements and Database Outline
+# Arena Props Data Requirements and Database Outline
 
 > This is the product-scope overview. The normative implementation documents
 > are the [frontend data requirements](frontend-data-requirements.md),
@@ -8,9 +8,9 @@
 ## Purpose
 
 This document is the data contract for the dashboard before vendors, API plans,
-and pricing are selected. It inventories what the current Premium Picks product
+and pricing are selected. It inventories what the current Arena Props product
 must display, identifies what must be licensed or ingested, separates source
-facts from Premium Picks calculations and user data, and defines the first-pass
+facts from Arena Props calculations and user data, and defines the first-pass
 database boundaries.
 
 The next procurement phase should map every external source domain in this
@@ -33,7 +33,7 @@ profiles, product documentation, and the running dashboard on 2026-08-26.
 | Player research | Identity and headshot, team logos, event status, consensus, current offers, period/segment markets, filters, event history, DNP/unavailable states, component stats, supporting stats, line movement, prop history and sport-specific context modules |
 | Trends | Market catalog plus ranked L5/L10 hit rates, projection differences and over/under streaks |
 | Matchups | Event identity, teams/logos, schedule/status, prop count, player count, sportsbook count and event-specific prop table |
-| Projections | Premium Picks model output compared with current sportsbook lines, sortable positive/negative difference and the shared prop performance fields |
+| Projections | Arena Props model output compared with current sportsbook lines, sortable positive/negative difference and the shared prop performance fields |
 | Popular | Community save count, Over/Under consensus, available provider offers and shared prop performance fields |
 | Saved | The current user's saved props, players and games |
 | Pick Builder | User-selected prop, Over/Under side and optional provider; selections persist across navigation and refresh |
@@ -75,9 +75,9 @@ vendor data from being confused with user-generated state.
 | Class | Examples | System of record |
 | --- | --- | --- |
 | Licensed source facts | Schedules, rosters, player headshots, team logos, injuries, box scores, live stats, sportsbook lines and odds | External provider, preserved with provider ID and source timestamp |
-| Premium Picks calculations | Hit rates, averages, streaks, min/max discrepancy, projections, matchup scores, rankings created by our model | Premium Picks calculation/version tables |
-| User and community data | Saves, selected picks, preferred books, Popular counts and Over/Under community consensus | Premium Picks transactional database |
-| Product configuration | Supported competitions, market definitions, display labels, stat mappings, freshness policy, feature flags | Premium Picks configuration managed in code/admin tools |
+| Arena Props calculations | Hit rates, averages, streaks, min/max discrepancy, projections, matchup scores, rankings created by our model | Arena Props calculation/version tables |
+| User and community data | Saves, selected picks, preferred books, Popular counts and Over/Under community consensus | Arena Props transactional database |
+| Product configuration | Supported competitions, market definitions, display labels, stat mappings, freshness policy, feature flags | Arena Props configuration managed in code/admin tools |
 
 ## External data domains to procure
 
@@ -127,7 +127,7 @@ Required fields:
 ### 4. Historical and semi-live player/team statistics
 
 The database needs event-level facts, not only vendor-provided L5 averages.
-Premium Picks must be able to reproduce every displayed average, hit rate and
+Arena Props must be able to reproduce every displayed average, hit rate and
 chart from underlying event records.
 
 Shared requirements:
@@ -158,10 +158,10 @@ Required fields:
 
 - Sportsbook/operator identity, display name, jurisdiction/region, logo and active status.
 - Canonical market definition, sport, competition, player/team scope, period and unit.
-- Provider market ID and mapping to the canonical Premium Picks market.
+- Provider market ID and mapping to the canonical Arena Props market.
 - Event, player, market, side, line/handicap, American odds and provider.
 - Offer status: open, suspended, closed, settled, cancelled or unavailable.
-- Provider publish time, time received by Premium Picks and last confirmed time.
+- Provider publish time, time received by Arena Props and last confirmed time.
 - Main versus alternate line, limits or promotion metadata only where licensed and reliable.
 - Settlement result including over, under, push, void and correction.
 - Full line/price change history, not only the current offer.
@@ -186,7 +186,7 @@ separate products from the core stats/odds feed:
 - Tennis head-to-head meetings, surface splits and venue/event averages.
 - Esports map pool, picks/bans, per-map stats, favorite champions/agents and team form.
 
-### 7. Premium Picks projection inputs
+### 7. Arena Props projection inputs
 
 The projections page cannot be sourced as a single opaque number if Premium
 Picks intends to own and explain its model. Retain:
@@ -201,9 +201,9 @@ Picks intends to own and explain its model. Retain:
 The raw inputs are primarily schedules, participation, historical stats,
 opponent/team context, injuries/lineups and current market data. Vendor-provided
 projections, if evaluated later, must be stored as a separate source rather than
-overwriting Premium Picks projections.
+overwriting Arena Props projections.
 
-## Values Premium Picks should calculate
+## Values Arena Props should calculate
 
 The following values should normally be derived from normalized source facts:
 
@@ -363,7 +363,7 @@ poll across 12 sports and six operators.
 
 ## Data quality and normalization rules
 
-- Keep provider timestamps and Premium Picks receipt timestamps separately.
+- Keep provider timestamps and Arena Props receipt timestamps separately.
 - Use UTC in storage and convert only at the presentation boundary.
 - Never treat missing, unavailable, suspended, DNP or zero as interchangeable.
 - Preserve stat and settlement corrections as versions; recalculate affected derived metrics.
@@ -413,5 +413,5 @@ final vendor recommendation:
 - Is the promise pregame research only, or must odds and stats update during games?
 - How many seasons of historical statistics and historical odds are required?
 - Are licensed headshots mandatory for every sport, or may some sports use initials/team artwork?
-- Does Premium Picks need play-by-play/shot-location/pitch-level data at launch, or can those modules wait?
-- Will Premium Picks build its own projections immediately, or initially display only source stats and market comparisons?
+- Does Arena Props need play-by-play/shot-location/pitch-level data at launch, or can those modules wait?
+- Will Arena Props build its own projections immediately, or initially display only source stats and market comparisons?

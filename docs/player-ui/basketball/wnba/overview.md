@@ -6,11 +6,11 @@
 >
 > **Reference scope:** WNBA player props and player analysis
 >
-> **Dashboard planning status:** First sport-specific UI map for the future Premium Picks master dashboard
+> **Dashboard planning status:** First sport-specific UI map for the future Arena Props master dashboard
 
 ## Purpose
 
-This document records how the supplied reference application **visually represents WNBA player information** when a user moves from the Props page to a player page. It is a UI and interaction reference for designing the Premium Picks basketball player page later.
+This document records how the supplied reference application **visually represents WNBA player information** when a user moves from the Props page to a player page. It is a UI and interaction reference for designing the Arena Props basketball player page later.
 
 It is intentionally **not** a database outline, API contract, or attempt to reproduce another product's internal calculations. The notes describe only what can be seen in the supplied screenshots.
 
@@ -18,7 +18,7 @@ This is the first entry in a planned set of sport-specific UI references. Each s
 
 ## Master dashboard planning context
 
-The future Premium Picks app will use one master dashboard shell while adapting the player analysis experience to the selected sport.
+The future Arena Props app will use one master dashboard shell while adapting the player analysis experience to the selected sport.
 
 This WNBA reference helps identify two categories:
 
@@ -435,7 +435,7 @@ Across Matchup, Defense, Shooting, Similar, Injuries, and the scrolled screensho
 
 This consistency is important: the player chart acts as the analytical anchor while the user changes the question being asked on the right.
 
-## 12. UI Patterns Worth Carrying Into Premium Picks
+## 12. UI Patterns Worth Carrying Into Arena Props
 
 ### Information hierarchy
 

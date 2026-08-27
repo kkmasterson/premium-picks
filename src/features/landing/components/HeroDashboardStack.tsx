@@ -256,7 +256,7 @@ function ContextScreen() {
 
 export function HeroDashboardStack() {
   return (
-    <div className="hero-dashboard-window" role="img" aria-label="Layered Premium Picks product previews featuring the real Patrick Mahomes player research page">
+    <div className="hero-dashboard-window" role="img" aria-label="Layered Arena Props product previews featuring the real Patrick Mahomes player research page">
       <div className="hero-dashboard-beam" aria-hidden="true" />
       <div className="hero-dashboard-stack">
         <PropsBoardScreen />

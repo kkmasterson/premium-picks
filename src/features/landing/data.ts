@@ -198,6 +198,86 @@ export const sports: Sport[] = [
     hitRates: [80, 70, 67, 63],
     chart: [238, 271, 264, 219, 302, 278, 246, 289],
   },
+  {
+    id: 'soccer',
+    abbr: 'SOCCER',
+    name: 'Soccer',
+    league: 'Soccer player research',
+    summary: 'Research shots, shots on target, passes, and goal contributions with league-aware context.',
+    markets: ['Shots', 'Shots on Target', 'Passes', 'Goals + Assists'],
+    contextLabel: 'Opponent context',
+    contextValue: 'Opponent allows 13.1 shots per match',
+    samplePlayer: 'Sample Forward',
+    sampleTeam: 'MCI · FWD',
+    sampleLine: '2.5 shots',
+    sampleAverage: '3.2 avg',
+    hitRates: [80, 70, 67, 64],
+    chart: [2, 4, 3, 1, 5, 4, 2, 4],
+  },
+  {
+    id: 'tennis',
+    abbr: 'TENNIS',
+    name: 'Tennis',
+    league: 'Tennis player research',
+    summary: 'Compare aces, games won, break points, and match totals with surface and opponent context.',
+    markets: ['Aces', 'Games Won', 'Break Points', 'Match Totals'],
+    contextLabel: 'Surface context',
+    contextValue: 'Hard court · 71% service points won',
+    samplePlayer: 'Sample Player',
+    sampleTeam: 'ITA · ATP',
+    sampleLine: '8.5 aces',
+    sampleAverage: '9.4 avg',
+    hitRates: [60, 70, 67, 62],
+    chart: [7, 11, 9, 6, 13, 10, 8, 11],
+  },
+  {
+    id: 'lol',
+    abbr: 'LOL',
+    name: 'League of Legends',
+    league: 'League of Legends research',
+    summary: 'Track kills, assists, map performance, and series markets with role-specific samples.',
+    markets: ['Kills', 'Assists', 'Maps', 'Fantasy Score'],
+    contextLabel: 'Role matchup',
+    contextValue: 'Opponent allows 3.8 mid-lane kills per map',
+    samplePlayer: 'Sample Mid Laner',
+    sampleTeam: 'T1 · MID',
+    sampleLine: '5.5 kills',
+    sampleAverage: '6.2 avg',
+    hitRates: [80, 70, 73, 68],
+    chart: [4, 7, 6, 3, 8, 7, 5, 8],
+  },
+  {
+    id: 'cs2',
+    abbr: 'CS2',
+    name: 'Counter-Strike 2',
+    league: 'CS2 player research',
+    summary: 'Analyze kills, headshots, assists, and map totals across match and series samples.',
+    markets: ['Kills', 'Headshots', 'Assists', 'Map Totals'],
+    contextLabel: 'Map context',
+    contextValue: 'Projected series · 2.7 maps',
+    samplePlayer: 'Sample Rifler',
+    sampleTeam: 'NAVI · RIFLER',
+    sampleLine: '18.5 kills',
+    sampleAverage: '19.8 avg',
+    hitRates: [60, 70, 67, 64],
+    chart: [17, 22, 19, 14, 24, 21, 18, 23],
+  },
+  {
+    id: 'valorant',
+    abbr: 'VAL',
+    name: 'Valorant',
+    league: 'Valorant player research',
+    summary: 'Review kills, assists, first bloods, and map performance with agent and matchup context.',
+    markets: ['Kills', 'Assists', 'First Bloods', 'Map Totals'],
+    contextLabel: 'Series context',
+    contextValue: 'Opponent map win rate · 54%',
+    samplePlayer: 'Sample Duelist',
+    sampleTeam: 'SEN · DUELIST',
+    sampleLine: '16.5 kills',
+    sampleAverage: '17.9 avg',
+    hitRates: [80, 80, 73, 69],
+    chart: [15, 20, 18, 13, 22, 19, 16, 21],
+  },
 ]
 
 export type ProductTourId = 'props' | 'player' | 'trends' | 'matchups'
@@ -222,7 +302,7 @@ export const productTourItems: ProductTourItem[] = [
     description: 'Filter the board by sport, game, player, market, odds, and recent performance while keeping the important numbers together.',
     route: '/dashboard/props',
     cta: 'Open Props',
-    proof: 'Fixed demo board · Advanced filters · Side-by-side context',
+    proof: 'Interactive props board · Advanced filters · Side-by-side context',
   },
   {
     id: 'player',
@@ -239,7 +319,7 @@ export const productTourItems: ProductTourItem[] = [
     step: '03',
     label: 'Read the Trend',
     title: 'See the threshold against every recent result.',
-    description: 'Exact game values, hit-rate windows, and the selected prop line make the pattern readable without relying on color alone.',
+    description: 'Exact game values, last 5, last 10, last 15, and season hit rates make the pattern readable without relying on color alone.',
     route: '/dashboard/trends',
     cta: 'Open Trends',
     proof: 'Exact results · Multiple samples · Clear threshold',
@@ -263,34 +343,34 @@ export interface FaqItem {
 
 export const faqItems: FaqItem[] = [
   {
-    question: 'What is Premium Picks?',
+    question: 'What is Arena Props?',
     answer:
-      'Premium Picks is a sports research platform designed to bring player props, trends, sportsbook lines, projections, and analytics into one place, so you can research faster without jumping between multiple websites.',
+      'Arena Props is a sports research platform designed to bring player props, trends, sportsbook lines, projections, and analytics into one place, so you can research faster without jumping between multiple websites.',
   },
   {
-    question: 'What sports does Premium Picks support?',
+    question: 'What sports does Arena Props support?',
     answer:
-      'At launch, Premium Picks covers the NBA, NFL, MLB, NHL, WNBA, NCAA Basketball, and NCAA Football, with more sports planned as the platform grows.',
+      'The current Arena Props experience includes the NBA, NFL, MLB, NHL, WNBA, NCAA Basketball, NCAA Football, soccer, tennis, League of Legends, CS2, and Valorant. Final production availability will be confirmed against our contracted data coverage.',
   },
   {
     question: 'Which sportsbooks are supported?',
     answer:
-      'Premium Picks aggregates lines from a range of major regulated US sportsbooks, with the list of supported books expanding over time. The current lineup is shown inside the platform.',
+      'Arena Props aggregates lines from a range of major regulated US sportsbooks, with the list of supported books expanding over time. The current lineup is shown inside the platform.',
   },
   {
-    question: 'Does Premium Picks place bets for me?',
+    question: 'Does Arena Props place bets for me?',
     answer:
-      'No. Premium Picks is a research and analytics platform. It does not place, accept, or process wagers of any kind.',
+      'No. Arena Props is a research and analytics platform. It does not place, accept, or process wagers of any kind.',
   },
   {
-    question: 'Is Premium Picks a sportsbook?',
+    question: 'Is Arena Props a sportsbook?',
     answer:
-      'No. Premium Picks does not accept or process wagers and is not a sportsbook. It provides data, research tools, and analytics only.',
+      'No. Arena Props does not accept or process wagers and is not a sportsbook. It provides data, research tools, and analytics only.',
   },
   {
     question: 'How often is the data updated?',
     answer:
-      'Player stats, props, and sportsbook lines are refreshed continuously throughout the day, so the numbers you see reflect the latest available information.',
+      'Arena Props is being designed for feed-driven updates to player stats, props, and sportsbook lines. Exact refresh timing will be published after the production providers and sport-specific service levels are finalized.',
   },
   {
     question: 'Can I cancel my subscription?',
@@ -298,13 +378,13 @@ export const faqItems: FaqItem[] = [
       'Yes. You can cancel your subscription at any time from your account settings. Your access remains active until the end of the current billing period.',
   },
   {
-    question: 'Can I use Premium Picks on mobile?',
+    question: 'Can I use Arena Props on mobile?',
     answer:
-      'Yes. The Premium Picks website and application are fully responsive, so you can research on desktop, tablet, or phone.',
+      'Yes. The Arena Props website and application are fully responsive, so you can research on desktop, tablet, or phone.',
   },
   {
-    question: 'Does Premium Picks guarantee winning bets?',
+    question: 'Does Arena Props guarantee winning bets?',
     answer:
-      'No. Premium Picks provides research and analytics tools and does not guarantee betting results. All information is provided for research and entertainment purposes only.',
+      'No. Arena Props provides research and analytics tools and does not guarantee betting results. All information is provided for research and entertainment purposes only.',
   },
 ]

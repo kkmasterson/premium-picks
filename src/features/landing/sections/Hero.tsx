@@ -3,7 +3,11 @@ import { HeroRatingBadge } from '@/features/landing/components/HeroRatingBadge'
 import { Reveal } from '@/features/landing/hooks/Reveal'
 import { StatsStrip } from '@/features/landing/sections/StatsStrip'
 
-const trustPoints = ['Real-Time Data', 'Multi-Sport Coverage', 'Advanced Research Tools']
+const trustPoints = [
+  { title: 'Feed-Ready Updates', detail: 'Odds, props + stats' },
+  { title: '12 Sports + Esports', detail: 'One workspace' },
+  { title: 'Full Research Stack', detail: 'Discovery → builder' },
+]
 
 function CheckIcon() {
   return (
@@ -25,13 +29,13 @@ export function Hero() {
         aria-hidden="true"
       />
 
-      <div className="hero-primary hero-shell relative grid grid-cols-1 items-center gap-10 pb-14 pt-14 md:pb-20 md:pt-20 lg:grid-cols-[480px_minmax(0,1fr)] lg:gap-16 lg:pb-24 lg:pt-8 xl:gap-20">
+      <div className="hero-primary hero-shell relative grid grid-cols-1 items-center gap-10 pb-14 pt-14 md:pb-20 md:pt-20 lg:grid-cols-[480px_minmax(0,1fr)] lg:gap-16 lg:pb-40 lg:pt-8 xl:gap-20">
         {/* Copy */}
         <div className="hero-copy relative min-w-0">
           <Reveal>
             <p className="eyebrow rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
-              Smarter Sports Research Starts Here
+              Built to Match the Category. Designed to Lead It.
             </p>
           </Reveal>
 
@@ -41,16 +45,17 @@ export function Hero() {
 
           <Reveal delay={80}>
             <h1 className="mt-6 text-[42px] font-extrabold leading-[1.05] tracking-tight text-mist sm:text-6xl lg:text-[64px]">
-              Make Smarter Picks
+              Your Complete Prop
               <br />
-              With <span className="gold-text">Better Data</span>
+              Research <span className="gold-text">Arena</span>
             </h1>
           </Reveal>
 
           <Reveal delay={160}>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-mist-secondary">
-              Premium Picks brings player trends, prop research, sportsbook lines, projections, and
-              sports analytics into one platform built to make research faster and easier.
+              Compare sportsbook lines, projections, hit rates, matchup context, discrepancies,
+              and community momentum across traditional sports and esports—without stitching
+              together multiple research tools.
             </p>
           </Reveal>
 
@@ -70,11 +75,14 @@ export function Hero() {
           </Reveal>
 
           <Reveal delay={320}>
-            <ul className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-7 sm:gap-y-3">
-              {trustPoints.map((t) => (
-                <li key={t} className="flex items-center gap-2.5 text-sm font-medium text-mist-secondary">
+            <ul className="mt-7 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
+              {trustPoints.map((point) => (
+                <li key={point.title} className="flex items-start gap-2.5 border-t border-line/80 pt-3 text-sm text-mist-secondary">
                   <CheckIcon />
-                  {t}
+                  <span>
+                    <span className="block font-semibold text-mist">{point.title}</span>
+                    <span className="mt-0.5 block text-[11px] text-mist-muted">{point.detail}</span>
+                  </span>
                 </li>
               ))}
             </ul>

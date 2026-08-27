@@ -20,8 +20,8 @@ const TOOLTIPS: Partial<Record<SortKey, string>> = {
   l10: 'Percentage of the player\'s last 10 games clearing this line.',
   l15: 'Percentage of the player\'s last 15 games clearing this line.',
   season: 'Percentage of season games clearing this line.',
-  diff: 'Difference between the Premium Picks projection and the sportsbook line.',
-  projection: 'Premium Picks model projection for this prop.',
+  diff: 'Difference between the Arena Props projection and the sportsbook line.',
+  projection: 'Arena Props model projection for this prop.',
   h2h: 'Hit rate in head-to-head meetings with this opponent.',
 };
 

@@ -7,11 +7,11 @@ import { PickBuilderDrawer, PickBuilderRail } from '@/features/dashboard/compone
 
 function Shell() {
   return (
-    <div className="min-h-screen bg-[#080808]">
+    <div className="min-h-screen max-w-full overflow-x-clip bg-[#080808]">
       <TopSportNav />
-      <div className="flex">
+      <div className="flex w-full min-w-0 max-w-full">
         <Sidebar />
-        <main className="min-w-0 flex-1 px-3 pb-24 pt-4 sm:px-5 md:pb-8">
+        <main className="min-w-0 flex-1 overflow-x-hidden px-3 pb-24 pt-4 sm:px-5 md:pb-8">
           <Outlet />
         </main>
         <PickBuilderRail />

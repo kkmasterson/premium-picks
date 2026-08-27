@@ -73,7 +73,7 @@ export function PlayerDrawer() {
           </section>
 
           <section aria-label="Projection" className="rounded-lg border border-[#F5C542]/25 bg-[#F5C542]/5 p-3">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#F5C542]">Premium Picks Projection</p>
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[#F5C542]">Arena Props Projection</p>
             <div className="flex items-end justify-between">
               <div>
                 <p className="text-2xl font-bold tabular-nums text-[#F5C542]">{prop.projection.toFixed(1)}</p>

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This is the field-level contract for every data-backed Premium Picks dashboard
+This is the field-level contract for every data-backed Arena Props dashboard
 surface. Each row receives a stable requirement ID so the source coverage
 matrix, provider evidence, ingestion mapping, tests and launch decisions can
 refer to the same requirement without relying on display labels.
@@ -22,7 +22,7 @@ refer to the same requirement without relying on display labels.
 
 ## UI read models
 
-The frontend should consume stable Premium Picks read models rather than raw
+The frontend should consume stable Arena Props read models rather than raw
 vendor responses.
 
 | Read model | Primary consumers |
@@ -43,20 +43,20 @@ vendor responses.
 
 | ID | Field or record | Used by | Required | Type | Provider/owner | Endpoint/feed | Refresh | Historical depth | Store? | License |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IDN-001 | Sport family ID, key and display name | Navigation, filters, all cards | Yes | Config | Premium Picks | Config/admin | On deploy/change | Permanent | Canonical | Own |
-| IDN-002 | Competition/league ID, key, name and sport | Navigation, filters, identity badges | Yes | Raw/config | TBD sports source + Premium Picks | TBD | Daily/change | Permanent | Canonical | Commercial display |
+| IDN-001 | Sport family ID, key and display name | Navigation, filters, all cards | Yes | Config | Arena Props | Config/admin | On deploy/change | Permanent | Canonical | Own |
+| IDN-002 | Competition/league ID, key, name and sport | Navigation, filters, identity badges | Yes | Raw/config | TBD sports source + Arena Props | TBD | Daily/change | Permanent | Canonical | Commercial display |
 | IDN-003 | Competition logo/mark | Navigation and badges | Conditional | Raw/media | TBD media/league source | TBD | On revision | Current + prior revision metadata | Object | Display, cache, resize |
 | IDN-004 | Season ID, name, start/end and current flag | Filters, player history, standings | Yes | Raw | TBD sports source | TBD | Daily | Full supported history | Canonical | Display and derived use |
 | IDN-005 | Team ID, name, short name and abbreviations | All team/event surfaces | Yes | Raw | TBD sports source | TBD | Daily/change | Permanent | Canonical | Display and derived use |
 | IDN-006 | Team colors and locale/location | Cards and team styling | Conditional | Raw | TBD sports/media source | TBD | On revision | Current | Canonical | Display |
 | IDN-007 | Team logo variants | All team/event surfaces | Yes | Raw/media | TBD media source | TBD | On revision | Current + rights record | Object | Display, cache, resize |
 | IDN-008 | Player ID, legal/display name and handle | All player/prop surfaces | Yes | Raw | TBD sports source | TBD | Daily/change | Permanent | Canonical | Display and derived use |
-| IDN-009 | Position/role and role vocabulary | Player directory/research | Yes | Raw/config | TBD sports source + Premium Picks | TBD + mapping | Roster change | Full membership history | Canonical | Display and derived use |
+| IDN-009 | Position/role and role vocabulary | Player directory/research | Yes | Raw/config | TBD sports source + Arena Props | TBD + mapping | Roster change | Full membership history | Canonical | Display and derived use |
 | IDN-010 | Jersey number, handedness and active status | Player header/context | Conditional | Raw | TBD sports source | TBD | Roster change | Full membership history | Canonical | Display |
 | IDN-011 | Player headshot/avatar | Player rows, cards and header | Yes | Raw/media | TBD media source | TBD | On revision/daily check | Current + rights record | Object | Display, cache, resize, commercial use |
 | IDN-012 | Venue ID, name, location and timezone | Event detail, weather, date display | Conditional | Raw | TBD sports source | TBD | On change | Permanent | Canonical | Display and derived use |
 | IDN-013 | External provider IDs for every identity | Ingestion only | Yes | Raw | Every selected provider | All source feeds | Every mapping change | Permanent | Canonical | Internal normalization |
-| IDN-014 | Media source, checksum, dimensions and rights expiry | Media delivery/operations | Yes | Raw/config | Media provider + Premium Picks | Media metadata | On revision | Permanent audit | Canonical | Compliance |
+| IDN-014 | Media source, checksum, dimensions and rights expiry | Media delivery/operations | Yes | Raw/config | Media provider + Arena Props | Media metadata | On revision | Permanent audit | Canonical | Compliance |
 
 ### Events, schedules and competition context
 
@@ -75,7 +75,7 @@ vendor responses.
 | EVT-011 | Best-of, LAN/online and tournament tier | Esports research | Conditional | Raw | TBD esports source | Tournament/match | Hourly/change | Permanent | Canonical | Display |
 | EVT-012 | Tour, tournament round and court surface | Tennis research | Conditional | Raw | TBD tennis source | Tournament/match | Hourly/change | Permanent | Canonical | Display and derived use |
 | EVT-013 | Event city/country and local date | Soccer/tennis/esports context | Conditional | Raw | TBD sports source | Event/venue | On change | Permanent | Canonical | Display |
-| EVT-014 | Props/player/books counts for event | Matchup cards | Yes | Calculated | Premium Picks | Event aggregation | On offer/roster change | Current + daily analytics | Cache | Own calculation |
+| EVT-014 | Props/player/books counts for event | Matchup cards | Yes | Calculated | Arena Props | Event aggregation | On offer/roster change | Current + daily analytics | Cache | Own calculation |
 
 ### Rosters, depth charts, lineups and availability
 
@@ -103,12 +103,12 @@ vendor responses.
 | STA-004 | Player/team segment-level stat values | Period/set/map charts | Conditional | Raw | TBD granular stats source | Segment stats | 15-60 sec active | Required history window | Canonical | Display, retention, derived use |
 | STA-005 | Minutes/time played and starter state | Charts, filters, DNP handling | Yes | Raw | TBD stats source | Box score | 15-60 sec active | Required history window | Canonical | Display and derived use |
 | STA-006 | Stat correction version and source time | Recalculation/audit | Yes | Raw | TBD stats source | Corrections feed/poll | On change | Permanent | Canonical | Retention and derived use |
-| STA-007 | Player season aggregate | Season context | Conditional | Raw or calculated | Source or Premium Picks | Season stats/job | After events | Supported seasons | Canonical/cache | Derived-data rights |
-| STA-008 | Team season aggregate/record | Standings/context | Conditional | Raw or calculated | Source or Premium Picks | Standings/job | After events | Supported seasons | Canonical/cache | Display and derived use |
+| STA-007 | Player season aggregate | Season context | Conditional | Raw or calculated | Source or Arena Props | Season stats/job | After events | Supported seasons | Canonical/cache | Derived-data rights |
+| STA-008 | Team season aggregate/record | Standings/context | Conditional | Raw or calculated | Source or Arena Props | Standings/job | After events | Supported seasons | Canonical/cache | Display and derived use |
 | STA-009 | Basketball full-game and quarter/half box stats | Basketball research | Conditional | Raw | TBD basketball source | Box/segment stats | 15-60 sec active | Required history window | Canonical | Display, retention, derived use |
 | STA-010 | Basketball shot-location events/zones | Basketball court view | Later | Raw | TBD tracking/play-by-play source | Tracking/PBP | Live/final | Product-defined | Canonical/object | Tracking and derived rights |
 | STA-011 | Football passing/rushing/receiving/kicking stats | Football research | Conditional | Raw | TBD football source | Box/player stats | 15-60 sec active | Required history window | Canonical | Display, retention, derived use |
-| STA-012 | Football targets, touches and opportunity shares | Usage modules | Conditional | Raw or calculated | Granular source + Premium Picks | Play/participation stats | 15-60 sec/final | Required history window | Canonical/cache | Derived-data rights |
+| STA-012 | Football targets, touches and opportunity shares | Usage modules | Conditional | Raw or calculated | Granular source + Arena Props | Play/participation stats | 15-60 sec/final | Required history window | Canonical/cache | Derived-data rights |
 | STA-013 | Baseball hitting and pitching box stats | MLB research | Conditional | Raw | TBD baseball source | Box/player stats | 15-60 sec active | Required history window | Canonical | Display, retention, derived use |
 | STA-014 | Baseball pitch type, velocity, outcome and whiff | Pitch Arsenal | Conditional | Raw | TBD pitch-level source | Pitch/PBP feed | Live/final | Required history window | Canonical/object | Pitch-level and derived rights |
 | STA-015 | Hockey skater/goalie and period stats | NHL research | Conditional/unconfirmed | Raw | TBD hockey source | Box/segment stats | 15-60 sec active | Required history window | Canonical | Display, retention, derived use |
@@ -127,69 +127,69 @@ vendor responses.
 | CTX-001 | Standings/division/conference snapshot | Rankings/context | Conditional | Raw | TBD sports source | Standings | After events/daily | Season snapshots | Snapshot | Display and retention |
 | CTX-002 | Player/team/esports ranking and source | Rankings/team form | Conditional | Raw | TBD ranking source | Rankings | Daily/weekly | Snapshot history | Snapshot | Attribution, display, retention |
 | CTX-003 | Venue weather forecast/observed weather | MLB and outdoor context | Conditional | Raw | TBD weather source | Forecast/observation | 5-15 min near event | Event history | Snapshot | Commercial display/cache |
-| CTX-004 | Matchup win probability | Context rail | Conditional | Raw or calculated | TBD model/source or Premium Picks | Model/feed | With inputs | Versioned | Snapshot | Model/source rights |
-| CTX-005 | Opponent allowed/rank by market/stat | Defense context | Conditional | Calculated | Premium Picks | Metric job | After events | Versioned permanent | Snapshot/cache | Own calculation on licensed facts |
-| CTX-006 | Similar-player cohort and comparison | Similar module | Conditional | Calculated | Premium Picks | Similarity job | Daily/model run | Versioned | Snapshot/cache | Own calculation |
-| CTX-007 | Team/player recent form | Soccer/tennis/esports modules | Conditional | Calculated | Premium Picks | Metric job | After events | Required history window | Cache | Own calculation |
-| CTX-008 | Tennis head-to-head meetings and surface splits | Tennis modules | Conditional | Raw/calculated | Stats source + Premium Picks | Match history/job | After matches | Full supported history | Canonical/cache | Display and derived use |
-| CTX-009 | Baseball pitch-arsenal aggregates | Pitch Arsenal | Conditional | Calculated | Premium Picks | Pitch aggregation | After games/live optional | Required history window | Snapshot/cache | Own calculation on licensed pitch facts |
-| CTX-010 | Esports map pool, pick/ban rates and favorites | Esports modules | Conditional | Raw/calculated | Esports source + Premium Picks | Match/map job | After matches | Required history window | Canonical/cache | Display, artwork separately |
-| CTX-011 | Consensus/provider event odds | Matchup odds/win predictor | Conditional | Raw/calculated | TBD odds source + Premium Picks | Game odds feed | 5-30 sec | Market lifetime | Snapshot/cache | Display, retention, derived use |
+| CTX-004 | Matchup win probability | Context rail | Conditional | Raw or calculated | TBD model/source or Arena Props | Model/feed | With inputs | Versioned | Snapshot | Model/source rights |
+| CTX-005 | Opponent allowed/rank by market/stat | Defense context | Conditional | Calculated | Arena Props | Metric job | After events | Versioned permanent | Snapshot/cache | Own calculation on licensed facts |
+| CTX-006 | Similar-player cohort and comparison | Similar module | Conditional | Calculated | Arena Props | Similarity job | Daily/model run | Versioned | Snapshot/cache | Own calculation |
+| CTX-007 | Team/player recent form | Soccer/tennis/esports modules | Conditional | Calculated | Arena Props | Metric job | After events | Required history window | Cache | Own calculation |
+| CTX-008 | Tennis head-to-head meetings and surface splits | Tennis modules | Conditional | Raw/calculated | Stats source + Arena Props | Match history/job | After matches | Full supported history | Canonical/cache | Display and derived use |
+| CTX-009 | Baseball pitch-arsenal aggregates | Pitch Arsenal | Conditional | Calculated | Arena Props | Pitch aggregation | After games/live optional | Required history window | Snapshot/cache | Own calculation on licensed pitch facts |
+| CTX-010 | Esports map pool, pick/ban rates and favorites | Esports modules | Conditional | Raw/calculated | Esports source + Arena Props | Match/map job | After matches | Required history window | Canonical/cache | Display, artwork separately |
+| CTX-011 | Consensus/provider event odds | Matchup odds/win predictor | Conditional | Raw/calculated | TBD odds source + Arena Props | Game odds feed | 5-30 sec | Market lifetime | Snapshot/cache | Display, retention, derived use |
 
 ### Sportsbooks, props and odds history
 
 | ID | Field or record | Used by | Required | Type | Provider/owner | Endpoint/feed | Refresh | Historical depth | Store? | License |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ODD-001 | Sportsbook ID, name, abbreviation and region | Filters/offers | Yes | Raw/config | TBD odds source + Premium Picks | Books/catalog | Daily/change | Permanent | Canonical | Display |
+| ODD-001 | Sportsbook ID, name, abbreviation and region | Filters/offers | Yes | Raw/config | TBD odds source + Arena Props | Books/catalog | Daily/change | Permanent | Canonical | Display |
 | ODD-002 | Sportsbook logo | Filters/offers | Yes | Raw/media | TBD media/operator source | Media | On revision | Current + rights record | Object | Logo display/cache |
-| ODD-003 | Canonical prop market ID and taxonomy | All prop surfaces | Yes | Config | Premium Picks | Config/admin | On approved change | Permanent/versioned | Canonical | Own |
-| ODD-004 | Provider market ID/label mapping | Ingestion | Yes | Raw/config | Odds provider + Premium Picks | Market feed/mapping | On new market | Permanent/versioned | Canonical | Internal normalization |
-| ODD-005 | Prop instance: event, player, market and period | All prop surfaces | Yes | Raw/normalized | Odds source + Premium Picks | Player prop feed | 5-30 sec | Permanent | Canonical | Display, retention, derived use |
+| ODD-003 | Canonical prop market ID and taxonomy | All prop surfaces | Yes | Config | Arena Props | Config/admin | On approved change | Permanent/versioned | Canonical | Own |
+| ODD-004 | Provider market ID/label mapping | Ingestion | Yes | Raw/config | Odds provider + Arena Props | Market feed/mapping | On new market | Permanent/versioned | Canonical | Internal normalization |
+| ODD-005 | Prop instance: event, player, market and period | All prop surfaces | Yes | Raw/normalized | Odds source + Arena Props | Player prop feed | 5-30 sec | Permanent | Canonical | Display, retention, derived use |
 | ODD-006 | Current line/handicap per sportsbook | Props/offers/discrepancies | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
 | ODD-007 | Current Over American odds | Offers/Popular/Pick Builder | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
 | ODD-008 | Current Under American odds | Offers/Popular/Pick Builder | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
 | ODD-009 | Offer status/suspension and source timestamps | Offer eligibility/freshness | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Market lifetime | Snapshot/cache | Display and retention |
 | ODD-010 | Main/alternate market marker | Market controls | Conditional | Raw | TBD odds source | Player prop feed | 5-30 sec | Market lifetime | Snapshot | Display and retention |
 | ODD-011 | Every changed line/price/status observation | Line Movement/Prop History | Yes | Raw | TBD odds source | Poll/stream/webhook | Every change | Permanent | Snapshot | Historical retention and derived-data rights |
-| ODD-012 | Opening line and price | Prop History | Yes | Calculated | Premium Picks | Snapshot aggregation | First eligible snapshot | Permanent | Snapshot/cache | Own calculation; source retention rights |
-| ODD-013 | Closing line and price | Prop History/backtests | Yes | Calculated | Premium Picks | Snapshot aggregation | Market close/event start | Permanent | Snapshot/cache | Own calculation; source retention rights |
-| ODD-014 | Minimum/maximum line and providers | Discrepancies | Yes | Calculated | Premium Picks | Current offer aggregation | On snapshot | Permanent analytics/current cache | Cache | Own calculation |
-| ODD-015 | Best Over/Under price at same line | Props/offers | Yes | Calculated | Premium Picks | Current offer aggregation | On snapshot | Current + analytics | Cache | Own calculation |
-| ODD-016 | Line movement, velocity and time at line | Research/advanced products | Conditional | Calculated | Premium Picks | Snapshot analytics | On snapshot/batch | Permanent | Snapshot/cache | Own calculation |
+| ODD-012 | Opening line and price | Prop History | Yes | Calculated | Arena Props | Snapshot aggregation | First eligible snapshot | Permanent | Snapshot/cache | Own calculation; source retention rights |
+| ODD-013 | Closing line and price | Prop History/backtests | Yes | Calculated | Arena Props | Snapshot aggregation | Market close/event start | Permanent | Snapshot/cache | Own calculation; source retention rights |
+| ODD-014 | Minimum/maximum line and providers | Discrepancies | Yes | Calculated | Arena Props | Current offer aggregation | On snapshot | Permanent analytics/current cache | Cache | Own calculation |
+| ODD-015 | Best Over/Under price at same line | Props/offers | Yes | Calculated | Arena Props | Current offer aggregation | On snapshot | Current + analytics | Cache | Own calculation |
+| ODD-016 | Line movement, velocity and time at line | Research/advanced products | Conditional | Calculated | Arena Props | Snapshot analytics | On snapshot/batch | Permanent | Snapshot/cache | Own calculation |
 | ODD-017 | Game moneyline, spread and total offers | Matchup odds | Conditional | Raw | TBD odds source | Game odds feed | 5-30 sec | Market lifetime/permanent snapshots | Snapshot/cache | Display, retention, derived use |
-| ODD-018 | Prop result/settlement/push/void | Hit rates/backtests | Yes | Raw/calculated | Stats result + Premium Picks | Settlement job | Final/correction | Permanent | Canonical | Derived use |
-| ODD-019 | Jurisdiction/market availability | Offer filtering/compliance | Yes | Raw/config | Odds source + Premium Picks | Feed/catalog | On change | Snapshot history | Canonical/cache | Regional display rights |
+| ODD-018 | Prop result/settlement/push/void | Hit rates/backtests | Yes | Raw/calculated | Stats result + Arena Props | Settlement job | Final/correction | Permanent | Canonical | Derived use |
+| ODD-019 | Jurisdiction/market availability | Offer filtering/compliance | Yes | Raw/config | Odds source + Arena Props | Feed/catalog | On change | Snapshot history | Canonical/cache | Regional display rights |
 
-### Premium Picks calculations and projections
+### Arena Props calculations and projections
 
 | ID | Field or record | Used by | Required | Type | Provider/owner | Endpoint/feed | Refresh | Historical depth | Store? | License |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CAL-001 | Average for selected sample/filter | Props/player research | Yes | Calculated | Premium Picks | Metric job/query | After stats/filter change | Versioned permanent | Snapshot/cache | Own calculation |
-| CAL-002 | L5 hit count/rate | Props/trends/research | Yes | Calculated | Premium Picks | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
-| CAL-003 | L10 hit count/rate | Props/trends/research | Yes | Calculated | Premium Picks | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
-| CAL-004 | L15 hit count/rate | Props/research | Yes | Calculated | Premium Picks | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
-| CAL-005 | Season hit count/rate | Props/research | Yes | Calculated | Premium Picks | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
-| CAL-006 | Opponent H2H hit count/rate | Props/research | Yes | Calculated | Premium Picks | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
-| CAL-007 | Current over/under streak | Props/trends/research | Yes | Calculated | Premium Picks | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
-| CAL-008 | Projection value and model version | Projections/props | Yes | Calculated | Premium Picks model | Model run | Scheduled/pre-event rerun | Permanent/versioned | Canonical | Own model on licensed inputs |
-| CAL-009 | Projection minus selected line | Projections/props | Yes | Calculated | Premium Picks | Read-model aggregation | On projection/line change | Versioned | Cache | Own calculation |
-| CAL-010 | Projection range/confidence/explanation | Future projection detail | Later | Calculated | Premium Picks model | Model run | With model run | Permanent/versioned | Canonical | Own model |
-| CAL-011 | Metric/model input cutoff and version | Audit/reproducibility | Yes | Calculated/config | Premium Picks | Jobs | Every calculation | Permanent | Canonical | Own |
-| CAL-012 | Backtest outcome and cohort | Model operations | Conditional | Calculated | Premium Picks | Settlement/backtest job | After settlement | Permanent | Canonical | Own |
+| CAL-001 | Average for selected sample/filter | Props/player research | Yes | Calculated | Arena Props | Metric job/query | After stats/filter change | Versioned permanent | Snapshot/cache | Own calculation |
+| CAL-002 | L5 hit count/rate | Props/trends/research | Yes | Calculated | Arena Props | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
+| CAL-003 | L10 hit count/rate | Props/trends/research | Yes | Calculated | Arena Props | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
+| CAL-004 | L15 hit count/rate | Props/research | Yes | Calculated | Arena Props | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
+| CAL-005 | Season hit count/rate | Props/research | Yes | Calculated | Arena Props | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
+| CAL-006 | Opponent H2H hit count/rate | Props/research | Yes | Calculated | Arena Props | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
+| CAL-007 | Current over/under streak | Props/trends/research | Yes | Calculated | Arena Props | Metric job/query | After final/correction/line change | Versioned permanent | Snapshot/cache | Own calculation |
+| CAL-008 | Projection value and model version | Projections/props | Yes | Calculated | Arena Props model | Model run | Scheduled/pre-event rerun | Permanent/versioned | Canonical | Own model on licensed inputs |
+| CAL-009 | Projection minus selected line | Projections/props | Yes | Calculated | Arena Props | Read-model aggregation | On projection/line change | Versioned | Cache | Own calculation |
+| CAL-010 | Projection range/confidence/explanation | Future projection detail | Later | Calculated | Arena Props model | Model run | With model run | Permanent/versioned | Canonical | Own model |
+| CAL-011 | Metric/model input cutoff and version | Audit/reproducibility | Yes | Calculated/config | Arena Props | Jobs | Every calculation | Permanent | Canonical | Own |
+| CAL-012 | Backtest outcome and cohort | Model operations | Conditional | Calculated | Arena Props | Settlement/backtest job | After settlement | Permanent | Canonical | Own |
 
 ### Community, saved research and Pick Builder
 
 | ID | Field or record | Used by | Required | Type | Provider/owner | Endpoint/feed | Refresh | Historical depth | Store? | License |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| USR-001 | User ID and entitlement/plan | Shell/access control | Yes | User | Premium Picks | Auth/billing | On change | Account lifetime | User | Own; privacy controls |
-| USR-002 | Preferred sports, books, timezone and density | Filters/display | Conditional | User | Premium Picks | Preferences API | On user change | Current + audit as needed | User | Own; privacy controls |
-| USR-003 | Saved prop/player/event action | Saved and card state | Yes | User | Premium Picks | Saved API | Immediate | Account lifetime | User | Own; deletion/export controls |
-| USR-004 | Pick Builder prop, side and provider | Pick Builder | Yes | User/session | Premium Picks | Pick Builder API/local sync | Immediate | Current + optional analytics | User | Own; privacy controls |
-| USR-005 | Community save action and validity state | Popular | Yes | User | Premium Picks | Community API | Immediate | Permanent/auditable | User | Own; abuse and privacy controls |
-| USR-006 | Community save count | Popular | Yes | Calculated | Premium Picks | Aggregate job/stream | Seconds | Permanent aggregates | Cache/snapshot | Own calculation |
-| USR-007 | Community Over/Under selection counts | Popular consensus | Conditional | User | Premium Picks | Community API | Immediate | Permanent/auditable | User | Own; abuse controls |
-| USR-008 | Community Over/Under percentages | Popular consensus | Conditional | Calculated | Premium Picks | Aggregate job | Seconds | Permanent aggregates | Cache/snapshot | Own calculation |
-| USR-009 | Bot/rate-abuse validity and aggregate version | Popular integrity | Yes | Calculated/config | Premium Picks | Trust/aggregate pipeline | Near-real-time | Permanent audit | Canonical | Own; security-sensitive |
+| USR-001 | User ID and entitlement/plan | Shell/access control | Yes | User | Arena Props | Auth/billing | On change | Account lifetime | User | Own; privacy controls |
+| USR-002 | Preferred sports, books, timezone and density | Filters/display | Conditional | User | Arena Props | Preferences API | On user change | Current + audit as needed | User | Own; privacy controls |
+| USR-003 | Saved prop/player/event action | Saved and card state | Yes | User | Arena Props | Saved API | Immediate | Account lifetime | User | Own; deletion/export controls |
+| USR-004 | Pick Builder prop, side and provider | Pick Builder | Yes | User/session | Arena Props | Pick Builder API/local sync | Immediate | Current + optional analytics | User | Own; privacy controls |
+| USR-005 | Community save action and validity state | Popular | Yes | User | Arena Props | Community API | Immediate | Permanent/auditable | User | Own; abuse and privacy controls |
+| USR-006 | Community save count | Popular | Yes | Calculated | Arena Props | Aggregate job/stream | Seconds | Permanent aggregates | Cache/snapshot | Own calculation |
+| USR-007 | Community Over/Under selection counts | Popular consensus | Conditional | User | Arena Props | Community API | Immediate | Permanent/auditable | User | Own; abuse controls |
+| USR-008 | Community Over/Under percentages | Popular consensus | Conditional | Calculated | Arena Props | Aggregate job | Seconds | Permanent aggregates | Cache/snapshot | Own calculation |
+| USR-009 | Bot/rate-abuse validity and aggregate version | Popular integrity | Yes | Calculated/config | Arena Props | Trust/aggregate pipeline | Near-real-time | Permanent audit | Canonical | Own; security-sensitive |
 
 ## Requirement-to-launch rules
 
@@ -201,7 +201,7 @@ vendor responses.
   user explicitly moves it into launch scope.
 - A field with technical coverage but unresolved commercial rights remains a
   sourcing gap.
-- A provider aggregate does not replace event-level facts when Premium Picks
+- A provider aggregate does not replace event-level facts when Arena Props
   needs to reproduce charts, hit rates or corrections.
 
 ## Open product decisions that change the matrix
