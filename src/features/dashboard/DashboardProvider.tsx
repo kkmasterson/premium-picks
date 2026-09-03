@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router';
+import { BuilderSelectionSchema, type AccessTier, type BuilderSelection, type Side } from '@arena/contracts';
 import type { PageKey, PickBuilderItem, Sport } from '@/features/dashboard/types';
+import { builderSelectionFor, offerFor, propBoardRowById } from '@/features/dashboard/props-fixtures';
 
 interface NavigationOptions {
   playerId?: string;
@@ -35,12 +37,14 @@ interface DashboardState {
   isSaved: (type: keyof SavedState, id: string) => boolean;
   density: Density;
   setDensity: (d: Density) => void;
+  accessTier: AccessTier;
   pickBuilder: PickBuilderItem[];
   pickBuilderOpen: boolean;
   setPickBuilderOpen: (open: boolean) => void;
   togglePick: (propId: string, side?: PickBuilderItem['side'], book?: string) => void;
   selectPick: (propId: string, side: PickBuilderItem['side'], book?: string) => void;
-  removePick: (propId: string) => void;
+  addPick: (selection: BuilderSelection) => void;
+  removePick: (keyOrPropId: string) => void;
   clearPicks: () => void;
   isInPickBuilder: (propId: string) => boolean;
 }
@@ -61,17 +65,28 @@ function loadPickBuilder(): PickBuilderItem[] {
     if (raw) {
       const parsed: unknown = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        return parsed.filter((item): item is PickBuilderItem => {
-          if (!item || typeof item !== 'object') return false;
-          const candidate = item as Partial<PickBuilderItem>;
-          return typeof candidate.propId === 'string'
-            && (candidate.side === 'over' || candidate.side === 'under')
-            && (candidate.book === undefined || typeof candidate.book === 'string');
+        return parsed.flatMap((item) => {
+          const result = BuilderSelectionSchema.safeParse(item);
+          if (result.success) return [result.data];
+          if (!item || typeof item !== 'object') return [];
+          const legacy = item as { propId?: unknown; side?: unknown; book?: unknown };
+          if (typeof legacy.propId !== 'string' || (legacy.side !== 'over' && legacy.side !== 'under')) return [];
+          const migrated = legacySelection(legacy.propId, legacy.side, typeof legacy.book === 'string' ? legacy.book : undefined);
+          return migrated ? [migrated] : [];
         });
       }
     }
   } catch { /* ignore */ }
   return [];
+}
+
+function legacySelection(propId: string, side: Side, book?: string): BuilderSelection | null {
+  const row = propBoardRowById(propId);
+  if (!row) return null;
+  const offer = book
+    ? row.offers.find((candidate) => candidate.providerShortName === book)
+    : offerFor(row);
+  return builderSelectionFor(row, offer ?? offerFor(row), side);
 }
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
@@ -87,6 +102,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [density, setDensityState] = useState<Density>(() => {
     return (localStorage.getItem('pp-density') as Density) || 'standard';
   });
+  const accessTier: AccessTier = import.meta.env.VITE_DEMO_TIER === 'tier1' ? 'tier1' : 'tier2';
 
   useEffect(() => { localStorage.setItem('pp-saved', JSON.stringify(saved)); }, [saved]);
   useEffect(() => { localStorage.setItem('pp-density', density); }, [density]);
@@ -111,13 +127,14 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const navigate = (p: PageKey, opts?: NavigationOptions) => {
     const paths: Record<Exclude<PageKey, 'player' | 'game'>, string> = {
       props: '/dashboard/props',
+      ev: '/dashboard/ev',
       discrepancies: '/dashboard/discrepancies',
       players: '/dashboard/players',
       trends: '/dashboard/trends',
       matchups: '/dashboard/matchups',
-      projections: '/dashboard/projections',
       saved: '/dashboard/saved',
       popular: '/dashboard/popular',
+      builder: '/dashboard/builder',
       help: '/dashboard/help',
     };
 
@@ -154,17 +171,23 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const isSaved = (type: keyof SavedState, id: string) => saved[type].includes(id);
 
   const togglePick = (propId: string, side: PickBuilderItem['side'] = 'over', book?: string) => {
+    const selection = legacySelection(propId, side, book);
+    if (!selection) return;
     setPickBuilder((previous) => previous.some((item) => item.propId === propId)
       ? previous.filter((item) => item.propId !== propId)
-      : [...previous, { propId, side, book }]);
+      : [...previous, selection]);
   };
 
-  const removePick = (propId: string) => setPickBuilder((previous) => previous.filter((item) => item.propId !== propId));
-  const selectPick = (propId: string, side: PickBuilderItem['side'], book?: string) => setPickBuilder((previous) => {
-    const current = previous.find((item) => item.propId === propId);
-    if (!current) return [...previous, { propId, side, book }];
-    return previous.map((item) => item.propId === propId ? { propId, side, book } : item);
-  });
+  const removePick = (keyOrPropId: string) => setPickBuilder((previous) => previous.filter((item) => item.key !== keyOrPropId && item.propId !== keyOrPropId));
+  const addPick = (selection: BuilderSelection) => setPickBuilder((previous) => previous.some((item) => item.key === selection.key) ? previous : [...previous, selection]);
+  const selectPick = (propId: string, side: PickBuilderItem['side'], book?: string) => {
+    const selection = legacySelection(propId, side, book);
+    if (!selection) return;
+    setPickBuilder((previous) => {
+      const withoutSamePropSide = previous.filter((item) => !(item.propId === propId && item.side === side));
+      return [...withoutSamePropSide, selection];
+    });
+  };
   const clearPicks = () => setPickBuilder([]);
   const isInPickBuilder = (propId: string) => pickBuilder.some((item) => item.propId === propId);
 
@@ -173,7 +196,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       sport, setSport, page, navigate, playerId, gameId,
       drawerPropId, openDrawer: setDrawerPropId, closeDrawer: () => setDrawerPropId(null),
       saved, toggleSave, isSaved, density, setDensity: setDensityState,
-      pickBuilder, pickBuilderOpen, setPickBuilderOpen, togglePick, selectPick, removePick, clearPicks, isInPickBuilder,
+      accessTier, pickBuilder, pickBuilderOpen, setPickBuilderOpen, togglePick, selectPick, addPick, removePick, clearPicks, isInPickBuilder,
     }}>
       {children}
     </Ctx.Provider>

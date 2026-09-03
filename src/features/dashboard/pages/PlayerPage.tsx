@@ -53,8 +53,10 @@ function ResolvedPlayerScreen({ viewModel }: { viewModel: PlayerResearchViewMode
       )}
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.7fr)_minmax(330px,0.78fr)]">
         <main className="min-w-0 space-y-4">
-          <MarketWorkspace viewModel={viewModel} market={filteredMarket} periodKey={selectedPeriod.key} line={line} update={update} filters={filters} updateFilter={updateFilter} providerId={providerId} onProviderChange={setProviderId} />
-          <PerformanceChart market={filteredMarket} line={line} periodLabel={selectedPeriod.label} />
+          <section className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#0f1111]">
+            <MarketWorkspace embedded viewModel={viewModel} market={filteredMarket} periodKey={selectedPeriod.key} line={line} update={update} filters={filters} updateFilter={updateFilter} providerId={providerId} onProviderChange={setProviderId} />
+            <PerformanceChart embedded market={filteredMarket} line={line} periodLabel={selectedPeriod.label} />
+          </section>
           <SupportingStatsChart market={filteredMarket} stats={viewModel.profile.supportingStats} />
         </main>
         <div className="xl:col-start-2 xl:row-span-2 xl:row-start-1"><ContextRail viewModel={viewModel} market={filteredMarket} line={line} /></div>

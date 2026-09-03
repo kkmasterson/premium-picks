@@ -12,6 +12,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@arena/contracts": [
+        "./packages/contracts/src/index.ts"
       ]
     },
     /* Bundler mode */
@@ -30,5 +33,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "packages/contracts/src"]
 }

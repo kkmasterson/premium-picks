@@ -6,6 +6,7 @@ import { marketKeyForName } from '@/features/dashboard/player-screen/profiles';
 import { PlayerAvatar } from '@/features/dashboard/components/common';
 import { cn } from '@/lib/utils';
 import type { BookLine, Prop } from '@/features/dashboard/types';
+import { fixturePopularity } from '@/features/dashboard/popularity';
 
 function useStoredArray(key: string) {
   const [value, setValue] = useState<string[]>(() => {
@@ -70,10 +71,6 @@ function PerformanceStrip({ prop }: { prop: Prop }) {
   return <div className="no-scrollbar flex gap-1 overflow-x-auto" aria-label="Performance summary">{cells.map((cell) => <div key={cell.label} className={cn('min-w-[54px] flex-1 rounded-md border px-1.5 py-2 text-center', cell.tone)}><p className="text-[8px] font-semibold uppercase tracking-wider opacity-60">{cell.label}</p><p className="mt-0.5 text-[11px] font-bold tabular-nums">{cell.value}</p></div>)}</div>;
 }
 
-function communityFavorites(prop: Prop): number {
-  return 180 + [...prop.id].reduce((total, character) => total + character.charCodeAt(0), 0) * 7 % 8300;
-}
-
 function openPlayer(prop: Prop, from: 'popular' | 'discrepancies', navigate: ReturnType<typeof useDashboard>['navigate']) {
   const player = playerById(prop.playerId)!;
   navigate('player', { playerId: player.id, sport: player.sport, marketKey: marketKeyForName(prop.market, player.sport, player.pos), line: prop.line, periodKey: 'full', from });
@@ -83,8 +80,8 @@ function PopularCard({ prop }: { prop: Prop }) {
   const { navigate, togglePick, selectPick, isInPickBuilder } = useDashboard();
   const player = playerById(prop.playerId)!;
   const inBuilder = isInPickBuilder(prop.id);
-  const over = Math.max(8, Math.min(92, prop.l10));
-  const favorites = communityFavorites(prop);
+  const activity = fixturePopularity(prop.id);
+  const over = activity.overPct;
   return <article className="min-w-0 rounded-xl border border-[#242424] bg-[#101010] p-3.5 shadow-sm shadow-black/20">
     <div className="flex items-start gap-3">
       <PlayerAvatar name={player.name} />
@@ -94,7 +91,7 @@ function PopularCard({ prop }: { prop: Prop }) {
         <button onClick={() => togglePick(prop.id, 'over')} aria-pressed={inBuilder} aria-label={inBuilder ? `Remove ${player.name} ${prop.market} from Pick Builder` : `Add ${player.name} ${prop.market} to Pick Builder`} className={cn('rounded-md border p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]', inBuilder ? 'border-[#F5C542]/50 bg-[#F5C542]/10 text-[#F5C542]' : 'border-[#303030] text-zinc-500 hover:text-[#F5C542]')}><Star className={cn('h-4 w-4', inBuilder && 'fill-[#F5C542]')} /></button>
       </div>
     </div>
-    <div className="mt-3 flex items-center justify-between"><span className="inline-flex items-center gap-1 rounded-full bg-[#F5C542]/10 px-2 py-1 text-[9px] font-bold text-[#F5C542]"><Star className="h-3 w-3 fill-[#F5C542]" /> {favorites.toLocaleString()} community saves</span><button onClick={() => openPlayer(prop, 'popular', navigate)} className="flex items-center gap-1 text-[9px] font-semibold text-zinc-500 hover:text-[#F5C542]">Research <ArrowUpRight className="h-3 w-3" /></button></div>
+    <div className="mt-3 flex items-center justify-between"><span className="inline-flex items-center gap-1 rounded-full bg-teal-500/10 px-2 py-1 text-[9px] font-bold text-teal-300"><Star className="h-3 w-3" /> {activity.totalActivity} actions · n={activity.sampleSize}</span><button onClick={() => openPlayer(prop, 'popular', navigate)} className="flex items-center gap-1 text-[9px] font-semibold text-zinc-500 hover:text-teal-300">Research <ArrowUpRight className="h-3 w-3" /></button></div>
     <div className="mt-3"><PerformanceStrip prop={prop} /></div>
     <div className="no-scrollbar mt-3 flex gap-1.5 overflow-x-auto border-t border-[#202020] pt-3">{prop.books.map((book) => <button key={book.book} onClick={() => selectPick(prop.id, 'over', book.book)} className="shrink-0 rounded-md border border-[#292929] bg-[#151515] px-2.5 py-1.5 text-left hover:border-[#F5C542]/40"><span className="text-[9px] font-bold text-[#F5C542]">{book.book}</span><span className="ml-2 text-[9px] text-zinc-400">O {formatOdds(book.over)}</span></button>)}</div>
   </article>;
@@ -142,9 +139,9 @@ export function PopularPage() {
     if (sports.length && !sports.includes(player.sport)) return false;
     if (books.length && !prop.books.some((book) => books.includes(book.book))) return false;
     return true;
-  }).sort((a, b) => communityFavorites(b) - communityFavorites(a)).slice(0, 30), [books, sport, sports]);
+  }).sort((a, b) => fixturePopularity(b.id).score - fixturePopularity(a.id).score).slice(0, 30), [books, sport, sports]);
 
-  return <div className="min-w-0 space-y-3"><PageHeading title="Popular" description="Community-favorited player props across sports and providers." /><section className="grid min-w-0 gap-3 rounded-xl border border-[#202020] bg-[#0e0e0e] p-3 lg:grid-cols-2"><MultiFilter label="Sports" values={sports} options={sportOptions} onChange={setSports} /><MultiFilter label="Apps" values={books} options={bookOptions} onChange={setBooks} /></section><div className="flex items-center justify-between px-1"><p className="text-xs font-semibold text-zinc-300">Most saved props</p><p className="text-[10px] text-zinc-600">{results.length} results</p></div>{results.length ? <div className="grid min-w-0 gap-3 min-[1600px]:grid-cols-2">{results.map((prop) => <PopularCard key={prop.id} prop={prop} />)}</div> : <div className="rounded-xl border border-dashed border-[#292929] py-16 text-center text-xs text-zinc-500">No popular props match the selected filters.</div>}</div>;
+  return <div className="min-w-0 space-y-3"><PageHeading title="Popular" description="Anonymous activity ranked by stronger intent and a six-hour recency half-life." /><section className="grid min-w-0 gap-3 rounded-xl border border-[#202020] bg-[#0e0e0e] p-3 lg:grid-cols-2"><MultiFilter label="Sports" values={sports} options={sportOptions} onChange={setSports} /><MultiFilter label="Apps" values={books} options={bookOptions} onChange={setBooks} /></section><div className="flex items-center justify-between px-1"><div><p className="sr-only">Most saved props</p><p className="text-xs font-semibold text-zinc-300">Strongest recent intent</p></div><p className="text-[10px] text-zinc-600">{results.length} results</p></div>{results.length ? <div className="grid min-w-0 gap-3 min-[1600px]:grid-cols-2">{results.map((prop) => <PopularCard key={prop.id} prop={prop} />)}</div> : <div className="rounded-xl border border-dashed border-[#292929] py-16 text-center text-xs text-zinc-500">No popular props match the selected filters.</div>}</div>;
 }
 
 export function DiscrepanciesPage() {

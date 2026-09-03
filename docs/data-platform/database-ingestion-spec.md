@@ -1515,9 +1515,9 @@ job with a documented recovery window.
 
 | Class | Target useful age | Stale behavior |
 | --- | --- | --- |
-| Current prop offers/status | 5-30 seconds during hot window | Mark stale and exclude from best-price/discrepancy calculations after configured TTL |
-| Live event status/score | 5-30 seconds if live is launched | Show freshness state; do not imply live accuracy |
-| Semi-live player/team stats | 15-60 seconds if live is launched | Retain last value with stale marker; final reconcile |
+| Current prop offers/status | Approximately 60 seconds during the hottest window for The Odds API; provider-specific if another source proves faster | Mark stale and exclude from best-price/discrepancy calculations after configured TTL |
+| Live event status/score | Webhook-first with 15-60 second reconciliation when live is enabled | Show freshness state; do not imply sub-provider latency |
+| Semi-live player/team stats | 15-60 seconds for competitions with live enabled, including the NBA reference | Retain last value with stale marker; final reconcile |
 | Pregame injury/lineup | 1-5 minutes near start | Preserve projected/confirmed label and timestamp |
 | Schedule/roster/reference | Hourly/daily | Alert after missed SLA; continue last confirmed value where safe |
 | Media | Revision-based | Use approved cached asset until rights expiry; then approved fallback |
@@ -1642,10 +1642,56 @@ canonical entities, rule key, first/last occurrence, state, owner and resolution
 Tracks endpoint/feed cursor, watermark, last attempt/success, next due time and
 consecutive failures per product and partition key.
 
+### `event_acquisition_jobs`
+
+Stores independently schedulable work for one event, provider product and data
+class. This table supports the versioned dynamic policy in
+[`docs/production/live-refresh-policy.md`](../production/live-refresh-policy.md)
+and replaces per-game cron definitions.
+
+```text
+event_acquisition_job_id uuid primary key
+event_id                 uuid not null foreign key
+provider_product_id      uuid not null foreign key
+data_class               event_state | injuries | lineups | props | game_odds | live_stats | final_reconcile
+acquisition_state        COLD | WARM | HOT | PREGAME | LIVE | FINALIZING | FINAL
+schedule_policy_version  text not null
+last_attempt_at          timestamptz nullable
+last_success_at          timestamptz nullable
+next_due_at              timestamptz not null
+lease_token              text nullable
+lease_until              timestamptz nullable
+consecutive_failures     integer not null default 0
+backoff_until            timestamptz nullable
+last_error_code          text nullable
+updated_at               timestamptz not null
+unique (event_id, provider_product_id, data_class)
+```
+
+Workers atomically lease due rows. Queue commands use a deterministic
+provider/event/data-class/window/policy idempotency key. A webhook can advance
+`next_due_at`, but cannot create a second logical job for the same target.
+
+### `event_acquisition_transitions`
+
+Append-only audit of acquisition-state transitions, including old/new state,
+reason (`clock`, `webhook`, `reconciliation`, `manual`, `correction`), source
+receipt/run, policy version and transition time. Canonical event status remains
+separate.
+
 ### `webhook_receipts`
 
 Stores provider message ID, signature result, receipt time, deduplication key,
 processing state and raw payload.
+
+Provider plus provider message ID is unique. Duplicate valid deliveries reuse
+the existing receipt and acknowledge success without repeating side effects.
+
+### `outbox_events`
+
+Stores typed post-commit change events for calculation, read-model and cache
+consumers. Canonical transactions write the fact and outbox row together;
+dispatchers publish idempotently and retry independently of Redis availability.
 
 ### `ingestion_runs`
 

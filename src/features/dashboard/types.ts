@@ -1,3 +1,5 @@
+import type { BuilderSelection } from '@arena/contracts';
+
 export type Sport =
   | 'NBA'
   | 'NFL'
@@ -74,22 +76,19 @@ export interface Game {
 
 export type PageKey =
   | 'props'
+  | 'ev'
   | 'discrepancies'
   | 'players'
   | 'trends'
   | 'matchups'
-  | 'projections'
   | 'saved'
   | 'popular'
+  | 'builder'
   | 'player'
   | 'game'
   | 'help';
 
-export interface PickBuilderItem {
-  propId: string;
-  side: 'over' | 'under';
-  book?: string;
-}
+export type PickBuilderItem = BuilderSelection;
 
 export interface Filters {
   gameId: string | null;

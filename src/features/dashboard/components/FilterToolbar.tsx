@@ -3,6 +3,7 @@ import { Check, ChevronDown, SlidersHorizontal, X } from 'lucide-react';
 import type { Filters, Sport } from '@/features/dashboard/types';
 import { BOOKS, GAMES, PLAYERS, marketsForSport } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
+import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo';
 import { cn } from '@/lib/utils';
 
 export const DEFAULT_FILTERS: Filters = {
@@ -162,7 +163,10 @@ export function FilterToolbar({ filters, setFilters }: { filters: Filters; setFi
                     selected={sel}
                     onClick={() => set({ books: sel ? filters.books.filter((b) => b !== k) : [...filters.books, k] })}
                   >
-                    {name} ({k})
+                    <span className="flex min-w-0 items-center gap-2">
+                      <SportsbookLogo shortName={k} compact />
+                      <span className="truncate">{name} <span className="text-zinc-500">{k}</span></span>
+                    </span>
                   </OptionRow>
                 );
               })}

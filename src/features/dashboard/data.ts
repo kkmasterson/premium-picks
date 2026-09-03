@@ -451,7 +451,8 @@ export function bestBook(prop: Prop, side: 'over' | 'under' = 'over'): BookLine 
   return prop.books.reduce((best, b) => (side === 'over' ? b.over > best.over : b.under > best.under) ? b : best, prop.books[0]);
 }
 
-export function formatOdds(o: number): string {
+export function formatOdds(o: number | null): string {
+  if (o === null) return '—';
   return o > 0 ? `+${o}` : `${o}`;
 }
 

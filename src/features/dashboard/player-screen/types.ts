@@ -1,4 +1,5 @@
 import type { Player, Sport } from '@/features/dashboard/types';
+import type { LineType, OfferStatus } from '@arena/contracts';
 
 export type PlayerScreenFamily = 'basketball' | 'football' | 'baseball' | 'hockey' | 'soccer' | 'tennis' | 'esports';
 export type HistoryAvailability = 'played' | 'dnp' | 'unavailable';
@@ -53,9 +54,11 @@ export interface ProviderOffer {
   name: string;
   shortName: string;
   line: number;
-  overOdds: number;
-  underOdds: number;
+  overOdds: number | null;
+  underOdds: number | null;
   updatedAt: number;
+  lineType?: LineType;
+  status?: OfferStatus;
   promotion?: string;
 }
 

@@ -59,7 +59,8 @@ layer documents, the more specific layer document controls.
 
 ## Decision sequence
 
-1. Confirm the launch requirement set and jurisdictions.
+1. Apply the approved jurisdiction allowlist policy and record evidence for each
+   region proposed for paid launch.
 2. Evaluate candidate providers against the source coverage matrix.
 3. Price low, expected and high request/stream volume for qualifying plans.
 4. Test sample payloads against canonical identity and market mapping.

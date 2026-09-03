@@ -24,12 +24,13 @@ procurement gates in [source-coverage-matrix.md](source-coverage-matrix.md).
 | Data class | Primary | Secondary | Arena Props responsibility |
 | --- | --- | --- | --- |
 | Sports identity, schedules, results, rosters, stats, injuries, lineups, play-by-play, standings and rankings | BALLDONTLIE | None until a demonstrated gap exists | Canonical IDs, normalization, corrections and serving |
-| Current sportsbook and DFS/pick'em markets | The Odds API | BALLDONTLIE where the same event/market exists | Market taxonomy, line shopping and source comparison |
+| Current NBA sportsbook and player-prop markets | BALLDONTLIE | The Odds API for comparison, repair or a demonstrated gap | Market taxonomy, line shopping and source comparison; paid fixtures per book/market remain mandatory |
+| Current markets for later sports | Provider selected by that sport's evidence gate | BALLDONTLIE and The Odds API are candidates | Never inherit NBA book/market coverage without fixtures |
 | Historical sportsbook and player-prop snapshots | The Odds API plus Arena Props polling archive | BALLDONTLIE opening endpoints | Append-only history, opening/closing definitions and reconciliation |
 | Player, team, league, event and venue imagery | TheSportsDB | Product-owned fallback assets | Cross-provider identity mapping, rights ledger, object storage and CDN |
 | Betting models and backtests | Arena Props | BDL Lab as a comparison input | Model/version ownership and reproducible calculations |
 | Pregame/live/postgame narrative | StoryStats, later | Arena Props summaries where legally allowed | Product presentation and attribution |
-| Live change triggers | BALLDONTLIE Webhooks | Polling reconciliation | Signature verification, deduplication, cache invalidation and alerts |
+| Live change triggers during NBA proof | Dynamic polling/reconciliation | Optional BALLDONTLIE webhooks after a qualifying upgrade | Provider-state transitions, idempotency, cache invalidation and later signed-webhook support |
 | Hit rates, splits, streaks, consensus, no-vig, +EV, arbitrage, projections and injury impact | Arena Props | Provider facts as inputs only | Versioned calculation engine |
 
 This decision chooses provider roles. It does not force an unsupported league,
@@ -83,7 +84,7 @@ must be possible without changing frontend field names.
 | `LR=ALLOWED:*` | `licensed_retention`: signed terms explicitly allow the stated period |
 | `BOOT` | Initial backfill and explicit repair only |
 | `DAY` | Daily or provider-change sync |
-| `HOT` | Event window; poll at the configured 5-30 second target |
+| `HOT` | Event window; use the versioned per-data-class adaptive cadence rather than one global interval |
 | `LIVE` | Active event; webhook first, 15-60 second reconciliation polling |
 | `FINAL` | Re-fetch after final and again inside the correction window |
 
@@ -271,18 +272,19 @@ Adding one requires a frontend requirement set and a new schema-registry row.
 | `GET /v1/standings?season=` | team, conference/division records and ranks, wins/losses, home/road records, season | standings snapshots | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | after finals/daily | standings/context | `DOC-VERIFIED`, sample pending |
 | sport-specific standings/rankings endpoints | source entity, competition/season, rank, record/points and provider time | standings/ranking snapshots | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | daily/weekly, after finals | rankings/context modules | schema pin required per enabled sport |
 
-The endpoint prefixes above are NBA-specific where shown. NFL, MLB, NHL,
-WNBA, NCAAF, NCAAB, soccer, tennis, LoL, CS2 and Valorant adapters must use the
-route and schema from that sport's pinned OpenAPI file; similar names are not
-proof of identical fields.
+The endpoint prefixes above are NBA-specific where shown. When NFL, MLB, NHL,
+WNBA, NCAAF, NCAAB, soccer, tennis, LoL, CS2 or Valorant enters Phase 8, its
+adapter must use that sport's pinned route and schema; similar names are not
+proof of identical fields. Roadmap inclusion does not make any later adapter
+part of the NBA reference build.
 
 ### BALLDONTLIE market and optional-product endpoints
 
 | Endpoint/feed | Accepted fields | Canonical writes | Storage; `desired_retention`; `licensed_retention` | Acquisition | Frontend/use | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| `GET /v2/odds` | `id`, `game_id`, `vendor`, home/away spread values and odds, moneylines, total and over/under odds, `updated_at` | game-market backup snapshots | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 30-60 seconds in hot window | source comparison/redundancy | `DOC-VERIFIED`; NBA 2025+ documented |
+| `GET /v2/odds` | `id`, `game_id`, `vendor`, home/away spread values and odds, moneylines, total and over/under odds, `updated_at` | primary current NBA game-market snapshots | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 30-60 seconds in hot window | matchup odds and consensus | `DOC-VERIFIED`; NBA 2025+ documented; target vendors documented |
 | `GET /nba/v2/odds/opening` | same game-market values plus `opened_at` | opening backup snapshot | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | once after market discovery and repair | opening-line audit | `DOC-VERIFIED`; recent/current coverage only |
-| `GET /v2/odds/player_props` | `id`, `game_id`, `player_id`, `vendor`, `prop_type`, `line_value`, `market.type`, `over_odds`, `under_odds` or milestone `odds`, `updated_at` | prop market and backup prop snapshot | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 30-60 seconds for comparison | props and discrepancy QA | `DOC-VERIFIED`; endpoint itself does not preserve history |
+| `GET /v2/odds/player_props` | `id`, `game_id`, `player_id`, `vendor`, `prop_type`, `line_value`, `market.type`, `over_odds`, `under_odds` or milestone `odds`, `updated_at` | primary current NBA prop market and economic snapshot | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 30-60 seconds in the hot/live window | Props, Player, Pick Builder and line shopping | `DOC-VERIFIED`; endpoint itself does not preserve history; DraftKings, FanDuel and Caesars appear in the documented player-prop vendor list, while BetMGM requires a paid fixture before enablement |
 | `GET /nba/v2/odds/player_props/opening` | live prop identity/market fields plus `opened_at` | opening prop backup | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | once and repair | opening movement audit | `DOC-VERIFIED`; recent/current coverage only |
 | `GET /{sport}/v1/dfs/slates`, `/dfs/slates/{id}`, `/dfs/draftables` | slate, event, roster-slot and draftable fields defined in sport schema | optional DFS extension tables | `C+S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 1-5 minutes while enabled slate open | later DFS product only | later; not part of core sportsbook MVP |
 | BDL Lab model/factor/backtest/prediction API | model IDs/config, factor definitions, run status, performance and prediction outputs | external model comparison snapshots, never Arena Props model tables | versioned `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | manual/queued model runs | internal model evaluation | later research integration |
@@ -308,7 +310,9 @@ Operational rules:
 - Deduplicate on `X-BDL-Webhook-Id` before side effects.
 - Acknowledge only after durable queue handoff.
 - Run endpoint reconciliation because webhooks can be delayed or missed.
-- Track the ALL-ACCESS allowance as a budget, not as guaranteed throughput.
+- During the NBA-only GOAT proof, polling must meet correctness and freshness
+  without full ALL-ACCESS webhook events. Track any later webhook allowance as
+  a budget, not guaranteed throughput.
 
 ## The Odds API endpoint contracts
 
@@ -324,9 +328,9 @@ Official references:
 | `GET /v4/sports/{sport}/events` | `ODDS_EVENT`, optional rotation numbers/source IDs when requested | event crosswalk candidates, not sports-truth overwrite | `C`, raw `O`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 5-10 minutes in active season; no quota cost documented | market discovery only | `DOC-VERIFIED`, sample pending |
 | `GET /v4/sports/{sport}/participants` | `id`, `full_name` | participant crosswalk candidate/whitelist | `C`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | daily/weekly | ingestion only | `DOC-VERIFIED`; does not return team rosters |
 | `GET /v4/sports/{sport}/scores` | `ODDS_EVENT`, `scores` | backup event score/status metadata | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 30 seconds only if BDL degraded; final repair up to supported recent window | degraded event context | `DOC-VERIFIED`; secondary source only |
-| `GET /v4/sports/{sport}/odds` | `ODDS_EVENT`, `ODDS_OFFER_TREE`; featured markets only | game-market snapshots/current projections | `S`, `R`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 15-30 seconds hot window | matchup odds and consensus | `DOC-VERIFIED`, sample pending |
+| `GET /v4/sports/{sport}/odds` | `ODDS_EVENT`, `ODDS_OFFER_TREE`; featured markets only | game-market snapshots/current projections | `S`, `R`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | Adaptive; approximately 40-60 seconds in the hottest/live window based on documented source update cadence | matchup odds and consensus | `DOC-VERIFIED`, sample pending |
 | `GET /v4/sports/{sport}/events/{eventId}/markets` | event identity; bookmaker key/title; market key and `last_update` | available-market discovery state | `S`; `DR=DURATION:30D`; `LR=PENDING_CONTRACT` | 1-5 minutes pregame or on empty-market repair | ingestion only | `DOC-VERIFIED`; recently seen markets, not exhaustive catalog |
-| `GET /v4/sports/{sport}/events/{eventId}/odds` | `ODDS_EVENT`, `ODDS_OFFER_TREE`; all returned additional, prop, alternate, period and DFS markets | `prop_markets`, economic-state `prop_snapshots`, current offers | `S`, `R`, raw `O`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | 15-30 seconds hot window, adaptive by update time | Props, Projections, Discrepancies, Player, Pick Builder | `DOC-VERIFIED`, sample per sport/book/market required |
+| `GET /v4/sports/{sport}/events/{eventId}/odds` | `ODDS_EVENT`, `ODDS_OFFER_TREE`; all returned additional, prop, alternate, period and DFS markets | `prop_markets`, economic-state `prop_snapshots`, current offers | `S`, `R`, raw `O`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | Adaptive; 60 seconds in the hottest pregame/live window for player props, matching documented source cadence | Props, Projections, Discrepancies, Player, Pick Builder | `DOC-VERIFIED`, sample per sport/book/market required |
 | `GET /v4/historical/sports/{sport}/events` | wrapper `timestamp`, `previous_timestamp`, `next_timestamp`, `data[]` of `ODDS_EVENT` | historical event crosswalk and backfill cursor | `C`, raw `O`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | `BOOT`/repair only | ingestion only | `DOC-VERIFIED`, paid plan |
 | `GET /v4/historical/sports/{sport}/odds` | historical wrapper plus featured-market offer tree | game-market backfill snapshots | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | `BOOT`/repair; budgeted | historical matchup odds | `DOC-VERIFIED`; 10x credit formula documented |
 | `GET /v4/historical/sports/{sport}/events/{eventId}/odds` | historical wrapper plus event-level `ODDS_OFFER_TREE` | historical prop/alternate/period snapshots | `S`; `DR=PERMANENT`; `LR=PENDING_CONTRACT` | selective backfill/repair only | movement, book/consensus open/close, backtests | `DOC-VERIFIED`; additional-market history documented from 2023-05-03 |
@@ -386,7 +390,8 @@ approved object/CDN URL. Hotlinking is not the production contract.
 | L5/L10/L15/L20 average and hit rate | final eligible player-event stats, selected line and eligibility rules | `calculated_metrics` with window, market, line, version and cutoff | Props, Player, Popular, Saved |
 | Season/home/away/opponent/position split | event, venue role, opponent and final stats | `calculated_metrics` | Player and matchup research |
 | Streak | ordered eligible final results and line | `calculated_metrics` | Props and Player |
-| Open/current/close/min/max movement | append-only eligible `prop_snapshots` | calculated metric plus source snapshot references | trend chart, Discrepancies, Player |
+| Book open/current/close/min/max movement | eligible economic-state `prop_snapshots` for one book stream | `BOOK_*` landmark plus source snapshot reference | trend chart, Discrepancies, Player |
+| Consensus open/current/close/min/max movement | versioned eligible book set and `BOOK_*` landmarks | `CONSENSUS_*` landmark plus calculated-metric reference | trend chart, Projections, Discrepancies |
 | Best line | fresh current offers for same canonical prop/region | current read model; optionally versioned metric | Props and Pick Builder |
 | Consensus/no-vig | fresh comparable book offers and configured book set | `calculated_metrics` | Projections, matchup odds |
 | +EV | Arena Props probability, no-vig/market probability and selected price | versioned projection result | Projections and Player |
@@ -394,8 +399,9 @@ approved object/CDN URL. Hotlinking is not the production contract.
 | Projection | versioned stats, context, availability and market inputs | `projections`/`projection_results` | Projections, Player, Popular |
 | Injury impact | availability revision, projected rotation/minutes and model | versioned projection/context result | Player and alerts |
 
-Every read model must expose `generated_at`, `source_cutoff_at`,
-`freshness_state`, `calculation_version` and `feature_availability`.
+Every calculated read model must expose `generated_at`, `source_cutoff_at`,
+`freshness_state`, `calculation_version`, `market_definition_version`,
+`eligibility_version` and `feature_availability`.
 
 ## Implementation order and acceptance gates
 
@@ -405,12 +411,12 @@ Every read model must expose `generated_at`, `source_cutoff_at`,
    manager; never put keys in the frontend or repository.
 3. Capture sanitized fixtures for NBA teams, players, games, stats, injuries,
    current props, historical props and player/team images.
-4. Complete a field-disposition manifest for every fixture and make schema
-   drift a failing contract test.
+4. Complete field, entity and market mapping manifests for every fixture; make
+   schema drift and unmapped required values failing contract tests.
 5. Map one NBA event/player/prop across all three providers into Arena Props
    canonical IDs.
-6. Prove append-only current and historical prop ingestion, disappearance,
-   suspension, opening, closing and final settlement end to end.
+6. Prove economic-state prop deduplication, disappearance hysteresis,
+   suspension, book/consensus landmarks and final settlement end to end.
 7. Validate display, caching, derivative and retention rights in writing.
 8. Load-test the hot-window credit/request model before enabling additional
    books or markets.
@@ -418,6 +424,8 @@ Every read model must expose `generated_at`, `source_cutoff_at`,
    sport. Similar endpoint names do not waive sport-specific validation.
 10. Add BDL Lab, StoryStats, DFS and deep live modules only after the core
     sports-truth/market-truth/media pipeline is stable.
+11. Run the Arena Props API contract suite and prove no public response depends
+    on provider field names, IDs, enums, payload shapes or SDK types.
 
 No provider field may reach a public read model solely because it appeared in a
 payload. It must have an explicit mapping, rights decision, freshness rule and

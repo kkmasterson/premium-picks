@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  BarChart3, Bookmark, CircleHelp, Flame, GitCompareArrows, ListFilter, Menu, PanelLeftClose, PanelLeftOpen, TrendingUp, Users, Swords, User,
+  Bookmark, Bot, CircleHelp, ExternalLink, Flame, GitCompareArrows, ListFilter, ListPlus, LockKeyhole, Menu, PanelLeftClose, PanelLeftOpen, TrendingUp, Users, Swords, User,
 } from 'lucide-react';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { cn } from '@/lib/utils';
@@ -12,12 +12,13 @@ interface Item { key: PageKey; label: string; icon: React.ElementType; }
 
 const ANALYSIS: Item[] = [
   { key: 'props', label: 'Props', icon: ListFilter },
+  { key: 'ev', label: '+EV', icon: LockKeyhole },
   { key: 'discrepancies', label: 'Discrepancies', icon: GitCompareArrows },
   { key: 'players', label: 'Players', icon: Users },
   { key: 'trends', label: 'Trends', icon: TrendingUp },
   { key: 'matchups', label: 'Matchups', icon: Swords },
-  { key: 'projections', label: 'Projections', icon: BarChart3 },
 ];
+const BUILD: Item[] = [{ key: 'builder', label: 'Builder', icon: ListPlus }];
 const COMMUNITY: Item[] = [{ key: 'popular', label: 'Popular', icon: Flame }];
 const PERSONAL: Item[] = [{ key: 'saved', label: 'Saved', icon: Bookmark }];
 const SUPPORT: Item[] = [{ key: 'help', label: 'Help / Guide', icon: CircleHelp }];
@@ -31,13 +32,13 @@ function NavItem({ item, collapsed }: { item: Item; collapsed: boolean }) {
       onClick={() => navigate(item.key)}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'group relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]',
+        'group relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500',
         collapsed && 'justify-center px-0',
         active ? 'bg-[#1a1a1a] font-medium text-white' : 'text-zinc-400 hover:bg-[#141414] hover:text-zinc-200',
       )}
     >
-      {active && <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-[#F5C542]" aria-hidden />}
-      <Icon className={cn('h-[18px] w-[18px] shrink-0', active ? 'text-[#F5C542]' : 'text-zinc-500 group-hover:text-zinc-300')} />
+      {active && <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-teal-500" aria-hidden />}
+      <Icon className={cn('h-[18px] w-[18px] shrink-0', active ? 'text-teal-400' : 'text-zinc-500 group-hover:text-zinc-300')} />
       {!collapsed && item.label}
     </button>
   );
@@ -75,6 +76,7 @@ export function Sidebar() {
       >
         <div className="flex-1 overflow-y-auto no-scrollbar">
           <Group label="Analysis" items={ANALYSIS} collapsed={collapsed} />
+          <Group label="Build" items={BUILD} collapsed={collapsed} />
           <Group label="Community" items={COMMUNITY} collapsed={collapsed} />
           <Group label="Personal" items={PERSONAL} collapsed={collapsed} />
           <Group label="Support" items={SUPPORT} collapsed={collapsed} />
@@ -95,7 +97,7 @@ export function Sidebar() {
           </div>
           <button
             onClick={() => setCollapsed((c) => !c)}
-            className="mt-1 flex w-full items-center justify-center gap-2 rounded-md py-1.5 text-xs text-zinc-500 hover:bg-[#141414] hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]"
+            className="mt-1 flex w-full items-center justify-center gap-2 rounded-md py-1.5 text-xs text-zinc-500 hover:bg-[#141414] hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <><PanelLeftClose className="h-4 w-4" /> Collapse</>}
@@ -113,13 +115,13 @@ export function MobileBottomNav() {
     { key: 'props', label: 'Props', icon: ListFilter },
     { key: 'players', label: 'Players', icon: Users },
     { key: 'popular', label: 'Popular', icon: Flame },
-    { key: 'saved', label: 'Saved', icon: Bookmark },
+    { key: 'builder', label: 'Builder', icon: ListPlus },
   ];
   const moreItems: Item[] = [
     { key: 'discrepancies', label: 'Discrepancies', icon: GitCompareArrows },
     { key: 'trends', label: 'Trends', icon: TrendingUp },
     { key: 'matchups', label: 'Matchups', icon: Swords },
-    { key: 'projections', label: 'Projections', icon: BarChart3 },
+    { key: 'saved', label: 'Saved', icon: Bookmark },
     { key: 'help', label: 'Help / Guide', icon: CircleHelp },
   ];
   const moreActive = moreItems.some((item) => item.key === page);
@@ -134,8 +136,8 @@ export function MobileBottomNav() {
             onClick={() => navigate(i.key)}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#F5C542]',
-              active ? 'text-[#F5C542]' : 'text-zinc-500',
+              'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-500',
+              active ? 'text-teal-400' : 'text-zinc-500',
             )}
           >
             <Icon className="h-5 w-5" />
@@ -143,8 +145,8 @@ export function MobileBottomNav() {
           </button>
         );
       })}
-      <button onClick={() => setMoreOpen((open) => !open)} aria-expanded={moreOpen} className={cn('flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#F5C542]', moreActive || moreOpen ? 'text-[#F5C542]' : 'text-zinc-500')}><Menu className="h-5 w-5" />More</button>
-    </nav>{moreOpen && <><button aria-label="Close more navigation" className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => setMoreOpen(false)} /><div role="dialog" aria-modal="true" aria-label="More navigation" className="fixed inset-x-3 bottom-20 z-40 grid grid-cols-2 gap-2 rounded-xl border border-[#292929] bg-[#101010] p-3 shadow-2xl md:hidden">{moreItems.map((item) => { const Icon = item.icon; return <button key={item.key} onClick={() => { navigate(item.key); setMoreOpen(false); }} className={cn('flex items-center gap-2 rounded-lg border px-3 py-3 text-left text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]', page === item.key ? 'border-[#F5C542]/40 bg-[#F5C542]/10 text-[#F5C542]' : 'border-[#252525] text-zinc-400')}><Icon className="h-4 w-4" />{item.label}</button>; })}</div></>}
+      <button onClick={() => setMoreOpen((open) => !open)} aria-expanded={moreOpen} className={cn('flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-500', moreActive || moreOpen ? 'text-teal-400' : 'text-zinc-500')}><Menu className="h-5 w-5" />More</button>
+    </nav>{moreOpen && <><button aria-label="Close more navigation" className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => setMoreOpen(false)} /><div role="dialog" aria-modal="true" aria-label="More navigation" className="fixed inset-x-3 bottom-20 z-40 grid grid-cols-2 gap-2 rounded-xl border border-[#292929] bg-[#101010] p-3 shadow-2xl md:hidden">{moreItems.map((item) => { const Icon = item.icon; return <button key={item.key} onClick={() => { navigate(item.key); setMoreOpen(false); }} className={cn('flex items-center gap-2 rounded-lg border px-3 py-3 text-left text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500', page === item.key ? 'border-teal-500/40 bg-teal-500/10 text-teal-300' : 'border-[#252525] text-zinc-400')}><Icon className="h-4 w-4" />{item.label}</button>; })}<a href="/bonuses" className="flex items-center gap-2 rounded-lg border border-[#252525] px-3 py-3 text-xs text-zinc-400"><ExternalLink className="h-4 w-4"/>Bonuses</a><a href={import.meta.env.VITE_PREMIUM_PICKS_DISCORD_URL || '#'} aria-disabled={!import.meta.env.VITE_PREMIUM_PICKS_DISCORD_URL} className="flex items-center gap-2 rounded-lg border border-[#252525] px-3 py-3 text-xs text-zinc-400"><Bot className="h-4 w-4"/>Discord</a></div></>}
     </>
   );
 }

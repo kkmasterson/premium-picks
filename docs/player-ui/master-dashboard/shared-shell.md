@@ -26,13 +26,20 @@ The supplied sports use the same desktop information hierarchy:
 - Saved.
 - Popular, under a separate Community navigation group.
 
+The wider planned product navigation, including +EV, Parlay Builder, AI
+Assistant, Bonuses, Discord, and the five-item phone navigation, is defined in
+the [Product Expansion Blueprint](product-expansion-blueprint.md). Those items
+remain planned or feature-gated unless their individual production evidence is
+complete.
+
 Discrepancies is a dedicated cross-app minimum/maximum line comparison page,
 not a variation of the Trends page. See
 [Discrepancies Page](discrepancies-page.md) for its card-grid specification.
 
-Popular is a community-favorites discovery page and must remain distinct from
-the current user's Saved page. See [Popular Page](popular-page.md) for its
-favorites-ranked card-grid specification.
+Popular is a weighted community-activity discovery page and must remain
+distinct from the current user's Saved page. See
+[Popular Page](popular-page.md) for its intent- and recency-ranked card-grid
+specification.
 
 ## Shared visual behavior
 

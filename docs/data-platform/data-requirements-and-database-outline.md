@@ -40,7 +40,7 @@ profiles, product documentation, and the running dashboard on 2026-08-26.
 
 ### Currently advertised coverage
 
-The top navigation exposes these 12 sport or competition keys:
+The prototype top navigation exposes these 12 sport or competition keys:
 
 - NBA
 - NFL
@@ -57,6 +57,11 @@ The top navigation exposes these 12 sport or competition keys:
 
 `All` is a filter, not a competition. Dota 2 and Call of Duty are explicitly
 excluded.
+
+These 12 labels are the frozen later-sport roadmap. Only NBA is funded during
+the reference proof. Every other label remains feature-gated until its own
+Phase 8 provider, rights, schema, capacity and launch gates pass; roadmap
+inclusion does not require purchasing all-sport access in advance.
 
 ### Coverage qualifications
 
@@ -166,9 +171,11 @@ Required fields:
 - Settlement result including over, under, push, void and correction.
 - Full line/price change history, not only the current offer.
 
-The six operators represented in the prototype are DraftKings, FanDuel, BetMGM,
-Caesars, Fanatics and bet365. This is a product target, not evidence that one
-vendor can legally or technically supply all six for every market and region.
+The approved target operators are DraftKings, FanDuel, BetMGM and Caesars.
+Prototype references to Fanatics or bet365 are not launch commitments. Provider
+documentation alone is not evidence that every approved book is available for
+every player market, event and region; paid fixtures and rights still gate each
+combination.
 
 ### 6. Contextual feeds
 
@@ -351,7 +358,7 @@ provider.
 
 | Tier | Data | Target ingestion behavior |
 | --- | --- | --- |
-| A: market-moving | Current prop lines/prices, suspensions and event status | Webhook/stream when available; otherwise approximately 5-30 second polling while relevant events are active |
+| A: market-moving | Current prop lines/prices, suspensions and event status | Webhook/stream when available; player props approximately every 60 seconds in the hottest window for The Odds API, with faster polling only when a selected source proves faster updates |
 | B: semi-live | Player/team stats, scores, participation and live segments | Stream/webhook or approximately 15-60 second polling; reconcile after event final |
 | C: pre-game context | Injuries, projected/confirmed lineups, starting pitchers, weather and roster changes | Event-driven when possible; approximately 1-5 minutes near start, slower outside the pre-game window |
 | D: reference | Schedules, rosters, standings, rankings and historical corrections | Incremental hourly/daily sync plus provider change notifications |
@@ -359,7 +366,9 @@ provider.
 
 Exact polling intervals must be checked against plan rate limits. A cheap plan
 that permits only a few thousand requests per month cannot support a 5-second
-poll across 12 sports and six operators.
+poll across all 12 roadmap labels and four approved operators. Capacity is
+proven with NBA first and remeasured as each sport is added; provider
+subscriptions are not purchased in advance.
 
 ## Data quality and normalization rules
 
@@ -394,7 +403,8 @@ candidate service, the pricing worksheet must include:
 ## Procurement sequence
 
 1. Freeze the launch competitions and which of the 12 advertised competitions must be real at launch.
-2. Freeze the launch sportsbook list and user jurisdiction(s).
+2. Apply the approved jurisdiction allowlist policy and verify the four target
+   books for each region proposed for paid launch.
 3. Decide the history window and freshness promise for odds and stats.
 4. Turn each external data domain above into a provider requirements checklist.
 5. Research candidate services from primary pricing/API/licensing sources.
@@ -409,8 +419,10 @@ final vendor recommendation:
 
 - Which sports are launch-day requirements versus visible but coming soon?
 - Which states/countries must sportsbook data support at launch?
-- Are all six prototype sportsbooks required, or is a smaller launch set acceptable?
-- Is the promise pregame research only, or must odds and stats update during games?
+- Do paid fixtures prove all four approved sportsbooks for every enabled market
+  and competition, and what is the feature-gated fallback when one is absent?
+- Which later sports inherit live updates; NBA is resolved as webhook-first live
+  sports data plus approximately 60-second supported live player-prop updates.
 - How many seasons of historical statistics and historical odds are required?
 - Are licensed headshots mandatory for every sport, or may some sports use initials/team artwork?
 - Does Arena Props need play-by-play/shot-location/pitch-level data at launch, or can those modules wait?

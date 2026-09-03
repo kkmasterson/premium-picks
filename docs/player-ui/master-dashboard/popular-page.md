@@ -3,15 +3,36 @@
 ## Status
 
 - Required top-level Community page.
-- Planned route: `/dashboard/popular`.
-- Not currently implemented in the Arena Props prototype.
-- Desktop reference confirmed; mobile composition remains unconfirmed.
+- Route: `/dashboard/popular`.
+- A mock-data prototype exists; weighted ranking and production community
+  integrity are not implemented.
+- Desktop reference confirmed; target mobile behavior is defined below.
 
 ## Purpose in the UI
 
-Popular is a community-discovery view that surfaces props receiving the most
-user favorites. It is not the same as Saved: Saved contains the current user's
-bookmarks, while Popular shows community interest across sports and apps.
+Popular is a community-discovery view ranked by weighted activity and recency.
+Builder additions and saves carry more weight than basic clicks because they
+show stronger intent. Pick activity may contribute when it has a precise,
+abuse-resistant event definition. It is not the same as Saved: Saved contains
+the current user's bookmarks, while Popular shows anonymous aggregate interest
+across sports and apps.
+
+The approved launch-weight hypothesis is:
+
+```text
+action_points = Builder add: 5
+              | Save: 4
+              | Valid Over/Under side selection: 3
+              | Deduplicated click/view: 1
+
+popularity_score = sum(action_points * recency_decay(action_age))
+```
+
+The `5 / 4 / 3 / 1` weights are the simple first version. The recency function
+must make activity from the last few hours matter substantially more than
+activity from the prior day. Its exact curve, minimum cohorts, deduplication,
+and anti-abuse rules remain versioned configuration that must pass production
+testing. Raw clicks cannot outweigh stronger-intent activity.
 
 The page belongs in a separate **Community** navigation group below the
 Analysis group.
@@ -44,19 +65,25 @@ regions.
 - Player avatar.
 - Player name, position, and league/sport mark.
 - Over or Under selection, line, and market name on the second line.
-- Blue favorite-count pill with a star icon.
+- Total-activity pill with a clear label.
 - Matchup and event time on a secondary line.
 - Optional compact league or event badge.
 
-The favorite count is the defining popularity signal and remains visible near
-the prop identity rather than inside the performance strip.
+Total weighted activity is the defining popularity signal and remains visible
+near the prop identity rather than inside the performance strip. A detail
+tooltip/sheet may explain the activity types without publishing security- or
+abuse-sensitive scoring rules.
 
 ### Optional consensus indicator
 
-Some cards display a compact circular indicator at the upper-right. The ring
+Cards with a sufficient valid cohort display a compact circular indicator at the upper-right. The ring
 visually separates the available Over and Under percentages and prints both
 values inside the circle. Cards without sufficient consensus information omit
 the ring without leaving an empty placeholder.
+
+Example: `72% Over / 28% Under`. The percentages use valid community side
+selections, not page clicks, and display their sample size or an availability
+explanation.
 
 The ring requires text labels or an accessible description because color alone
 cannot identify the two sides.
@@ -89,8 +116,8 @@ cell.
 
 ## Interaction requirements
 
-- Selecting the star/favorite control adds or removes the prop from the Pick
-  Builder and exposes a visible selected state.
+- Saving and adding to the Builder remain separate explicit actions and feed
+  separate popularity events.
 - Selecting the card identity opens the corresponding player analysis page at
   the represented market and line.
 - Selecting an app offer targets that provider offer without triggering the
@@ -102,14 +129,15 @@ cell.
 
 ## Relationship to other pages
 
-- **Popular** ranks or surfaces community-favorited props.
+- **Popular** ranks weighted, recent, anonymous community activity.
 - **Saved** contains only the current user's saved props, players, and games.
 - **Props** is the full research table.
 - **Trends** groups performance patterns.
 - **Discrepancies** compares minimum and maximum lines between app groups.
 
 Popular must remain its own Community destination because community interest is
-its primary organizing signal.
+its primary organizing signal. Written community picks, profiles, verified
+records, leaderboards, and following are post-launch roadmap features.
 
 ## Responsive requirement
 

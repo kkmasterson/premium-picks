@@ -6,6 +6,12 @@ This catalog maps how player information should be represented across sports bef
 
 The documents are visual references, not backend schemas. They record what is visibly confirmed in supplied screenshots and mark missing states instead of guessing.
 
+The cross-dashboard feature, navigation, mobile, +EV, AI, Bonuses, Discord, and
+delivery direction is mapped in the
+[Product Expansion Blueprint](master-dashboard/product-expansion-blueprint.md).
+It treats supplied screenshots as visual references and does not replace the
+normative data-platform or production contracts.
+
 ## Resolution order
 
 When planning a player page, read the documents in this order:
@@ -36,8 +42,9 @@ minimum/maximum line comparison. This page is documented but is not yet
 implemented in the current prototype.
 
 A separate [Popular page](master-dashboard/popular-page.md) is also required in
-the Community navigation group. It represents community-favorited props and is
-documented separately from the current user's Saved page.
+the Community navigation group. It represents weighted anonymous community
+activity and recency and is documented separately from the current user's
+Saved page.
 
 | Category | League/game | Current reference | Visible role | Status |
 | --- | --- | --- | --- | --- |

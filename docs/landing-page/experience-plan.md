@@ -187,8 +187,8 @@ This becomes the main product demonstration and replaces the current repeated st
 | Player Analysis | Player header, market selection, performance chart, contextual panel | `/dashboard/players/:playerId` | Use a stable sample player and supported sport profile. |
 | Trends | Recent performance and threshold line | `/dashboard/trends` | Available now. |
 | Matchups | Event and opponent context | `/dashboard/matchups` | Available now. |
-| Popular | Community-favorited props | `/dashboard/popular` | Do not link until the documented page is implemented. |
-| Discrepancies | Cross-app minimum/maximum line comparison | Future documented route | Do not present as available until implemented. |
+| Popular | Weighted anonymous community activity | `/dashboard/popular` | Mock prototype exists; label as fixed demo data until production community ranking is enabled. |
+| Discrepancies | Cross-app minimum/maximum line comparison | `/dashboard/discrepancies` | Mock prototype exists; label as fixed demo data until live source coverage is enabled. |
 
 #### Interaction behavior
 

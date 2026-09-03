@@ -27,10 +27,18 @@ describe('player-screen route state', () => {
     window.localStorage.clear();
     render(<MemoryRouter initialEntries={['/dashboard/players/WNBA-a-ja-wilson?market=pts&line=20&period=full']}><App /></MemoryRouter>);
     const increase = await screen.findByRole('button', { name: 'Increase line' });
-    const displayedLine = increase.previousElementSibling as HTMLElement;
-    expect(displayedLine).toHaveTextContent('20');
+    const displayedLine = screen.getByRole('textbox', { name: 'Prop line' }) as HTMLInputElement;
+    expect(displayedLine).toHaveValue('20');
     fireEvent.click(increase);
-    expect(displayedLine).toHaveTextContent('20.5');
+    expect(displayedLine).toHaveValue('20.5');
+
+    fireEvent.focus(displayedLine);
+    expect(displayedLine.selectionStart).toBe(0);
+    expect(displayedLine.selectionEnd).toBe(4);
+    fireEvent.change(displayedLine, { target: { value: '24.5' } });
+    fireEvent.keyDown(displayedLine, { key: 'Enter' });
+    expect(displayedLine).toHaveValue('24.5');
+
     const save = screen.getByRole('button', { name: 'Save player' });
     fireEvent.click(save);
     expect(screen.getByRole('button', { name: 'Remove player from saved' })).toHaveTextContent('Saved');
@@ -40,9 +48,10 @@ describe('player-screen route state', () => {
     render(<MemoryRouter initialEntries={['/dashboard/players/WNBA-a-ja-wilson?market=pts&line=20&period=full']}><App /></MemoryRouter>);
 
     const provider = await screen.findByRole('combobox', { name: 'Sportsbook provider' });
-    const providerOption = Array.from((provider as HTMLSelectElement).options).find((option) => option.value !== 'all')!;
-    fireEvent.change(provider, { target: { value: providerOption.value } });
-    expect(provider).toHaveValue(providerOption.value);
+    fireEvent.click(provider);
+    const providerOption = screen.getAllByRole('option').find((option) => !option.textContent?.includes('All books'))!;
+    fireEvent.click(providerOption);
+    expect(provider).toHaveTextContent(/Line/);
 
     const firstQuarter = screen.getByRole('button', { name: '1Q' });
     fireEvent.click(firstQuarter);
@@ -51,6 +60,33 @@ describe('player-screen route state', () => {
     const season = screen.getByRole('combobox', { name: 'Season' });
     fireEvent.change(season, { target: { value: 'previous' } });
     expect(season).toHaveValue('previous');
+  });
+
+  it('shows explicit Goblin and Devil art only for the selected classified offer', async () => {
+    render(<MemoryRouter initialEntries={['/dashboard/players/NFL-patrick-mahomes?market=pass-yds&period=full']}><App /></MemoryRouter>);
+    const provider = await screen.findByRole('combobox', { name: 'Sportsbook provider' });
+
+    fireEvent.click(provider);
+    fireEvent.click(screen.getByRole('option', { name: /FanDuel.*Goblin/i }));
+    expect(screen.getByText(/Goblin · O/)).toBeInTheDocument();
+    expect(document.querySelector('img[src="/assets/sportsbooks/fanduel.svg"]')).toBeInTheDocument();
+    expect(document.querySelector('img[src="/assets/green-goblin.png"]')).toBeInTheDocument();
+    expect(document.querySelector('img[src="/assets/red-devil.png"]')).not.toBeInTheDocument();
+
+    fireEvent.click(provider);
+    fireEvent.click(screen.getByRole('option', { name: /BetMGM.*Devil/i }));
+    expect(screen.getByText(/Devil · O/)).toBeInTheDocument();
+    expect(document.querySelector('img[src="/assets/sportsbooks/betmgm.jpg"]')).toBeInTheDocument();
+    expect(document.querySelector('img[src="/assets/red-devil.png"]')).toBeInTheDocument();
+    expect(document.querySelector('img[src="/assets/green-goblin.png"]')).not.toBeInTheDocument();
+  });
+
+  it('reveals event details immediately when a chart bar is hovered', async () => {
+    render(<MemoryRouter initialEntries={['/dashboard/players/NFL-patrick-mahomes?market=pass-yds&period=full']}><App /></MemoryRouter>);
+    await screen.findByRole('heading', { name: 'Recent Passing Yards' });
+    const bar = document.querySelector('[data-testid^="history-bar-"]') as SVGElement;
+    fireEvent.mouseEnter(bar);
+    expect(screen.getByTestId('chart-tooltip')).toHaveTextContent('Click to keep details visible');
   });
 
   it('switches contextual modes and exposes the NHL unavailable state', async () => {

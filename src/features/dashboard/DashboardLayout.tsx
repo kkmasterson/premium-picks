@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Outlet } from 'react-router';
 import { DashboardProvider } from '@/features/dashboard/DashboardProvider';
 import { TopSportNav } from '@/features/dashboard/components/TopSportNav';
@@ -12,7 +13,7 @@ function Shell() {
       <div className="flex w-full min-w-0 max-w-full">
         <Sidebar />
         <main className="min-w-0 flex-1 overflow-x-hidden px-3 pb-24 pt-4 sm:px-5 md:pb-8">
-          <Outlet />
+          <Suspense fallback={<div className="grid min-h-64 place-items-center text-xs text-zinc-600">Loading research…</div>}><Outlet /></Suspense>
         </main>
         <PickBuilderRail />
       </div>

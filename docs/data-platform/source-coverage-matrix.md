@@ -8,8 +8,10 @@ source, product and plan can satisfy each requirement in
 Props buys or integrates anything.
 
 Arena Props has selected provider roles: BALLDONTLIE is the primary sports-truth
-source, The Odds API is the primary betting-market source, and TheSportsDB is
-the primary media-enrichment source. The role decision does not turn an
+and current NBA betting-market source, The Odds API is the historical
+betting-market source and current-market comparison/fallback, and TheSportsDB is
+the primary media-enrichment source. Later sports repeat source selection from
+their own evidence rather than inheriting the NBA assignment. The role decision does not turn an
 unverified requirement into `YES`: cells remain `UNKNOWN` or `PARTIAL` until
 official documentation, a qualifying plan, a real sample payload and acceptable
 rights prove the exact requirement.
@@ -53,12 +55,15 @@ The selected roles are:
 
 - BALLDONTLIE for sports identity, schedules, rosters, injuries, lineups,
   play-by-play, standings, rankings and player/team statistics.
-- The Odds API for current game odds, current player props, DFS/pick'em markets
-  and historical odds/prop snapshots. BALLDONTLIE odds remain a comparison and
-  opening-price fallback where supported.
+- BALLDONTLIE for current NBA game odds and player props. The live player-prop
+  endpoint is not a historical store, so Arena Props snapshots every observed
+  economic state from the moment ingestion begins.
+- The Odds API for historical odds/prop snapshots and as a current-market
+  comparison, repair or gap source where approved.
 - TheSportsDB for player, team, league, event and venue visual enrichment,
   subject to entity-level coverage and commercial media rights.
-- A weather source and possibly specialist soccer, tennis and esports sources.
+- A weather source and possibly specialist soccer, tennis and esports sources
+  when those later roadmap labels enter Phase 8.
 - Arena Props for normalization, user/community data, calculations and model outputs.
 
 The endpoint and field implementation contract is
@@ -92,10 +97,10 @@ matrix remains the proof and procurement ledger for exact coverage.
 | Hockey stats | STA-015 | Conditional/unconfirmed UI | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN calculations | TBD | Product requirements still incomplete |
 | Soccer stats | STA-016 | Conditional | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN calculations | TBD | Player stats plus team context and formations |
 | Tennis stats | STA-017 | Conditional | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN calculations | TBD | Set-level statistics and surface context |
-| LoL data | STA-018 | Conditional | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | OWN calculations | TBD | Series/map/champion data and artwork rights |
-| CS2 data | STA-019 | Conditional | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | OWN calculations | TBD | Map/round/veto/ranking coverage |
-| Valorant data | STA-020 | Conditional | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | OWN calculations | TBD | Map/player/agent data and artwork rights |
-| Live clock and play-by-play | STA-021–022 | Later unless live launch | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN normalization | TBD | Do not buy until live product promise is set |
+| LoL data | STA-018 | Later roadmap; non-Phase-0 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | OWN calculations | Deferred | Enable only through its own Phase 8 proof |
+| CS2 data | STA-019 | Later roadmap; non-Phase-0 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | OWN calculations | Deferred | Enable only through its own Phase 8 proof |
+| Valorant data | STA-020 | Later roadmap; non-Phase-0 | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | OWN calculations | Deferred | Enable only through its own Phase 8 proof |
+| Live clock and play-by-play | STA-021–022 | Required for NBA reference; conditional by later sport | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN normalization | TBD | NBA live requirement is set; verify paid-plan fields, latency, rights and correction behavior |
 | Standings and rankings | CTX-001–002 | Conditional | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN snapshots | TBD | Rankings require source attribution |
 | Weather | CTX-003 | Conditional | N/A | N/A | N/A | UNKNOWN | OWN normalization | TBD | Need forecast and observed event-time conditions |
 | Win probability and opponent metrics | CTX-004–007 | Conditional | UNKNOWN raw inputs | UNKNOWN odds inputs | N/A | UNKNOWN | OWN calculations | TBD | Separate source predictions from Arena Props calculations |
@@ -103,7 +108,7 @@ matrix remains the proof and procurement ledger for exact coverage.
 | Baseball arsenal aggregates | CTX-009 | Conditional | UNKNOWN raw inputs | N/A | N/A | UNKNOWN | OWN | TBD | Depends on pitch-level source |
 | Esports map/context aggregates | CTX-010 | Conditional | UNKNOWN | UNKNOWN | UNKNOWN artwork | UNKNOWN | OWN | TBD | Map artwork and stats may have different licensors |
 | Matchup/game odds | CTX-011, ODD-017 | Conditional | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN consensus calculations | TBD | Moneyline, spread, total and esports score odds |
-| Sportsbook identity/region | ODD-001–002, ODD-019 | Critical | UNKNOWN | UNKNOWN | UNKNOWN | N/A | OWN normalization/config | TBD | Six prototype books; jurisdictions unconfirmed |
+| Sportsbook identity/region | ODD-001–002, ODD-019 | Critical | UNKNOWN | UNKNOWN | UNKNOWN | N/A | OWN normalization/config | TBD | DraftKings, FanDuel, BetMGM and Caesars approved as targets; public-access jurisdictions unconfirmed |
 | Current player props | ODD-003–010 | Critical | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN taxonomy/normalization | TBD | Verify player props by league, book and plan |
 | Historical prop snapshots | ODD-011 | Critical proprietary dataset | UNKNOWN | UNKNOWN | N/A | UNKNOWN | OWN retention pipeline | TBD | Contract must allow permanent snapshot retention |
 | Opening/closing/min/max/best/movement | ODD-012–016 | Critical calculations | Raw input only | Raw input only | N/A | Raw input only | OWN | Arena Props | Requires complete eligible snapshot history |
@@ -122,10 +127,11 @@ evaluated for the same requirement.
 
 | Requirement ID | Candidate provider | Product/plan | Endpoint/feed | Coverage status | Official evidence URL | Sample verified | Refresh/latency | Historical depth | Rate/stream limit | Display rights | Cache rights | Derived-data rights | Retention rights | Price evidence | Checked date | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IDN-008 | BALLDONTLIE | ALL-ACCESS | Per-sport players endpoints | PARTIAL | [NBA OpenAPI](https://www.balldontlie.io/openapi/nba.yml) plus per-sport schemas | No | Daily/change target; exact provider revision cadence TBD | Varies by sport | 600 requests/minute published | TBD | TBD | TBD | TBD | $299.99/month published | 2026-08-26 | Route and documented NBA fields confirmed; fixture, rights and every launch-sport schema still required |
-| STA-002 | BALLDONTLIE | ALL-ACCESS | Per-sport player/event stat endpoints | PARTIAL | [BALLDONTLIE API hub](https://www.balldontlie.io/docs) | No | Real-time documented for selected endpoints; exact per-sport latency TBD | Varies by sport/endpoint | 600 requests/minute published | TBD | TBD | TBD | TBD | $299.99/month published | 2026-08-26 | Technical breadth documented; verify event-level fields and correction behavior per required league |
-| ODD-006 | The Odds API | Paid tier TBD | `GET /v4/sports/{sport}/events/{eventId}/odds` | PARTIAL | [V4 docs](https://the-odds-api.com/liveapi/guides/v4/) and [market catalog](https://the-odds-api.com/sports-odds-data/betting-markets.html) | No | Additional markets documented at one-minute intervals; slower than the current 5-30 second target | Current event lifetime | Credits depend on returned markets and regions; paid rate limit 30 requests/second | TBD | TBD | TBD | TBD | $30-$249 published tiers before higher-volume plans | 2026-08-26 | Props and books vary by sport/book/jurisdiction; fixture and freshness decision required |
+| IDN-008 | BALLDONTLIE | NBA GOAT | NBA player endpoints | PARTIAL | [NBA OpenAPI](https://www.balldontlie.io/openapi/nba.yml) | No | Daily/change target; exact provider revision cadence TBD | NBA endpoint history varies | 600 requests/minute published | TBD | TBD | TBD | TBD | $39.99/month published | 2026-08-26 | NBA-only proof plan; other sport subscriptions are deferred |
+| STA-002 | BALLDONTLIE | NBA GOAT | NBA player/event stat endpoints | PARTIAL | [BALLDONTLIE NBA API](https://docs.balldontlie.io/) | No | Live polling target; exact endpoint latency TBD | NBA endpoint history varies | 600 requests/minute published | TBD | TBD | TBD | TBD | $39.99/month published | 2026-08-26 | NBA proof is polling-first because full granular webhooks require ALL-ACCESS |
+| ODD-006 | The Odds API | Paid tier TBD | `GET /v4/sports/{sport}/events/{eventId}/odds` | PARTIAL | [V4 docs](https://the-odds-api.com/liveapi/guides/v4/) and [market catalog](https://the-odds-api.com/sports-odds-data/betting-markets.html) | No | Additional markets documented at one-minute intervals; matches the NBA reference ingestion target | Current event lifetime | Credits depend on returned markets and regions; paid rate limit 30 requests/second | TBD | TBD | TBD | TBD | $30-$249 published tiers before higher-volume plans | 2026-08-26 | Props and books vary by sport/book/jurisdiction; paid fixture and live coverage still require verification |
 | ODD-011 | The Odds API | Paid tier TBD | `GET /v4/historical/sports/{sport}/events/{eventId}/odds` plus Arena Props polling archive | PARTIAL | [Historical odds guide](https://the-odds-api.com/historical-odds-data/) | No | Provider snapshots at five-minute intervals for additional markets | Additional-market history documented from 2023-05-03 | Generally 10x returned markets x regions per event | TBD | TBD | TBD | TBD | Paid tier required | 2026-08-26 | Historical access proves availability, not permanent Arena Props retention or derivative rights |
+| ODD-006 | BALLDONTLIE | NBA GOAT | `GET /v2/odds/player_props` | PARTIAL | [BALLDONTLIE NBA docs](https://docs.balldontlie.io/) | No | Documented as live/real-time; application polls at the approved dynamic cadence | No retained live history; opening endpoint is limited | 600 requests/minute for the subscribed NBA sport | TBD | TBD | TBD | TBD | $39.99/month published | 2026-08-26 | Current NBA primary. BetMGM is documented for game odds but is absent from the current player-prop vendor table, so a paid fixture is required. |
 | IDN-011 | TheSportsDB | Premium V2 candidate | `/lookup/player/{id}` plus search/list mapping endpoints | PARTIAL | [V2 OpenAPI](https://www.thesportsdb.com/api/spec/v2/openapi.yaml) | No | Revision/monthly target; provider revision signaling TBD | Entity records vary by sport/league | 100 requests/minute published for Premium | TBD | TBD | TBD | TBD | $9/month published | 2026-08-26 | Image URLs documented; verify coverage, ownership and commercial cache/resize rights per launch competition |
 
 ## Plan and pricing comparison
@@ -135,13 +141,22 @@ current official pricing page, quote or contract.
 
 | Provider | Product/plan | Monthly price | Annual price/commitment | Included requests/events | Overage | Concurrency | Historical access | Webhooks/stream | Commercial rights | Setup/support fee | Evidence and date |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BALLDONTLIE | ALL-ACCESS | $299.99 published monthly | Monthly; cancellation/commitment terms TBD | 600 requests/minute across sports; webhook allowance separate | TBD | TBD | Sport endpoint history varies | 10 webhook endpoints; 500,000 deliveries/month; events may be delayed up to one minute | Display/cache/derived/retention rights still need written acceptance | TBD | [Account/API docs](https://www.balldontlie.io/account/) and [webhook docs](https://www.balldontlie.io/webhooks), checked 2026-08-26 |
-| The Odds API | Paid usage tier TBD after volume model | Published tiers currently $30-$249 for 20K-15M credits; higher plans discoverable after account creation | Monthly | Plan credits; current odds generally 1x region x market, historical generally 10x | N/A | Paid API documented at 30 requests/second | Paid tiers include historical access | No webhook documented in evaluated V4 contract | Display/cache/derived/retention rights still need written acceptance | None documented | [Official plans](https://the-odds-api.com/) and [V4 usage costs](https://the-odds-api.com/liveapi/guides/v4/), checked 2026-08-26 |
+| BALLDONTLIE | NBA GOAT, initial | $39.99 published monthly | Monthly; cancellation/commitment terms TBD | 600 requests/minute for NBA; full NBA endpoint set | TBD | TBD | NBA endpoint history varies | Full granular webhooks not included; polling-first proof | Display/cache/derived/retention rights still need written acceptance | TBD | [NBA API docs](https://docs.balldontlie.io/) and [account plans](https://www.balldontlie.io/account/), checked 2026-08-26 |
+| BALLDONTLIE | ALL-ACCESS, deferred | $299.99 published monthly | Monthly; do not purchase before NBA proof | 600 requests/minute across sports | TBD | TBD | Sport endpoint history varies | 10 webhook endpoints; 500,000 deliveries/month; events may be delayed up to one minute | Display/cache/derived/retention rights still need written acceptance | TBD | [Account/API docs](https://www.balldontlie.io/account/) and [webhook docs](https://www.balldontlie.io/webhooks), checked 2026-08-26 |
+| The Odds API | 100K-credit proof plan | $59 published monthly | Monthly; high-volume plans deferred | 100,000 credits; proof usage restricted to NBA | N/A | Paid API documented at 30 requests/second | Historical access included | No webhook documented in evaluated V4 contract | Display/cache/derived/retention rights still need written acceptance | None documented | [Official plans](https://the-odds-api.com/) and [V4 usage costs](https://the-odds-api.com/liveapi/guides/v4/), checked 2026-08-26 |
 | TheSportsDB | Premium V2 candidate | $9 published monthly | Monthly | 100 requests/minute documented for Premium | TBD | TBD | Entity/event history varies | No required stream; livescores are polling | Commercial image display/cache/resize rights still need written acceptance | TBD | [Official API guide](https://www.thesportsdb.com/docs_api_guide), checked 2026-08-26 |
 | Weather/context provider | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 | Soccer specialist | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 | Tennis specialist | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
 | Esports specialist | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
+
+Owner planning allowance for the first development month is $39.99 for the
+BALLDONTLIE NBA GOAT tier, $59 for The Odds API's 100K-credit plan and $20 for
+TheSportsDB, totaling $118.99 before infrastructure, transaction fees, tax and
+overages. The Odds API is not sold per sport, but proof credits are restricted
+operationally to NBA. ALL-ACCESS and maximum-volume upgrades require measured
+NBA proof results and owner approval. These are budget assumptions; the evidence
+table above remains authoritative for verified public price and plan terms.
 
 ## Usage and cost model
 
@@ -190,5 +205,6 @@ A provider/product cannot be selected until:
 1. BALLDONTLIE official coverage, endpoints, plans, limits and rights.
 2. The Odds API official player-prop, bookmaker, historical, plan and rights coverage.
 3. Media provider shortlist for headshots, team marks and sportsbook logos.
-4. Weather and specialist soccer/tennis/esports feeds for unresolved gaps.
+4. Weather and specialist soccer/tennis/esports feeds only when the applicable
+   roadmap label enters Phase 8.
 5. Consolidated architecture and price scenarios only after the matrix is populated.

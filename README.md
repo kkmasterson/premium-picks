@@ -81,3 +81,4 @@ Production hosting must serve `index.html` as the fallback for dashboard URLs be
 - [Landing page experience plan](docs/landing-page/experience-plan.md)
 - [Player UI catalog](docs/player-ui/README.md)
 - [Data platform documentation](docs/data-platform/README.md)
+- [Production program and phase gates](docs/production/README.md)

@@ -1,4 +1,5 @@
 import { BOOKS, propsForPlayer } from '@/features/dashboard/data';
+import { propBoardRowById } from '@/features/dashboard/props-fixtures';
 import type { GameLogEntry, Player, Prop } from '@/features/dashboard/types';
 import type { ChartPreset, DepthChartEntry, FilterOption, MarketDefinition, MarketSnapshot, PlayerFilterKey, PlayerResearchAdapter, PlayerResearchViewModel, PlayerScreenProfile, ResearchHistoryEntry, SportModulePayload } from './types';
 
@@ -148,6 +149,7 @@ function marketSnapshot(player: Player, profile: PlayerScreenProfile, definition
   const averageValues = history.filter((entry) => entry.availability === 'played' && entry.value !== null).map((entry) => entry.value as number);
   const average = averageValues.length ? Math.round((averageValues.reduce((sum, value) => sum + value, 0) / averageValues.length) * 10) / 10 : null;
   const bookSource = source?.books ?? template?.books ?? [];
+  const canonicalOffers = source ? propBoardRowById(source.id)?.offers : undefined;
   return {
     definition,
     available: true,
@@ -157,7 +159,17 @@ function marketSnapshot(player: Player, profile: PlayerScreenProfile, definition
     average,
     hitRates: { l5: rate(history, canonicalLine, 5), l10: rate(history, canonicalLine, 10), l15: rate(history, canonicalLine, 15), season: rate(history, canonicalLine), h2h: rate(history.filter((entry) => entry.opponent === player.opponent), canonicalLine) },
     history,
-    offers: bookSource.map((book, index) => ({
+    offers: canonicalOffers?.map((offer) => ({
+      id: offer.id,
+      name: offer.providerName,
+      shortName: offer.providerShortName,
+      line: round(offer.line * periodScale(periodKey), definition.step),
+      overOdds: offer.overOdds,
+      underOdds: offer.underOdds,
+      updatedAt: Math.max(0, Math.round((new Date('2026-09-01T20:00:00.000Z').getTime() - new Date(offer.observedAt).getTime()) / 1000)),
+      lineType: offer.lineType,
+      status: offer.status,
+    })) ?? bookSource.map((book, index) => ({
       id: book.book, name: book.bookName, shortName: book.book, line: round(canonicalLine + (book.line - (source?.line ?? template?.line ?? canonicalLine)) * periodScale(periodKey), definition.step), overOdds: book.over, underOdds: book.under, updatedAt: book.updatedAt, promotion: index === 1 ? '$50' : index === 3 ? '$200' : undefined,
     })),
   };

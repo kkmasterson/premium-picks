@@ -25,6 +25,20 @@ refer to the same requirement without relying on display labels.
 The frontend should consume stable Arena Props read models rather than raw
 vendor responses.
 
+### Frontend boundary invariant
+
+- React code imports Arena Props API/read-model types only. It may not import a
+  provider SDK, raw schema or provider adapter type.
+- Every entity reference uses an Arena Props canonical ID. External provider
+  IDs such as `IDN-013` are ingestion-only and are forbidden in UI state,
+  route parameters, component props and analytics identifiers.
+- Provider field names and enums never define frontend property names. Any
+  coincidental spelling match still belongs to the Arena Props contract.
+- Adding, replacing or upgrading a provider must not require a frontend change
+  unless the Arena Props product contract itself changes.
+- Legally required attribution is delivered through an Arena Props-owned
+  attribution object; it does not expose or recreate the raw provider payload.
+
 | Read model | Primary consumers |
 | --- | --- |
 | `DashboardReferenceData` | Sport navigation, books, filters and global search |
@@ -64,11 +78,11 @@ vendor responses.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | EVT-001 | Event/game/match/series ID and competition | Props, matchup, player research | Yes | Raw | TBD sports source | Schedule/events | Hourly/change | Full supported history | Canonical | Display, cache, derived use |
 | EVT-002 | UTC start time and source timezone | All event/prop surfaces | Yes | Raw | TBD sports source | Schedule/events | 1-5 min near event | Full supported history | Canonical | Display |
-| EVT-003 | Event status and status timestamp | Matchups, player header, odds eligibility | Yes | Raw | TBD live sports source | Events/live feed | 5-30 sec active | Permanent | Canonical + snapshot | Display and retention |
+| EVT-003 | Event status and status timestamp | Matchups, player header, odds eligibility | Yes | Raw | TBD live sports source | Events/live feed | 15-60 sec active; webhook-first where available | Permanent | Canonical + snapshot | Display and retention |
 | EVT-004 | Participants and home/away/order | Matchups and all prop identity | Yes | Raw | TBD sports source | Schedule/events | On change | Permanent | Canonical | Display and derived use |
 | EVT-005 | Venue and neutral-site flag | Matchup/weather context | Conditional | Raw | TBD sports source | Schedule/events | On change | Permanent | Canonical | Display |
 | EVT-006 | Season, week, round, stage and tournament | Filters and event context | Yes | Raw | TBD sports source | Schedule/tournament | Hourly/daily | Permanent | Canonical | Display and derived use |
-| EVT-007 | Current score and participant result | Matchups/live modules | Conditional | Raw | TBD live sports source | Live feed | 5-30 sec active | Permanent | Canonical + snapshot | Live display and retention |
+| EVT-007 | Current score and participant result | Matchups/live modules | Conditional | Raw | TBD live sports source | Live feed | 15-60 sec active; webhook-first where available | Permanent | Canonical + snapshot | Live display and retention |
 | EVT-008 | Segment hierarchy and status | Period filters/charts | Conditional | Raw | TBD live sports source | Live/box score | 15-60 sec | Permanent | Canonical | Display and derived use |
 | EVT-009 | Segment scores/results | Matchups and sport-specific modules | Conditional | Raw | TBD live sports source | Live/box score | 15-60 sec | Permanent | Canonical | Display and derived use |
 | EVT-010 | Event final/correction timestamp | Settlement and metric recalculation | Yes | Raw | TBD sports source | Event update | On change | Permanent | Canonical | Internal/derived use |
@@ -117,7 +131,7 @@ vendor responses.
 | STA-018 | LoL series/map player stats and champion usage | LoL research | Conditional | Raw | TBD esports source | Series/map stats | 15-60 sec active | Required history window | Canonical | Display, retention, artwork rights separately |
 | STA-019 | CS2 series/map/round stats and map vetoes | CS2 research | Conditional | Raw | TBD esports source | Series/map/round stats | 15-60 sec active | Required history window | Canonical | Display, retention, derived use |
 | STA-020 | Valorant series/map player stats and agent usage | Valorant research | Conditional | Raw | TBD esports source | Series/map stats | 15-60 sec active | Required history window | Canonical | Display, retention, artwork rights separately |
-| STA-021 | Live score, clock and period | Live event context | Later unless live launch | Raw | TBD live source | Live feed | 5-15 sec | Event + permanent final | Snapshot/canonical | Live display and retention |
+| STA-021 | Live score, clock and period | Live event context | Required for NBA reference; conditional by later sport | Raw | TBD live source | Live feed | Webhook-first; 15-60 sec reconciliation | Event + permanent final | Snapshot/canonical | Live display and retention |
 | STA-022 | Play-by-play events | Advanced/live modules | Later | Raw | TBD PBP source | Stream/feed | Near-real-time | Product-defined | Object/canonical | Display, cache, derived use |
 
 ### Advanced and contextual research
@@ -134,7 +148,7 @@ vendor responses.
 | CTX-008 | Tennis head-to-head meetings and surface splits | Tennis modules | Conditional | Raw/calculated | Stats source + Arena Props | Match history/job | After matches | Full supported history | Canonical/cache | Display and derived use |
 | CTX-009 | Baseball pitch-arsenal aggregates | Pitch Arsenal | Conditional | Calculated | Arena Props | Pitch aggregation | After games/live optional | Required history window | Snapshot/cache | Own calculation on licensed pitch facts |
 | CTX-010 | Esports map pool, pick/ban rates and favorites | Esports modules | Conditional | Raw/calculated | Esports source + Arena Props | Match/map job | After matches | Required history window | Canonical/cache | Display, artwork separately |
-| CTX-011 | Consensus/provider event odds | Matchup odds/win predictor | Conditional | Raw/calculated | TBD odds source + Arena Props | Game odds feed | 5-30 sec | Market lifetime | Snapshot/cache | Display, retention, derived use |
+| CTX-011 | Consensus/provider event odds | Matchup odds/win predictor | Conditional | Raw/calculated | TBD odds source + Arena Props | Game odds feed | Approximately 40-60 sec in hottest/live window for The Odds API | Market lifetime | Snapshot/cache | Display, retention, derived use |
 
 ### Sportsbooks, props and odds history
 
@@ -144,19 +158,19 @@ vendor responses.
 | ODD-002 | Sportsbook logo | Filters/offers | Yes | Raw/media | TBD media/operator source | Media | On revision | Current + rights record | Object | Logo display/cache |
 | ODD-003 | Canonical prop market ID and taxonomy | All prop surfaces | Yes | Config | Arena Props | Config/admin | On approved change | Permanent/versioned | Canonical | Own |
 | ODD-004 | Provider market ID/label mapping | Ingestion | Yes | Raw/config | Odds provider + Arena Props | Market feed/mapping | On new market | Permanent/versioned | Canonical | Internal normalization |
-| ODD-005 | Prop instance: event, player, market and period | All prop surfaces | Yes | Raw/normalized | Odds source + Arena Props | Player prop feed | 5-30 sec | Permanent | Canonical | Display, retention, derived use |
-| ODD-006 | Current line/handicap per sportsbook | Props/offers/discrepancies | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
-| ODD-007 | Current Over American odds | Offers/Popular/Pick Builder | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
-| ODD-008 | Current Under American odds | Offers/Popular/Pick Builder | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
-| ODD-009 | Offer status/suspension and source timestamps | Offer eligibility/freshness | Yes | Raw | TBD odds source | Player prop feed | 5-30 sec target | Market lifetime | Snapshot/cache | Display and retention |
-| ODD-010 | Main/alternate market marker | Market controls | Conditional | Raw | TBD odds source | Player prop feed | 5-30 sec | Market lifetime | Snapshot | Display and retention |
+| ODD-005 | Prop instance: event, player, market and period | All prop surfaces | Yes | Raw/normalized | Odds source + Arena Props | Player prop feed | Adaptive; approximately 60 sec in hottest/live window for The Odds API | Permanent | Canonical | Display, retention, derived use |
+| ODD-006 | Current line/handicap per sportsbook | Props/offers/discrepancies | Yes | Raw | TBD odds source | Player prop feed | Approximately 60 sec in hottest window for The Odds API; faster only with verified source support | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
+| ODD-007 | Current Over American odds | Offers/Popular/Pick Builder | Yes | Raw | TBD odds source | Player prop feed | Approximately 60 sec in hottest window for The Odds API; faster only with verified source support | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
+| ODD-008 | Current Under American odds | Offers/Popular/Pick Builder | Yes | Raw | TBD odds source | Player prop feed | Approximately 60 sec in hottest window for The Odds API; faster only with verified source support | Current + permanent snapshots | Snapshot/cache | Live display, cache, historical retention |
+| ODD-009 | Offer status/suspension and source timestamps | Offer eligibility/freshness | Yes | Raw | TBD odds source | Player prop feed | Approximately 60 sec in hottest window for The Odds API; source timestamps remain authoritative | Market lifetime | Snapshot/cache | Display and retention |
+| ODD-010 | Main/alternate market marker | Market controls | Conditional | Raw | TBD odds source | Player prop feed | Approximately 60 sec in hottest window for The Odds API | Market lifetime | Snapshot | Display and retention |
 | ODD-011 | Every changed line/price/status observation | Line Movement/Prop History | Yes | Raw | TBD odds source | Poll/stream/webhook | Every change | Permanent | Snapshot | Historical retention and derived-data rights |
 | ODD-012 | Opening line and price | Prop History | Yes | Calculated | Arena Props | Snapshot aggregation | First eligible snapshot | Permanent | Snapshot/cache | Own calculation; source retention rights |
 | ODD-013 | Closing line and price | Prop History/backtests | Yes | Calculated | Arena Props | Snapshot aggregation | Market close/event start | Permanent | Snapshot/cache | Own calculation; source retention rights |
 | ODD-014 | Minimum/maximum line and providers | Discrepancies | Yes | Calculated | Arena Props | Current offer aggregation | On snapshot | Permanent analytics/current cache | Cache | Own calculation |
 | ODD-015 | Best Over/Under price at same line | Props/offers | Yes | Calculated | Arena Props | Current offer aggregation | On snapshot | Current + analytics | Cache | Own calculation |
 | ODD-016 | Line movement, velocity and time at line | Research/advanced products | Conditional | Calculated | Arena Props | Snapshot analytics | On snapshot/batch | Permanent | Snapshot/cache | Own calculation |
-| ODD-017 | Game moneyline, spread and total offers | Matchup odds | Conditional | Raw | TBD odds source | Game odds feed | 5-30 sec | Market lifetime/permanent snapshots | Snapshot/cache | Display, retention, derived use |
+| ODD-017 | Game moneyline, spread and total offers | Matchup odds | Conditional | Raw | TBD odds source | Game odds feed | Approximately 40-60 sec in hottest/live window for The Odds API | Market lifetime/permanent snapshots | Snapshot/cache | Display, retention, derived use |
 | ODD-018 | Prop result/settlement/push/void | Hit rates/backtests | Yes | Raw/calculated | Stats result + Arena Props | Settlement job | Final/correction | Permanent | Canonical | Derived use |
 | ODD-019 | Jurisdiction/market availability | Offer filtering/compliance | Yes | Raw/config | Odds source + Arena Props | Feed/catalog | On change | Snapshot history | Canonical/cache | Regional display rights |
 
@@ -207,11 +221,12 @@ vendor responses.
 ## Open product decisions that change the matrix
 
 - Launch sports versus visible `coming soon` sports.
-- Launch jurisdictions and required sportsbooks.
-- Pregame-only versus in-game odds/stat updates.
+- Launch-time jurisdiction allowlist entries and required sportsbooks for each enabled region.
+- Live acquisition policy for each sport added after NBA; the NBA reference
+  implementation includes webhook-first live sports data and approximately
+  60-second supported live prop updates.
 - Minimum historical stats and odds depth.
 - Mandatory headshots versus approved fallbacks by sport.
 - Whether shot-location, pitch-level and play-by-play requirements are launch
   needs or deferred modules.
 - Whether projections launch with the initial dashboard.
-
