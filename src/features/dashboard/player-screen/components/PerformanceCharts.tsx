@@ -26,8 +26,8 @@ function Chart({
     return componentBars && entry.components?.length ? entry.components.reduce((sum, item) => sum + item.value, 0) : value;
   }).filter((value): value is number => value !== null);
   const width = 760;
-  const height = 248;
-  const pad = { left: 10, right: 8, top: 22, bottom: 46 };
+  const height = 270;
+  const pad = { left: 10, right: 8, top: 20, bottom: 44 };
   const max = Math.max(1, ...values, line ?? 0) * 1.16;
   const baseline = height - pad.bottom;
   const chartHeight = baseline - pad.top;
@@ -92,7 +92,7 @@ function Chart({
           );
         })}
 
-        {lineY !== null && <g pointerEvents="none"><line x1={pad.left} x2={width - pad.right} y1={lineY} y2={lineY} stroke="#14B8A6" strokeWidth="1.5" strokeDasharray="7 5" /><rect x={width - 82} y={lineY - 17} width="68" height="15" rx="4" fill="#0b2926" /><text x={width - 48} y={lineY - 6} textAnchor="middle" fontSize="9" fontWeight="800" fill="#5EEAD4">LINE {line}</text></g>}
+        {lineY !== null && <g pointerEvents="none"><line x1={pad.left} x2={width - pad.right} y1={lineY} y2={lineY} stroke="#2DD4BF" strokeWidth="2" strokeDasharray="7 5" /><rect x={width - 86} y={lineY - 18} width="72" height="17" rx="5" fill="#0b312d" stroke="#2dd4bf" strokeOpacity="0.45" /><text x={width - 50} y={lineY - 6} textAnchor="middle" fontSize="9" fontWeight="800" fill="#99F6E4">LINE {line}</text></g>}
 
         {active && (
           <g pointerEvents="none" data-testid="chart-tooltip">
@@ -109,23 +109,20 @@ function Chart({
   );
 }
 
-export function PerformanceChart({ market, line, periodLabel, embedded = false }: { market: MarketSnapshot; line: number; periodLabel: string; embedded?: boolean }) {
+export function PerformanceChart({ market, line, embedded = false }: { market: MarketSnapshot; line: number; embedded?: boolean }) {
   const [range, setRange] = useState<Range>(15);
   const history = useMemo(() => range === 'season' ? market.history : market.history.slice(0, range), [market.history, range]);
   return (
-    <section className={cn('bg-[#0f1111]', !embedded && 'rounded-xl border border-white/[0.07]')}>
-      <header className="flex flex-wrap items-center justify-between gap-2 px-4 pb-1 pt-3">
-        <div>
-          <h2 className="text-[13px] font-semibold text-zinc-100">Recent {market.definition.market}</h2>
-          <p className="text-[9px] text-zinc-600">{periodLabel} · Hover, focus, or tap a bar for instant event detail</p>
-        </div>
-        <div className="flex gap-1" role="group" aria-label="Performance range">
-          {([5, 10, 15, 'season'] as Range[]).map((item) => <button key={String(item)} onClick={() => setRange(item)} aria-pressed={range === item} className={cn('rounded px-2 py-1 text-[10px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', range === item ? 'bg-teal-400/15 text-teal-300' : 'text-zinc-500 hover:text-zinc-300')}>{item === 'season' ? 'SZN' : `L${item}`}</button>)}
-        </div>
+    <section className={cn('border-t border-white/[0.06] bg-[#0f1111]', !embedded && 'overflow-hidden rounded-xl border border-white/[0.07]')}>
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.05] px-3 py-1.5">
+        <h2 className="text-[12px] font-semibold text-zinc-100">Recent {market.definition.market}</h2>
+          <div className="flex gap-0.5" role="group" aria-label="Performance range">
+          {([5, 10, 15, 'season'] as Range[]).map((item) => <button key={String(item)} onClick={() => setRange(item)} aria-pressed={range === item} className={cn('rounded px-1.5 py-1 text-[9px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', range === item ? 'bg-teal-400/15 text-teal-200' : 'text-zinc-500 hover:text-zinc-300')}>{item === 'season' ? 'Season' : `L${item}`}</button>)}
+          </div>
       </header>
-      <div className={cn('pb-3 pt-1', embedded ? 'px-0' : 'px-3 sm:px-4')}>
+      <div className={cn('pb-2 pt-1.5', embedded ? 'px-0' : 'px-3 sm:px-4')}>
         <Chart history={history} line={line} valueFor={(entry) => entry.value} componentBars={Boolean(market.definition.chartPreset && market.definition.chartPreset !== 'standard')} ariaLabel={`${market.definition.market} history compared with line ${line}`} />
-        <div className="mt-1 flex flex-wrap gap-4 px-3 text-[9px] text-zinc-600 sm:px-4"><span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-emerald-400" />Over line</span><span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-red-400" />Under line</span><span><span className="mr-1 inline-block h-2 w-2 rounded-sm border border-dashed border-zinc-500" />DNP / unavailable</span></div>
+        <div className="mt-1 flex flex-wrap gap-3 border-t border-white/[0.04] px-3 pt-1.5 text-[8px] text-zinc-600"><span><span className="mr-1 inline-block h-1.5 w-1.5 rounded-sm bg-emerald-400" />Over line</span><span><span className="mr-1 inline-block h-1.5 w-1.5 rounded-sm bg-red-400" />Under line</span><span><span className="mr-1 inline-block h-1.5 w-1.5 rounded-sm border border-dashed border-zinc-500" />DNP / unavailable</span><span className="ml-auto">Fixed demo data · No live connection</span></div>
       </div>
     </section>
   );

@@ -1,15 +1,30 @@
+import { useState } from 'react';
 import { avatarColor, initials } from '@/features/dashboard/data';
+import { playerMediaForName } from '@/features/dashboard/media-fixtures';
 import { cn } from '@/lib/utils';
 
-export function PlayerAvatar({ name, size = 'md' }: { name: string; size?: 'sm' | 'md' | 'lg' }) {
-  const sz = size === 'sm' ? 'h-8 w-8 text-[10px]' : size === 'lg' ? 'h-16 w-16 text-xl' : 'h-10 w-10 text-xs';
+export function PlayerAvatar({ name, size = 'md' }: { name: string; size?: 'xs' | 'sm' | 'md' | 'lg' }) {
+  const asset = playerMediaForName(name);
+  const [failedUrl, setFailedUrl] = useState<string>();
+  const showHeadshot = asset && failedUrl !== asset.headshotUrl;
+  const sz = size === 'xs' ? 'h-7 w-7 text-[9px]' : size === 'sm' ? 'h-8 w-8 text-[10px]' : size === 'lg' ? 'h-16 w-16 text-xl' : 'h-10 w-10 text-xs';
   return (
     <div
-      className={cn('flex shrink-0 items-center justify-center rounded-full border border-teal-500/25 bg-teal-500/[0.06] font-semibold text-teal-300', sz)}
-      style={{ background: avatarColor(name) }}
-      aria-hidden
+      className={cn('flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-teal-500/25 bg-teal-500/[0.06] font-semibold text-teal-300', sz)}
+      style={showHeadshot ? undefined : { background: avatarColor(name) }}
+      aria-label={showHeadshot ? `${name} headshot` : undefined}
+      aria-hidden={showHeadshot ? undefined : true}
     >
-      {initials(name)}
+      {showHeadshot ? (
+        <img
+          src={asset.headshotUrl}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover object-top"
+          onError={() => setFailedUrl(asset.headshotUrl)}
+        />
+      ) : initials(name)}
     </div>
   );
 }

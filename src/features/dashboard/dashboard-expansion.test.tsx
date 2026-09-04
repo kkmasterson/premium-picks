@@ -93,6 +93,17 @@ describe('expanded dashboard destinations', () => {
     expect(within(secondRow).getAllByRole('cell')[0]).toHaveClass('bg-[#121515]');
   });
 
+  it('renders desktop player headshots as bottom-anchored card cutouts', async () => {
+    renderRoute('/dashboard/props');
+    const table = await screen.findByRole('table', { name: 'Props research table' });
+    const firstPlayerCell = within(table).getAllByRole('row')[1].querySelector('td');
+    const headshot = firstPlayerCell?.querySelector<HTMLImageElement>('img[src*="cdn.nba.com/headshots"]');
+
+    expect(headshot).toHaveClass('absolute', 'bottom-0', 'object-contain', 'object-bottom');
+    expect(headshot?.parentElement).toHaveClass('absolute', 'inset-y-0', 'overflow-hidden');
+    expect(firstPlayerCell?.querySelector('button')).toHaveClass('pl-[72px]');
+  });
+
   it('keeps line type and advanced controls in one filter surface', async () => {
     renderRoute('/dashboard/props');
     await screen.findByRole('table', { name: 'Props research table' });

@@ -13,6 +13,7 @@ import {
   type SideMetrics,
 } from '@arena/contracts';
 import { BOOKS, PROPS, playerById } from '@/features/dashboard/data';
+import { playerMediaFor } from '@/features/dashboard/media-fixtures';
 import type { Prop } from '@/features/dashboard/types';
 
 const DEMO_NOW = new Date('2026-09-01T20:00:00.000Z');
@@ -163,7 +164,7 @@ function buildRow(prop: Prop, index: number): PropBoardRow {
     id: prop.id,
     playerId: player.id,
     playerName: player.name,
-    headshotUrl: null,
+    headshotUrl: playerMediaFor(player.id)?.headshotUrl ?? null,
     team: player.team,
     position: player.pos,
     opponent: player.opponent,
@@ -233,4 +234,3 @@ export function builderSelectionFor(row: PropBoardRow, offer: PropOffer, side: S
     capturedAt: offer.observedAt,
   };
 }
-

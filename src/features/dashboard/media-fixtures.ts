@@ -17,6 +17,14 @@ export interface FixtureTeamMedia {
   verifiedAt: '2026-09-03';
 }
 
+export interface FixturePlayerMedia {
+  source: 'nba';
+  sourceEntityId: string;
+  label: string;
+  headshotUrl: string;
+  verifiedAt: '2026-09-04';
+}
+
 const navigationAsset = (sourceEntityId: string, label: string, url: string): FixtureMediaAsset => ({
   source: 'thesportsdb',
   sourceEntityId,
@@ -119,5 +127,37 @@ export const TEAM_MEDIA: Record<string, FixtureTeamMedia> = {
   },
 };
 
+const nbaHeadshot = (sourceEntityId: string, label: string): FixturePlayerMedia => ({
+  source: 'nba',
+  sourceEntityId,
+  label,
+  headshotUrl: `https://cdn.nba.com/headshots/nba/latest/1040x760/${sourceEntityId}.png`,
+  verifiedAt: '2026-09-04',
+});
+
+/** Official NBA headshots for every NBA player in the fixed demo roster. */
+export const PLAYER_MEDIA: Record<string, FixturePlayerMedia> = {
+  'NBA-jalen-brunson': nbaHeadshot('1628973', 'Jalen Brunson'),
+  'NBA-jayson-tatum': nbaHeadshot('1628369', 'Jayson Tatum'),
+  'NBA-lebron-james': nbaHeadshot('2544', 'LeBron James'),
+  'NBA-stephen-curry': nbaHeadshot('201939', 'Stephen Curry'),
+  'NBA-nikola-jokic': nbaHeadshot('203999', 'Nikola Jokic'),
+  'NBA-giannis-antetokounmpo': nbaHeadshot('203507', 'Giannis Antetokounmpo'),
+  'NBA-kevin-durant': nbaHeadshot('201142', 'Kevin Durant'),
+  'NBA-luka-doncic': nbaHeadshot('1629029', 'Luka Doncic'),
+  'NBA-jimmy-butler': nbaHeadshot('202710', 'Jimmy Butler'),
+  'NBA-joel-embiid': nbaHeadshot('203954', 'Joel Embiid'),
+  'NBA-donovan-mitchell': nbaHeadshot('1628378', 'Donovan Mitchell'),
+  'NBA-shai-gilgeous-alexander': nbaHeadshot('1628983', 'Shai Gilgeous-Alexander'),
+  'NBA-anthony-davis': nbaHeadshot('203076', 'Anthony Davis'),
+  'NBA-tyrese-haliburton': nbaHeadshot('1630169', 'Tyrese Haliburton'),
+  'NBA-devin-booker': nbaHeadshot('1626164', 'Devin Booker'),
+  'NBA-zach-lavine': nbaHeadshot('203897', 'Zach LaVine'),
+};
+
+const PLAYER_MEDIA_BY_NAME = new Map(Object.values(PLAYER_MEDIA).map((asset) => [asset.label, asset]));
+
 export const sportMediaFor = (sport: Sport) => SPORT_MEDIA[sport];
 export const teamMediaFor = (team: string) => TEAM_MEDIA[team];
+export const playerMediaFor = (playerId: string) => PLAYER_MEDIA[playerId];
+export const playerMediaForName = (name: string) => PLAYER_MEDIA_BY_NAME.get(name);

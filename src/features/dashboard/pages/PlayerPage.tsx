@@ -38,18 +38,20 @@ function ResolvedPlayerScreen({ viewModel }: { viewModel: PlayerResearchViewMode
   const { selectedMarket, selectedPeriod, line, update } = usePlayerScreenState(viewModel);
   const { filters, updateFilter, providerId, setProviderId, filteredMarket } = usePlayerResearchFilters(selectedMarket, line);
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <PlayerHeader viewModel={viewModel} market={selectedMarket} />
-      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.7fr)_minmax(330px,0.78fr)]">
-        <main className="min-w-0 space-y-4">
-          <section className="overflow-hidden rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-surface)]">
+      <div className="grid min-w-0 items-start gap-3 xl:grid-cols-[minmax(0,2.7fr)_minmax(260px,1fr)]">
+        <main className="min-w-0 space-y-3">
+          <section aria-label="Player stats workspace" className="overflow-hidden rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-surface)]">
             <MarketWorkspace embedded viewModel={viewModel} market={filteredMarket} periodKey={selectedPeriod.key} line={line} update={update} filters={filters} updateFilter={updateFilter} providerId={providerId} onProviderChange={setProviderId} />
-            <PerformanceChart embedded market={filteredMarket} line={line} periodLabel={selectedPeriod.label} />
+            <PerformanceChart embedded market={filteredMarket} line={line} />
           </section>
           <SupportingStatsChart market={filteredMarket} stats={viewModel.profile.supportingStats} />
+          <PrimaryModules market={filteredMarket} viewModel={viewModel} />
         </main>
-        <div className="xl:col-start-2 xl:row-span-2 xl:row-start-1"><ContextRail viewModel={viewModel} market={filteredMarket} line={line} /></div>
-        <div className="min-w-0 space-y-4 xl:col-start-1"><PrimaryModules market={filteredMarket} viewModel={viewModel} /></div>
+        <div className="min-w-0 xl:col-start-2 xl:row-start-1">
+          <ContextRail viewModel={viewModel} market={filteredMarket} line={line} />
+        </div>
       </div>
     </div>
   );

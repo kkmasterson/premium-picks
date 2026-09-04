@@ -6,7 +6,7 @@ import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { GlobalSearch } from '@/features/dashboard/components/GlobalSearch';
 import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo';
 import { DEFAULT_FILTERS, FilterToolbar, filterProps } from '@/features/dashboard/components/FilterToolbar';
-import { EmptyState } from '@/features/dashboard/components/common';
+import { EmptyState, PlayerAvatar } from '@/features/dashboard/components/common';
 import { PROP_BOARD_ROWS, builderSelectionFor, metricsFor, offerFor, redactEvForTier } from '@/features/dashboard/props-fixtures';
 import { LIVE_DEMO_REFRESH_MS, liveDemoRowsAt } from '@/features/dashboard/live-demo';
 import type { Filters } from '@/features/dashboard/types';
@@ -54,6 +54,25 @@ function LineTypeMark({ lineType, compact = false }: { lineType: LineType; compa
 
 function oddsLabel(value: number | null) {
   return value === null ? '—' : value > 0 ? `+${value}` : String(value);
+}
+
+function PlayerCutout({ name, src }: { name: string; src: string | null }) {
+  const [failedSrc, setFailedSrc] = useState<string>();
+  const showHeadshot = Boolean(src && failedSrc !== src);
+
+  return <span className="pointer-events-none absolute inset-y-0 left-0 w-[72px] overflow-hidden" aria-hidden="true">
+    <span className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/15 to-transparent" />
+    {showHeadshot ? <img
+      src={src!}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      className="absolute bottom-0 left-[-4px] h-[78px] w-[82px] max-w-none object-contain object-bottom drop-shadow-[0_4px_8px_rgba(0,0,0,0.45)]"
+      onError={() => setFailedSrc(src!)}
+    /> : <span className="absolute bottom-3 left-3 text-[10px] font-bold text-teal-300/80">
+      {name.split(' ').map((part) => part[0]).join('').slice(0, 2)}
+    </span>}
+  </span>;
 }
 
 function freshness(observedAt: string) {
@@ -283,9 +302,7 @@ function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChang
   )}>
     <div className="flex items-start justify-between gap-2">
       <button onClick={() => navigate('player', { playerId: row.playerId })} className="flex min-w-0 items-center gap-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">
-        <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-[#242424] text-[8px] font-bold text-teal-300">
-          {row.headshotUrl ? <img src={row.headshotUrl} alt="" className="h-full w-full object-cover" /> : row.playerName.split(' ').map((part) => part[0]).join('').slice(0, 2)}
-        </span>
+        <PlayerAvatar name={row.playerName} size="xs" />
         <span className="min-w-0">
           <span className="block truncate text-[11px] font-semibold text-white">{row.playerName}</span>
           <span className="block truncate text-[8px] text-zinc-500">{row.team} vs {row.opponent} · {row.event.startTimeLabel}</span>
@@ -365,16 +382,14 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
     selected.lineType === 'devil' && 'shadow-[inset_0_-1px_0_rgba(239,68,68,0.18)]',
   )}>
     <td className={cn(
-      'sticky left-0 z-10 px-3 py-2 transition-colors group-hover:bg-[#171b1a]',
+      'sticky left-0 z-10 overflow-hidden p-0 transition-colors group-hover:bg-[#171b1a]',
       alternate ? 'bg-[#121515]' : 'bg-[#0d1010]',
       selected.lineType === 'goblin' && 'shadow-[inset_2px_0_0_#22c55e]',
       selected.lineType === 'devil' && 'shadow-[inset_2px_0_0_#ef4444]',
     )}>
-      <button onClick={() => navigate('player', { playerId: row.playerId })} className="flex w-full min-w-0 items-start gap-2.5 text-left focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">
-        <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full bg-[#182220] text-[9px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">
-          {row.headshotUrl ? <img src={row.headshotUrl} alt="" className="h-full w-full object-cover" /> : row.playerName.split(' ').map((part) => part[0]).join('').slice(0, 2)}
-        </span>
-        <span className="min-w-0 flex-1">
+      <button onClick={() => navigate('player', { playerId: row.playerId })} className="relative flex min-h-[78px] w-full min-w-0 items-center py-2 pl-[72px] pr-3 text-left focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-500">
+        <PlayerCutout name={row.playerName} src={row.headshotUrl} />
+        <span className="relative min-w-0 flex-1">
           <span className="flex min-w-0 items-center gap-1.5"><span className="truncate text-[12px] font-semibold text-zinc-100">{row.playerName}</span><span className="rounded bg-white/[0.055] px-1 py-0.5 text-[8px] font-semibold text-zinc-500">{row.position}</span></span>
           <span className="mt-0.5 flex items-center gap-1 truncate text-[9px] text-zinc-500"><span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', row.event.phase === 'live' ? 'bg-emerald-400' : 'bg-zinc-700')} />{row.team} vs {row.opponent} · {row.event.startTimeLabel}</span>
           <span className="mt-1 flex min-w-0 items-center gap-1.5"><span className="truncate text-[10px] font-semibold text-zinc-300">{row.market}</span><LineTypeMark lineType={selected.lineType} compact /></span>
@@ -501,8 +516,8 @@ export function PropsPage() {
       : { field, direction: 'desc' });
   };
 
-  return <div className="space-y-3">
-    <div className="sticky top-14 z-30 space-y-1.5 rounded-xl border border-white/[0.065] bg-[#0d1010]/95 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur">
+  return <div className="space-y-3 md:space-y-0">
+    <div className="sticky top-14 z-30 space-y-1.5 rounded-xl border border-white/[0.065] bg-[#0d1010]/95 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur md:rounded-b-none md:border-b-0">
       <GlobalSearch onPickPlayer={(id) => setFilters({ ...filters, playerId: id })} />
       <FilterToolbar
         filters={filters}
@@ -535,7 +550,7 @@ export function PropsPage() {
     </div>
     {rows.length ? <>
       <div className="grid grid-cols-1 gap-2 md:hidden">{visibleRows.slice(0, 40).map((row) => <PropCard key={`${row.id}:${lineType}:card`} row={row} lineFilter={lineType} selectedOfferId={selectedOfferIds[row.id]} selectedSide={selectedSides[row.id] ?? 'over'} onOfferChange={(offerId) => updateOffer(row.id, offerId)} onSideChange={(side) => updateSide(row.id, side)} />)}</div>
-      <div className="hidden overflow-hidden rounded-xl border border-white/[0.055] bg-[#0d0f0f] shadow-[0_12px_40px_rgba(0,0,0,0.16)] md:block">
+      <div className="hidden overflow-hidden rounded-xl border border-white/[0.055] bg-[#0d0f0f] shadow-[0_12px_40px_rgba(0,0,0,0.16)] md:block md:rounded-t-none">
         <div className="overflow-x-auto">
           <table aria-label="Props research table" className="w-full min-w-[1090px] table-fixed border-collapse text-left">
             <thead>
