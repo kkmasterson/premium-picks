@@ -92,7 +92,7 @@ function Chart({
           );
         })}
 
-        {lineY !== null && <g pointerEvents="none"><line x1={pad.left} x2={width - pad.right} y1={lineY} y2={lineY} stroke="#F5C542" strokeWidth="1.5" strokeDasharray="7 5" /><rect x={width - 82} y={lineY - 17} width="68" height="15" rx="4" fill="#251f0d" /><text x={width - 48} y={lineY - 6} textAnchor="middle" fontSize="9" fontWeight="800" fill="#F5C542">LINE {line}</text></g>}
+        {lineY !== null && <g pointerEvents="none"><line x1={pad.left} x2={width - pad.right} y1={lineY} y2={lineY} stroke="#14B8A6" strokeWidth="1.5" strokeDasharray="7 5" /><rect x={width - 82} y={lineY - 17} width="68" height="15" rx="4" fill="#0b2926" /><text x={width - 48} y={lineY - 6} textAnchor="middle" fontSize="9" fontWeight="800" fill="#5EEAD4">LINE {line}</text></g>}
 
         {active && (
           <g pointerEvents="none" data-testid="chart-tooltip">

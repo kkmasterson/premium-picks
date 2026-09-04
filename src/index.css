@@ -38,6 +38,15 @@
   }
 
   :root[data-surface='dashboard'] {
+    --dashboard-canvas: #080909;
+    --dashboard-surface: #0d1010;
+    --dashboard-surface-raised: #111515;
+    --dashboard-surface-hover: #151a19;
+    --dashboard-border: rgba(255, 255, 255, 0.065);
+    --dashboard-border-strong: rgba(255, 255, 255, 0.11);
+    --dashboard-text-primary: #f4f4f5;
+    --dashboard-text-secondary: #a1a1aa;
+    --dashboard-text-muted: #71717a;
     --dashboard-active: #14B8A6;
     --dashboard-active-hover: #2DD4BF;
     --premium-accent: #F5C542;

@@ -33,6 +33,7 @@ layer documents, the more specific layer document controls.
 | Source coverage | Evaluation structure complete; candidate claims are intentionally unverified | Research official BALLDONTLIE, The Odds API and media/context sources plan by plan |
 | Canonical PostgreSQL and ingestion | Normative tables, invariants and state transitions defined | Validate sample payloads, then translate this contract into migrations |
 | Provider endpoint/field catalog | Initial source-role decision and documented endpoint contract complete | Pin schemas, capture paid-plan fixtures and finish field-disposition manifests |
+| Media ingestion | Shared rights-gated importer, database migration and TheSportsDB field mapping foundation added | Confirm rights, capture NBA fixtures, provision media storage and measure roster/team coverage |
 
 ## Governing rules
 

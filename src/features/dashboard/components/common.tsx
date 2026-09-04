@@ -5,7 +5,7 @@ export function PlayerAvatar({ name, size = 'md' }: { name: string; size?: 'sm' 
   const sz = size === 'sm' ? 'h-8 w-8 text-[10px]' : size === 'lg' ? 'h-16 w-16 text-xl' : 'h-10 w-10 text-xs';
   return (
     <div
-      className={cn('flex shrink-0 items-center justify-center rounded-full border border-[#F5C542]/25 font-semibold text-[#F5C542]', sz)}
+      className={cn('flex shrink-0 items-center justify-center rounded-full border border-teal-500/25 bg-teal-500/[0.06] font-semibold text-teal-300', sz)}
       style={{ background: avatarColor(name) }}
       aria-hidden
     >

@@ -11,12 +11,12 @@ export function DepthCharts({ viewModel }: { viewModel: PlayerResearchViewModel 
     <section className="rounded-xl border border-[#202020] bg-[#101010]">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-[#202020] px-4 py-3">
         <div><h2 className="text-sm font-semibold text-zinc-100">Depth Charts</h2><p className="text-[10px] text-zinc-600">OUT · Q · DOUBT · OFS availability labels</p></div>
-        <div className="flex gap-1">{teams.map((item) => <button key={item} onClick={() => setTeam(item)} aria-pressed={team === item} className={cn('rounded-full border px-2.5 py-1 text-[10px] font-semibold', team === item ? 'border-[#F5C542]/40 bg-[#F5C542]/10 text-[#F5C542]' : 'border-[#303030] text-zinc-500')}>{item}</button>)}</div>
+        <div className="flex gap-1">{teams.map((item) => <button key={item} onClick={() => setTeam(item)} aria-pressed={team === item} className={cn('rounded-full border px-2.5 py-1 text-[10px] font-semibold', team === item ? 'border-teal-500/40 bg-teal-500/10 text-teal-300' : 'border-[#303030] text-zinc-500')}>{item}</button>)}</div>
       </header>
       <div className="overflow-x-auto p-4">
         <table className="w-full min-w-[620px] text-xs">
           <thead><tr className="text-left text-[9px] uppercase tracking-wider text-zinc-600"><th className="pb-2">Position</th><th className="pb-2">Starter</th><th className="pb-2">2nd</th><th className="pb-2">3rd</th><th className="pb-2">4th</th></tr></thead>
-          <tbody className="divide-y divide-[#1d1d1d]">{chart.map((row) => <tr key={row.slot}><td className="py-2 font-semibold text-zinc-500">{row.slot}</td>{row.players.map((player, index) => <td key={`${row.slot}-${index}`} className="py-2 pr-3"><div className="flex items-center gap-2"><PlayerAvatar name={player.name} size="sm" /><div><p className={cn('max-w-24 truncate', player.current ? 'font-semibold text-[#F5C542]' : 'text-zinc-300')}>{player.name}</p>{player.status && <span className="text-[9px] font-bold text-red-400">{player.status}</span>}</div></div></td>)}</tr>)}</tbody>
+          <tbody className="divide-y divide-[#1d1d1d]">{chart.map((row) => <tr key={row.slot}><td className="py-2 font-semibold text-zinc-500">{row.slot}</td>{row.players.map((player, index) => <td key={`${row.slot}-${index}`} className="py-2 pr-3"><div className="flex items-center gap-2"><PlayerAvatar name={player.name} size="sm" /><div><p className={cn('max-w-24 truncate', player.current ? 'font-semibold text-teal-300' : 'text-zinc-300')}>{player.name}</p>{player.status && <span className="text-[9px] font-bold text-red-400">{player.status}</span>}</div></div></td>)}</tr>)}</tbody>
         </table>
       </div>
     </section>
@@ -29,13 +29,13 @@ function FootballUsage({ viewModel }: { viewModel: PlayerResearchViewModel }) {
   return (
     <section className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
       <article className="rounded-xl border border-[#202020] bg-[#101010] p-4">
-        <div className="flex items-center justify-between"><div><h2 className="text-sm font-semibold text-zinc-100">{viewModel.player.team} Pass vs Run Rate</h2><p className="text-[10px] text-zinc-600">Current season play-call split</p></div><span className="text-xs font-bold text-[#F5C542]">{payload.passRate}% PASS</span></div>
+        <div className="flex items-center justify-between"><div><h2 className="text-sm font-semibold text-zinc-100">{viewModel.player.team} Pass vs Run Rate</h2><p className="text-[10px] text-zinc-600">Current season play-call split</p></div><span className="text-xs font-bold text-teal-300">{payload.passRate}% PASS</span></div>
         <div className="mt-5 flex h-3 overflow-hidden rounded-full"><span className="bg-sky-500" style={{ width: `${payload.passRate}%` }} /><span className="flex-1 bg-emerald-500" /></div>
         <div className="mt-2 flex justify-between text-[10px] font-semibold"><span className="text-sky-400">Pass {payload.passRate}%</span><span className="text-emerald-400">Run {100 - payload.passRate}%</span></div>
       </article>
       <article className="rounded-xl border border-[#202020] bg-[#101010] p-4">
         <div className="flex items-center justify-between"><div><h2 className="text-sm font-semibold text-zinc-100">{payload.opportunityLabel} Share</h2><p className="text-[10px] text-zinc-600">Team opportunity distribution</p></div><span className="text-[10px] text-zinc-500">Current season</span></div>
-        <div className="mt-3 divide-y divide-[#202020]">{payload.opportunityShares.map((item) => <div key={item.name} className="grid grid-cols-[1fr_auto_minmax(80px,0.6fr)] items-center gap-3 py-2 text-xs"><div><p className={item.current ? 'font-semibold text-[#F5C542]' : 'text-zinc-300'}>{item.name}</p><p className="text-[9px] text-zinc-600">{item.position}</p></div><span className="tabular-nums text-zinc-400">{item.count}</span><div className="flex items-center gap-2"><div className="h-1.5 flex-1 rounded-full bg-[#252525]"><span className="block h-full rounded-full bg-[#F5C542]" style={{ width: `${item.share}%` }} /></div><span className="w-8 text-right tabular-nums text-zinc-500">{item.share}%</span></div></div>)}</div>
+        <div className="mt-3 divide-y divide-[#202020]">{payload.opportunityShares.map((item) => <div key={item.name} className="grid grid-cols-[1fr_auto_minmax(80px,0.6fr)] items-center gap-3 py-2 text-xs"><div><p className={item.current ? 'font-semibold text-teal-300' : 'text-zinc-300'}>{item.name}</p><p className="text-[9px] text-zinc-600">{item.position}</p></div><span className="tabular-nums text-zinc-400">{item.count}</span><div className="flex items-center gap-2"><div className="h-1.5 flex-1 rounded-full bg-[#252525]"><span className="block h-full rounded-full bg-teal-500" style={{ width: `${item.share}%` }} /></div><span className="w-8 text-right tabular-nums text-zinc-500">{item.share}%</span></div></div>)}</div>
       </article>
     </section>
   );

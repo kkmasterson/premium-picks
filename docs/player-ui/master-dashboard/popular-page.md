@@ -4,9 +4,9 @@
 
 - Required top-level Community page.
 - Route: `/dashboard/popular`.
-- A mock-data prototype exists; weighted ranking and production community
-  integrity are not implemented.
-- Desktop reference confirmed; target mobile behavior is defined below.
+- The fixture-backed ranked research view is implemented.
+- Production community integrity, cohort enforcement, and abuse controls remain future work.
+- Desktop and purpose-built mobile layouts are implemented.
 
 ## Purpose in the UI
 
@@ -39,10 +39,9 @@ Analysis group.
 
 ## Desktop page composition
 
-1. A compact blue title bar labels the page **Popular** and includes a Help
-   control.
+1. The shared Props-led page header labels **Popular** and includes Help.
 2. A two-part filter row sits immediately below the title bar.
-3. Popular props appear in a dense two-column card grid.
+3. Popular props appear in one dense ranked research surface separated by hairlines.
 4. The persistent sidebar and Pick Builder remain visible.
 5. The result area scrolls vertically inside the dashboard shell.
 
@@ -57,8 +56,7 @@ review overflow selections.
 
 ## Popular prop card
 
-Each card is a compact, full-width interactive module with three primary
-regions.
+Each row is a compact, full-width interactive module with three primary regions. Phone layouts convert the row into a readable card without changing its evidence hierarchy.
 
 ### Identity and popularity header
 
@@ -141,9 +139,4 @@ records, leaderboards, and following are post-launch roadmap features.
 
 ## Responsive requirement
 
-The supplied reference confirms a two-column desktop grid. The future
-responsive layout should collapse to one card per row before reducing text or
-metric readability. The performance strip may scroll horizontally at narrow
-widths, while the identity header and favorite count remain fixed and visible.
-Treat these mobile rules as planned behavior until a mobile reference is
-available.
+Desktop uses a single aligned ranked list. Phone layouts use purpose-built cards; the performance strip scrolls horizontally while identity, consensus, Save, Research, and Builder actions remain explicit.

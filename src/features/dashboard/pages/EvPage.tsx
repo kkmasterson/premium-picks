@@ -5,6 +5,7 @@ import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo';
 import { PROP_BOARD_ROWS, metricsFor, offerFor } from '@/features/dashboard/props-fixtures';
 import { LIVE_DEMO_REFRESH_MS, liveDemoRowsAt } from '@/features/dashboard/live-demo';
+import { DashboardPageHeader, ResearchSurface } from '@/features/dashboard/components/dashboard-ui';
 
 function oddsLabel(value: number | null) {
   if (value === null) return 'Unavailable';
@@ -70,19 +71,16 @@ export function EvPage() {
   }).sort((a, b) => b.details.evPercent - a.details.evPercent).slice(0, 20);
 
   return <div className="space-y-3">
-    <div>
-      <h1 className="flex items-center gap-2 text-lg font-bold text-white"><Sparkles className="h-5 w-5 text-amber-300" />+EV research</h1>
-      <p className="text-xs text-zinc-500">Interactive demo preview · every result includes its supporting inputs and calculation · no sportsbook/API connection.</p>
-    </div>
+    <DashboardPageHeader eyebrow="Analysis" title="+EV Research" description="Interactive demo preview · every result includes its supporting inputs and calculation · no sportsbook/API connection." actions={<span className="inline-flex items-center gap-1.5 rounded-md border border-teal-500/20 bg-teal-500/[0.06] px-2.5 py-1.5 text-[9px] font-semibold text-teal-300"><Sparkles className="h-3.5 w-3.5" /> Ranked by EV</span>} />
 
-    {rows.map(({ row, offer, side, details, odds, metrics }) => {
+    <ResearchSurface className="divide-y divide-[var(--dashboard-border)]">{rows.map(({ row, offer, side, details, odds, metrics }) => {
       const fairPercent = details.fairProbability * 100;
       const impliedPercent = details.impliedProbability * 100;
       const probabilityEdge = details.edge * 100;
       const profit = profitMultiplier(odds);
       const losingProbability = (1 - details.fairProbability) * 100;
 
-      return <article key={`${row.id}:${side}`} className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#101111] shadow-[0_8px_28px_rgba(0,0,0,0.16)]">
+      return <article key={`${row.id}:${side}`} className="overflow-hidden transition hover:bg-[var(--dashboard-surface-hover)]/60">
         <div className="flex flex-wrap items-start justify-between gap-3 px-4 py-3.5">
           <div className="flex min-w-0 items-center gap-3">
             <SportsbookLogo shortName={offer.providerShortName} />
@@ -109,7 +107,7 @@ export function EvPage() {
           <RateEvidence label="H2H" rate={metrics.h2h} />
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+        <div className="hidden flex-wrap items-center justify-between gap-2 px-4 py-2.5 sm:flex">
           <p className="flex items-center gap-1.5 text-[10px] text-zinc-400">
             <Info className="h-3 w-3 shrink-0 text-teal-400" />
             <span className="font-medium text-zinc-300">EV calculation:</span>
@@ -117,7 +115,8 @@ export function EvPage() {
           </p>
           <p className="text-[8px] text-zinc-700">{details.modelVersion} · demo inputs</p>
         </div>
+        <details className="border-t border-white/[0.055] px-4 py-2.5 sm:hidden"><summary className="cursor-pointer text-[10px] font-medium text-teal-300">Show calculation details</summary><p className="mt-2 text-[10px] leading-relaxed text-zinc-400"><span className="font-medium text-zinc-300">EV calculation: </span><span className="tabular-nums">({fairPercent.toFixed(1)}% × {profit.toFixed(2)} profit) − {losingProbability.toFixed(1)}% loss = <strong className="text-emerald-300">+{details.evPercent}%</strong></span></p><p className="mt-1 text-[8px] text-zinc-700">{details.modelVersion} · demo inputs</p></details>
       </article>;
-    })}
+    })}</ResearchSurface>
   </div>;
 }

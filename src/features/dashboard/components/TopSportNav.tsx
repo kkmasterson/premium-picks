@@ -8,6 +8,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { SportIcon } from '@/features/dashboard/components/EntityMedia';
 
 const ALL_SPORTS: (Sport | 'All')[] = ['All', ...SPORTS];
 
@@ -37,12 +38,13 @@ export function TopSportNav() {
               onClick={() => { setSport(s); if (playerId) navigate('props'); }}
               aria-current={activeSport === s ? 'page' : undefined}
               className={cn(
-                'relative shrink-0 px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542] rounded-t',
+                'relative inline-flex shrink-0 items-center gap-1.5 px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542] rounded-t',
                 activeSport === s
                   ? 'text-[#F5C542] after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full after:bg-[#F5C542]'
                   : 'text-zinc-400 hover:text-zinc-100',
               )}
             >
+              {s !== 'All' && <SportIcon sport={s} className="h-4 w-4 opacity-75" />}
               {s}
             </button>
           ))}

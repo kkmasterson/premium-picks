@@ -29,8 +29,8 @@ export function TrendChart({ gameLog, line, height = 160 }: { gameLog: GameLogEn
             onClick={() => setRange(r)}
             aria-pressed={range === r}
             className={cn(
-              'rounded px-2 py-0.5 text-[11px] font-semibold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542]',
-              range === r ? 'bg-[#F5C542]/15 text-[#F5C542]' : 'text-zinc-500 hover:text-zinc-300',
+              'rounded px-2 py-0.5 text-[11px] font-semibold focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-500',
+              range === r ? 'bg-teal-500/15 text-teal-300' : 'text-zinc-500 hover:text-zinc-300',
             )}
           >
             {r === 'season' ? 'SZN' : `L${r}`}
@@ -64,8 +64,8 @@ export function TrendChart({ gameLog, line, height = 160 }: { gameLog: GameLogEn
             </g>
           );
         })}
-        <line x1={padL} x2={W - padR} y1={lineY} y2={lineY} stroke="#F5C542" strokeWidth="1.5" strokeDasharray="6 4" />
-        <text x={W - padR} y={lineY - 4} textAnchor="end" fontSize="9.5" fontWeight="700" fill="#F5C542">LINE {line}</text>
+        <line x1={padL} x2={W - padR} y1={lineY} y2={lineY} stroke="#14B8A6" strokeWidth="1.5" strokeDasharray="6 4" />
+        <text x={W - padR} y={lineY - 4} textAnchor="end" fontSize="9.5" fontWeight="700" fill="#5EEAD4">LINE {line}</text>
       </svg>
     </div>
   );

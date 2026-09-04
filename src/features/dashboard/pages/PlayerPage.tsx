@@ -26,7 +26,7 @@ export function PlayerPage() {
     return (
       <EmptyState
         title="We couldn't load this player. Try again."
-        action={<button onClick={() => navigate('players')} className="rounded-md border border-[#F5C542]/40 px-3 py-1.5 text-xs font-semibold text-[#F5C542] hover:bg-[#F5C542]/10">Back to Players</button>}
+        action={<button onClick={() => navigate('players')} className="rounded-md border border-teal-500/40 px-3 py-1.5 text-xs font-semibold text-teal-300 hover:bg-teal-500/10">Back to Players</button>}
       />
     );
   }
@@ -37,23 +37,12 @@ export function PlayerPage() {
 function ResolvedPlayerScreen({ viewModel }: { viewModel: PlayerResearchViewModel }) {
   const { selectedMarket, selectedPeriod, line, update } = usePlayerScreenState(viewModel);
   const { filters, updateFilter, providerId, setProviderId, filteredMarket } = usePlayerResearchFilters(selectedMarket, line);
-  const showProfileNotice = Boolean(viewModel.profile.proxyNotice) && (
-    viewModel.player.sport === 'NBA'
-    || viewModel.player.sport === 'NCAAB'
-    || viewModel.player.sport === 'NCAAF'
-    || viewModel.player.sport === 'NHL'
-  );
   return (
     <div className="space-y-4">
       <PlayerHeader viewModel={viewModel} market={selectedMarket} />
-      {showProfileNotice && (
-        <div className="rounded-lg border border-[#F5C542]/20 bg-[#F5C542]/[0.04] px-3 py-2 text-[11px] text-[#D9B45B]">
-          <span className="font-semibold">Profile note:</span> {viewModel.profile.proxyNotice}
-        </div>
-      )}
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.7fr)_minmax(330px,0.78fr)]">
         <main className="min-w-0 space-y-4">
-          <section className="overflow-hidden rounded-xl border border-white/[0.07] bg-[#0f1111]">
+          <section className="overflow-hidden rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-surface)]">
             <MarketWorkspace embedded viewModel={viewModel} market={filteredMarket} periodKey={selectedPeriod.key} line={line} update={update} filters={filters} updateFilter={updateFilter} providerId={providerId} onProviderChange={setProviderId} />
             <PerformanceChart embedded market={filteredMarket} line={line} periodLabel={selectedPeriod.label} />
           </section>

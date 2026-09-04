@@ -5,6 +5,22 @@ export const AccessTierSchema = z.enum(['tier1', 'tier2']);
 export const EventPhaseSchema = z.enum(['pregame', 'live', 'final']);
 export const OfferStatusSchema = z.enum(['active', 'suspended', 'stale', 'closed']);
 export const SideSchema = z.enum(['over', 'under']);
+export const MediaAssetKindSchema = z.enum(['player_headshot', 'team_badge', 'team_logo', 'sport_icon']);
+export const MediaVariantSchema = z.enum(['default', 'square', 'transparent', 'original']);
+
+export const PublicMediaAssetSchema = z.object({
+  url: z.string().url(),
+  kind: MediaAssetKindSchema,
+  variant: MediaVariantSchema,
+  alt: z.string(),
+  width: z.number().int().positive().nullable(),
+  height: z.number().int().positive().nullable(),
+  revision: z.string(),
+  attribution: z.object({
+    text: z.string(),
+    url: z.string().url().nullable(),
+  }).nullable(),
+});
 
 export const HitRateSchema = z.object({
   hits: z.number().int().nonnegative(),
@@ -159,6 +175,9 @@ export type AccessTier = z.infer<typeof AccessTierSchema>;
 export type EventPhase = z.infer<typeof EventPhaseSchema>;
 export type OfferStatus = z.infer<typeof OfferStatusSchema>;
 export type Side = z.infer<typeof SideSchema>;
+export type MediaAssetKind = z.infer<typeof MediaAssetKindSchema>;
+export type MediaVariant = z.infer<typeof MediaVariantSchema>;
+export type PublicMediaAsset = z.infer<typeof PublicMediaAssetSchema>;
 export type HitRate = z.infer<typeof HitRateSchema>;
 export type Confidence = z.infer<typeof ConfidenceSchema>;
 export type EvAccess = z.infer<typeof EvAccessSchema>;
@@ -172,4 +191,3 @@ export type BuilderSelection = z.infer<typeof BuilderSelectionSchema>;
 export type PopularityAction = z.infer<typeof PopularityActionSchema>;
 export type PopularityEvent = z.infer<typeof PopularityEventSchema>;
 export type BonusOffer = z.infer<typeof BonusOfferSchema>;
-

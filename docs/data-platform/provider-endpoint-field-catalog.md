@@ -206,6 +206,8 @@ following identity and media families from its V2 OpenAPI schemas:
 - identity: `idSport`, `idLeague`, `idTeam`, `idPlayer`, `idEvent`, `idVenue`;
 - labels: `strSport`, `strLeague`, `strTeam`, `strPlayer`, `strEvent`,
   `strVenue`, alternate/localized description fields and country/location;
+- sport media: `strSportIconGreen`, with `strSportThumb` and
+  `strSportThumbBW` retained only as non-logo artwork candidates;
 - team/player media: `strBadge`, `strLogo`, `strFanart1..4`, `strBanner`,
   `strPoster`, `strThumb`, `strCutout`, `strRender` where present;
 - league/event/venue media: badge/logo/banner/poster/trophy/fanart/thumb fields
@@ -361,18 +363,22 @@ minimum, the launch taxonomy must map:
 Unknown market keys enter `data_quality_issues`; they never publish under a
 guessed canonical market.
 
-## TheSportsDB V2 endpoint contracts
+## TheSportsDB endpoint contracts
 
 Official schema: [TheSportsDB V2 OpenAPI](https://www.thesportsdb.com/api/spec/v2/openapi.yaml).
-Use V2 with the `X-API-KEY` header for new integration. V1 is permitted only as
-a documented fallback for a missing V2 operation.
+Use free V1 with the provider's published shared key during local testing and
+mockup creation. Its small result caps are sufficient for contract and rendering
+fixtures, but not for a full NBA coverage claim. Upgrade to V2 with the
+`X-API-KEY` header after mockups/testing and before any real users. V1 and V2
+remain separate provider-client implementations behind the same media mapper.
 
 | Endpoint family | Accepted fields | Canonical writes | Storage; `desired_retention`; `licensed_retention` | Acquisition | Frontend/use | Status |
 | --- | --- | --- | --- | --- | --- | --- |
+| V1 `all_sports.php`; V2 `/all/sports` | `idSport`, `strSport`, `strFormat`, `strSportIconGreen`, thumb fields | sport crosswalk candidates and sport-icon media assets | metadata `C`, objects `O`; metadata `DR=PERMANENT`, object `DR=UNTIL_RIGHTS_EXPIRY`; `LR=PENDING_CONTRACT` | free fixture now; paid `BOOT`, monthly/revision later | sport navigation/filters | free response verified for its limited records; full paid-plan sample pending |
 | `/search/league/{name}`, `/search/team/{name}`, `/search/player/{name}`, `/search/event/{name}`, `/search/venue/{name}` | provider IDs, names, parent IDs, sport/country/location and preview media fields | provisional crosswalk candidates only | raw `O`, confirmed mapping `C`; mapping `DR=PERMANENT`, raw `DR=DURATION:30D`; `LR=PENDING_CONTRACT` | manual/repair | ingestion review queue | `DOC-VERIFIED` |
 | `/lookup/league/{id}` | complete pinned `LeagueLookupResponse`, especially identity and league artwork URLs | competition enrichment and media assets | metadata `C`, objects `O`; metadata `DR=PERMANENT`, object `DR=UNTIL_RIGHTS_EXPIRY`; `LR=PENDING_CONTRACT` | `BOOT`, monthly/revision | navigation/badges | `DOC-VERIFIED`, sample pending |
-| `/lookup/team/{id}` and `/lookup/team_equipment/{id}` | complete pinned team/equipment schemas, especially badge/logo/banner/fanart/jersey fields | team enrichment and media assets | `C`, `O`; metadata `DR=PERMANENT`, object `DR=UNTIL_RIGHTS_EXPIRY`; `LR=PENDING_CONTRACT` | `BOOT`, monthly/revision | team/event cards | `DOC-VERIFIED`, sample pending |
-| `/lookup/player/{id}` | complete pinned player schema, especially player/team identity and thumb/cutout/render/fanart fields | player enrichment and media assets | `C`, `O`; metadata `DR=PERMANENT`, object `DR=UNTIL_RIGHTS_EXPIRY`; `LR=PENDING_CONTRACT` | `BOOT`, monthly/revision | player rows/header/cards | `DOC-VERIFIED`, sample pending |
+| V1 `lookupteam.php?id=`; V2 `/lookup/team/{id}` and `/lookup/team_equipment/{id}` | complete pinned team/equipment schemas, especially badge/logo/banner/fanart/jersey fields | team enrichment and media assets | `C`, `O`; metadata `DR=PERMANENT`, object `DR=UNTIL_RIGHTS_EXPIRY`; `LR=PENDING_CONTRACT` | limited free fixtures now; paid `BOOT`, monthly/revision later | team/event cards | `DOC-VERIFIED`, sample pending |
+| V1 `lookupplayer.php?id=`; V2 `/lookup/player/{id}` | complete pinned player schema, especially player/team identity and thumb/cutout/render/fanart fields | player enrichment and media assets | `C`, `O`; metadata `DR=PERMANENT`, object `DR=UNTIL_RIGHTS_EXPIRY`; `LR=PENDING_CONTRACT` | limited free fixtures now; paid `BOOT`, monthly/revision later | player rows/header/cards | `DOC-VERIFIED`, sample pending |
 | `/lookup/event/{id}` and `/lookup/venue/{id}` | complete pinned event/venue identity and artwork schemas | optional event/venue enrichment and media | `C`, `O`; metadata `DR=PERMANENT`, object `DR=UNTIL_RIGHTS_EXPIRY`; `LR=PENDING_CONTRACT` | targeted/revision | event context | `DOC-VERIFIED`, secondary only |
 | `/list/teams/{leagueId}` and the V2 league player list | provider IDs, names, parent identity and available artwork | mapping candidates and coverage audit | `C`, raw `O`; mapping `DR=PERMANENT`, raw `DR=DURATION:30D`; `LR=PENDING_CONTRACT` | monthly/revision | ingestion only | `DOC-VERIFIED`, exact route pinned from OpenAPI |
 | schedule, live-score, event result/stat/timeline/lineup endpoints | full pinned response schema | no canonical writes by default; raw comparison only | raw `O`; `DR=DURATION:30D`; `LR=PENDING_CONTRACT` | diagnostics only | none | `DOC-VERIFIED`, deliberately not sports truth |
@@ -405,8 +411,9 @@ Every calculated read model must expose `generated_at`, `source_cutoff_at`,
 
 ## Implementation order and acceptance gates
 
-1. Pin and archive the NBA BALLDONTLIE, The Odds API V4, TheSportsDB V2 and
-   BALLDONTLIE webhook schemas.
+1. Capture limited TheSportsDB free-V1 media fixtures for mockups now. Pin and
+   archive the NBA BALLDONTLIE, The Odds API V4, TheSportsDB V2 and BALLDONTLIE
+   webhook schemas before their respective production integrations are enabled.
 2. Add provider product rows and environment-specific credentials in a secret
    manager; never put keys in the frontend or repository.
 3. Capture sanitized fixtures for NBA teams, players, games, stats, injuries,

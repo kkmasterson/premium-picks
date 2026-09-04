@@ -3,9 +3,9 @@
 ## Status
 
 - Required top-level dashboard page.
-- Planned route: `/dashboard/discrepancies`.
-- Not currently implemented in the Arena Props prototype.
-- Desktop reference confirmed; mobile composition remains unconfirmed.
+- Route: `/dashboard/discrepancies`.
+- The fixture-backed comparison view is implemented.
+- Desktop comparison rows and compact mobile cards are implemented.
 
 ## Purpose in the UI
 
@@ -18,10 +18,9 @@ The page belongs in the **Analysis** navigation directly after **Props**.
 
 ## Desktop page composition
 
-1. A compact blue title bar labels the page **Discrepancies** and includes a
-   small Help control.
+1. The shared Props-led page header labels **Discrepancies** and includes Help.
 2. A single filter row sits directly below the title bar.
-3. Results use a dense two-column card grid inside the main scroll region.
+3. Results use one aligned comparison surface with quiet row dividers.
 4. The persistent dashboard sidebar and Pick Builder remain visible.
 5. The results region scrolls vertically without changing the global shell.
 
@@ -39,9 +38,9 @@ Filters should update the result grid in place. Selected app groups must remain
 visually distinguishable even when logos are the only visible labels; each logo
 therefore needs an accessible app name.
 
-## Discrepancy result card
+## Discrepancy result row
 
-Each card is a compact, bordered module with four visual regions.
+Each desktop row aligns player identity, minimum line, maximum line, difference, evidence, and Builder action. The phone layout stacks these regions into a compact card.
 
 ### Identity header
 
@@ -111,9 +110,4 @@ interaction is cross-app line comparison rather than performance ranking.
 
 ## Responsive requirement
 
-The supplied reference confirms the dense two-column desktop grid only. For the
-future responsive build, collapse to one card per row before compressing card
-content below readable widths. Keep the performance strip horizontally
-scrollable if necessary and stack the Min line and Max line panels only on the
-narrowest layout. Treat these mobile rules as planned behavior until a mobile
-reference is supplied.
+The performance strip remains horizontally scrollable at narrow widths. Minimum and maximum line panels remain side by side on phones, with the Builder action kept visible and page-level horizontal overflow prohibited.

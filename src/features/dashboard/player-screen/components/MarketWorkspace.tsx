@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { LineType } from '@arena/contracts';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import type { MarketSnapshot, PlayerFilterKey, PlayerResearchViewModel, PlayerRouteSelection, ResearchFilters } from '../types';
 
@@ -91,93 +92,85 @@ function SportsbookOfferSelector({
   };
 
   return (
-    <div
-      className="relative min-w-[190px]"
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
-      }}
-      onKeyDown={(event) => {
-        if (event.key === 'Escape') {
-          setOpen(false);
-          (event.currentTarget.querySelector('[role="combobox"]') as HTMLElement | null)?.focus();
-        }
-      }}
-    >
-      <button
-        type="button"
-        role="combobox"
-        aria-label="Sportsbook provider"
-        aria-expanded={open}
-        aria-controls="sportsbook-provider-options"
-        aria-haspopup="listbox"
-        onClick={() => setOpen((value) => !value)}
-        className={cn(
-          'flex h-10 w-full items-center gap-2 rounded-lg border bg-[#111313] px-2 text-left transition-colors hover:border-white/[0.18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/70',
-          selectedType ? selectedType.surface : 'border-white/[0.1]',
-        )}
-      >
-        {selectedOffer ? <SportsbookLogo shortName={selectedOffer.shortName} /> : <span aria-hidden="true" className="grid h-6 w-10 place-items-center rounded-md bg-teal-500/10 text-[8px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">ALL</span>}
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-[11px] font-semibold text-zinc-100">{selectedOffer?.name ?? 'All books'}</span>
-          <span className="block truncate text-[9px] text-zinc-500">
-            {selectedOffer ? `Line ${selectedOffer.line} · O ${formatOdds(selectedOffer.overOdds)} · U ${formatOdds(selectedOffer.underOdds)}` : `Compare ${offers.length} available offers`}
-          </span>
-        </span>
-        <ChevronDown className={cn('h-3.5 w-3.5 shrink-0 text-zinc-500 transition-transform', open && 'rotate-180')} />
-      </button>
+    <div className="min-w-[190px]">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            role="combobox"
+            aria-label="Sportsbook provider"
+            aria-controls="sportsbook-provider-options"
+            aria-haspopup="listbox"
+            className={cn(
+              'flex h-10 w-full items-center gap-2 rounded-lg border bg-[#111313] px-2 text-left transition-colors hover:border-white/[0.18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/70',
+              selectedType ? selectedType.surface : 'border-white/[0.1]',
+            )}
+          >
+            {selectedOffer ? <SportsbookLogo shortName={selectedOffer.shortName} /> : <span aria-hidden="true" className="grid h-6 w-10 place-items-center rounded-md bg-teal-500/10 text-[8px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">ALL</span>}
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[11px] font-semibold text-zinc-100">{selectedOffer?.name ?? 'All books'}</span>
+              <span className="block truncate text-[9px] text-zinc-500">
+                {selectedOffer ? `Line ${selectedOffer.line} · O ${formatOdds(selectedOffer.overOdds)} · U ${formatOdds(selectedOffer.underOdds)}` : `Compare ${offers.length} available offers`}
+              </span>
+            </span>
+            <ChevronDown className={cn('h-3.5 w-3.5 shrink-0 text-zinc-500 transition-transform', open && 'rotate-180')} />
+          </button>
+        </PopoverTrigger>
 
-      {open && (
-        <div
+        <PopoverContent
           id="sportsbook-provider-options"
           role="listbox"
           aria-label="Sportsbook offers"
-          className="absolute left-0 top-full z-50 mt-1.5 w-[min(320px,calc(100vw-32px))] overflow-hidden rounded-xl border border-white/[0.12] bg-[#151818] p-1.5 shadow-[0_18px_60px_rgba(0,0,0,0.65)]"
+          align="start"
+          sideOffset={6}
+          collisionPadding={16}
+          className="z-50 max-h-[var(--radix-popover-content-available-height)] w-[min(320px,calc(100vw-32px))] overflow-y-auto rounded-xl border-white/[0.12] bg-[#151818] p-1.5 text-zinc-100 shadow-[0_18px_60px_rgba(0,0,0,0.65)]"
         >
-          <button
-            type="button"
-            role="option"
-            aria-selected={!selectedOffer}
-            onClick={() => choose(null)}
-            className={cn('flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400', !selectedOffer && 'bg-teal-500/[0.09]')}
-          >
-            <span aria-hidden="true" className="grid h-6 w-10 shrink-0 place-items-center rounded-md bg-teal-500/10 text-[8px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">ALL</span>
-            <span className="min-w-0 flex-1"><span className="block text-[11px] font-semibold text-zinc-100">All books</span><span className="block text-[9px] text-zinc-500">Compare every available offer</span></span>
-            {!selectedOffer && <span className="text-[9px] font-semibold text-teal-300">Selected</span>}
-          </button>
+            <button
+              type="button"
+              role="option"
+              aria-selected={!selectedOffer}
+              onClick={() => choose(null)}
+              className={cn('flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400', !selectedOffer && 'bg-teal-500/[0.09]')}
+            >
+              <span aria-hidden="true" className="grid h-6 w-10 shrink-0 place-items-center rounded-md bg-teal-500/10 text-[8px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">ALL</span>
+              <span className="min-w-0 flex-1"><span className="block text-[11px] font-semibold text-zinc-100">All books</span><span className="block text-[9px] text-zinc-500">Compare every available offer</span></span>
+              {!selectedOffer && <span className="text-[9px] font-semibold text-teal-300">Selected</span>}
+            </button>
 
-          <div className="my-1 h-px bg-white/[0.06]" />
+            <div className="my-1 h-px bg-white/[0.06]" />
 
-          {offers.map((offer) => {
-            const type = offer.lineType ? lineTypeMeta[offer.lineType] : undefined;
-            const disabled = offer.status === 'suspended' || offer.status === 'closed';
-            return (
-              <button
-                key={offer.id}
-                type="button"
-                role="option"
-                aria-selected={selectedOffer?.id === offer.id}
-                disabled={disabled}
-                onClick={() => choose(offer)}
-                className={cn(
-                  'flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400 disabled:cursor-not-allowed disabled:opacity-40',
-                  selectedOffer?.id === offer.id && 'bg-teal-500/[0.09]',
-                )}
-              >
-                <SportsbookLogo shortName={offer.shortName} />
-                <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-1.5">
-                    <span className="truncate text-[11px] font-semibold text-zinc-100">{offer.name}</span>
-                    {type && <span className={cn('inline-flex shrink-0 items-center gap-0.5 text-[9px] font-semibold', type.color)}><img src={type.asset} alt="" className="h-4 w-4 object-contain" />{type.label}</span>}
-                    {offer.lineType === 'alternate' && <span className="shrink-0 text-[9px] font-semibold text-sky-300">Alternate</span>}
+            {offers.map((offer) => {
+              const type = offer.lineType ? lineTypeMeta[offer.lineType] : undefined;
+              const disabled = offer.status === 'suspended' || offer.status === 'closed';
+              return (
+                <button
+                  key={offer.id}
+                  type="button"
+                  role="option"
+                  aria-selected={selectedOffer?.id === offer.id}
+                  disabled={disabled}
+                  onClick={() => choose(offer)}
+                  className={cn(
+                    'flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400 disabled:cursor-not-allowed disabled:opacity-40',
+                    selectedOffer?.id === offer.id && 'bg-teal-500/[0.09]',
+                  )}
+                >
+                  <SportsbookLogo shortName={offer.shortName} />
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-1.5">
+                      <span className="truncate text-[11px] font-semibold text-zinc-100">{offer.name}</span>
+                      {type && <span className={cn('inline-flex shrink-0 items-center gap-0.5 text-[9px] font-semibold', type.color)}><img src={type.asset} alt="" className="h-4 w-4 object-contain" />{type.label}</span>}
+                      {offer.lineType === 'alternate' && <span className="shrink-0 text-[9px] font-semibold text-sky-300">Alternate</span>}
+                    </span>
+                    <span className="mt-0.5 block text-[10px] tabular-nums text-zinc-400">Line <strong className="font-semibold text-zinc-100">{offer.line}</strong> · O {formatOdds(offer.overOdds)} · U {formatOdds(offer.underOdds)}</span>
                   </span>
-                  <span className="mt-0.5 block text-[10px] tabular-nums text-zinc-400">Line <strong className="font-semibold text-zinc-100">{offer.line}</strong> · O {formatOdds(offer.overOdds)} · U {formatOdds(offer.underOdds)}</span>
-                </span>
-                <span className={cn('shrink-0 text-[9px] capitalize', offer.status === 'active' ? 'text-emerald-400' : offer.status === 'stale' ? 'text-amber-300' : 'text-zinc-500')}>{offer.status}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
+                  <span className={cn('shrink-0 text-[9px] capitalize', offer.status === 'active' ? 'text-emerald-400' : offer.status === 'stale' ? 'text-amber-300' : 'text-zinc-500')}>{offer.status}</span>
+                </button>
+              );
+            })}
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

@@ -25,8 +25,7 @@ const HelpPage = lazyNamed(() => import('@/features/dashboard/pages/SavedPage'),
 function Loading() { return <div className="grid min-h-64 place-items-center bg-[#080808] text-xs text-zinc-500">Loading Arena Props…</div>; }
 function LandingRoute() { return <RouteTheme surface="landing" title="Arena Props | Sports Props Research & Analytics" description="Research player props, compare sportsbook lines, analyze trends, and explore sports data with Arena Props."><LandingPage /></RouteTheme>; }
 function DashboardRoute() {
-  const demoEnabled = import.meta.env.DEV || import.meta.env.VITE_ARENA_DEMO === 'true';
-  return <RouteTheme surface="dashboard" title="Arena Props Dashboard" description="Explore player props, sportsbook lines, projections, matchups, and saved research in Arena Props.">{demoEnabled ? <DashboardLayout/> : <main className="grid min-h-screen place-items-center bg-[#080808] px-5 text-center text-white"><div className="max-w-lg"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F5C542]">Arena Props</p><h1 className="mt-3 text-3xl font-black">Dashboard access opens at launch.</h1><p className="mt-3 text-sm text-zinc-400">There is no free production dashboard. Checkout remains disabled until Tier 1 and Tier 2 names and prices are approved.</p><a href="/#pricing" className="mt-6 inline-flex rounded-lg border border-[#F5C542]/40 px-4 py-2 text-sm font-semibold text-[#F5C542]">View access comparison</a></div></main>}</RouteTheme>;
+  return <RouteTheme surface="dashboard" title="Arena Props Dashboard" description="Explore player props, sportsbook lines, projections, matchups, and saved research in Arena Props."><DashboardLayout/></RouteTheme>;
 }
 
 export default function App() {
@@ -34,7 +33,7 @@ export default function App() {
     <Route path="/" element={<LandingRoute/>}/>
     <Route path="/bonuses" element={<BonusesPage/>}/>
     <Route path="/dashboard" element={<DashboardRoute/>}>
-      <Route index element={<Navigate to="props" replace/>}/><Route path="props" element={<PropsPage/>}/><Route path="ev" element={<EvPage/>}/><Route path="builder" element={<BuilderPage/>}/><Route path="discrepancies" element={<DiscrepanciesPage/>}/><Route path="players" element={<PlayersPage/>}/><Route path="players/:playerId" element={<PlayerPage/>}/><Route path="trends" element={<TrendsPage/>}/><Route path="matchups" element={<MatchupsPage/>}/><Route path="matchups/:gameId" element={<GamePage/>}/><Route path="projections" element={<Navigate to="/dashboard/props?sort=positive" replace/>}/><Route path="saved" element={<SavedPage/>}/><Route path="popular" element={<PopularPage/>}/><Route path="help" element={<HelpPage/>}/>
+      <Route index element={<Navigate to="props" replace/>}/><Route path="props" element={<PropsPage/>}/><Route path="ev" element={<EvPage/>}/><Route path="builder" element={<BuilderPage/>}/><Route path="discrepancies" element={<DiscrepanciesPage/>}/><Route path="players" element={<PlayersPage/>}/><Route path="players/:playerId" element={<PlayerPage/>}/><Route path="trends" element={<TrendsPage/>}/><Route path="matchups" element={<MatchupsPage/>}/><Route path="matchups/:gameId" element={<GamePage/>}/><Route path="projections" element={<Navigate to="/dashboard/props" replace/>}/><Route path="saved" element={<SavedPage/>}/><Route path="popular" element={<PopularPage/>}/><Route path="help" element={<HelpPage/>}/>
     </Route><Route path="*" element={<Navigate to="/" replace/>}/>
   </Routes></Suspense>;
 }

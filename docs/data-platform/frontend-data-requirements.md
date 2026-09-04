@@ -71,6 +71,7 @@ vendor responses.
 | IDN-012 | Venue ID, name, location and timezone | Event detail, weather, date display | Conditional | Raw | TBD sports source | TBD | On change | Permanent | Canonical | Display and derived use |
 | IDN-013 | External provider IDs for every identity | Ingestion only | Yes | Raw | Every selected provider | All source feeds | Every mapping change | Permanent | Canonical | Internal normalization |
 | IDN-014 | Media source, checksum, dimensions and rights expiry | Media delivery/operations | Yes | Raw/config | Media provider + Arena Props | Media metadata | On revision | Permanent audit | Canonical | Compliance |
+| IDN-015 | Sport icon/mark | Global navigation and sport filters | Yes | Config/media | Arena Props + approved media source | Config or media adapter | On revision | Current + prior revision metadata | Object | Own or approved display/cache/resize |
 
 ### Events, schedules and competition context
 

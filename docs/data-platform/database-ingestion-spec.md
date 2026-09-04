@@ -644,9 +644,9 @@ current-membership view.
 
 ```text
 media_asset_id           uuid primary key
-owner_type               competition | team | player | sportsbook | venue | map | champion | agent
+owner_type               sport | competition | team | player | sportsbook | venue | map | champion | agent
 owner_id                 uuid
-asset_type               logo | headshot | wordmark | icon | artwork | map_image
+asset_type               logo | badge | headshot | wordmark | icon | artwork | map_image
 variant_key              default | light | dark | square | transparent | original
 raw_payload_id nullable  foreign key
 source_url nullable
@@ -659,6 +659,7 @@ sha256 nullable
 rights_status            approved | restricted | expired | unknown
 rights_reference nullable
 rights_expires_at nullable
+transform_policy          as_is | proportional_resize
 effective_from
 effective_to nullable
 ```

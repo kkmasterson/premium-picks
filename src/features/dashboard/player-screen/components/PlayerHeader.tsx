@@ -57,7 +57,7 @@ export function PlayerHeader({ viewModel, market }: { viewModel: PlayerResearchV
             </div>
             <div className="hidden border-l border-white/[0.07] pl-4 text-right sm:block">
               <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-zinc-600">Profile</p>
-              <p className="text-[11px] font-semibold text-[#F5C542]">{viewModel.roleLabel}</p>
+              <p className="text-[11px] font-semibold text-teal-300">{viewModel.roleLabel}</p>
             </div>
           </div>
         </div>

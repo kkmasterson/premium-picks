@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { DiffBadge, HitRateBadge, PlayerAvatar, hitTone } from './common';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { EntityIdentity, MetricStrip } from './dashboard-ui';
 
 type SortKey = 'line' | 'avg' | 'projection' | 'diff' | 'l5' | 'l10' | 'l15' | 'season' | 'h2h' | 'streak' | 'time';
 
@@ -70,19 +71,19 @@ function BooksCell({ prop, density }: { prop: Prop; density: Density }) {
   const best = bestBook(prop, 'over');
   return (
     <div className="flex items-center gap-1.5">
-      <div className="flex w-fit items-center gap-1.5 whitespace-nowrap rounded border border-[#F5C542]/50 bg-[#F5C542]/5 px-1.5 py-px text-[10px] tabular-nums">
-        <span className="w-7 font-bold text-[#F5C542]">{best.book}</span>
+      <div className="flex w-fit items-center gap-1.5 whitespace-nowrap rounded border border-teal-500/30 bg-teal-500/[0.06] px-1.5 py-px text-[10px] tabular-nums">
+        <span className="w-7 font-bold text-teal-300">{best.book}</span>
         <span className="text-zinc-200">{best.line}</span>
         <span className="text-zinc-500">O {formatOdds(best.over)}</span>
         {density !== 'compact' && <span className="text-zinc-500">U {formatOdds(best.under)}</span>}
-        <span className="rounded bg-[#F5C542] px-1 text-[8px] font-bold text-black">BEST</span>
+        <span className="rounded bg-teal-400 px-1 text-[8px] font-bold text-black">BEST</span>
       </div>
       {prop.books.length > 1 && (
         <Popover>
           <PopoverTrigger asChild>
             <button
               onClick={(e) => e.stopPropagation()}
-              className="shrink-0 rounded text-[10px] font-medium text-[#F5C542] hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542]"
+              className="shrink-0 rounded text-[10px] font-medium text-teal-300 hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-500"
               aria-label={`Show ${prop.books.length - 1} more sportsbook lines`}
             >
               +{prop.books.length - 1}
@@ -94,12 +95,12 @@ function BooksCell({ prop, density }: { prop: Prop; density: Density }) {
             onClick={(e) => e.stopPropagation()}
           >
             {prop.books.map((book) => (
-              <div key={book.book} className={cn('flex items-center gap-2 rounded border px-2 py-1 text-[10px] tabular-nums', book.book === best.book ? 'border-[#F5C542]/40 bg-[#F5C542]/5' : 'border-[#242424] bg-[#161616]')}>
-                <span className={cn('w-8 font-bold', book.book === best.book ? 'text-[#F5C542]' : 'text-zinc-300')}>{book.book}</span>
+              <div key={book.book} className={cn('flex items-center gap-2 rounded border px-2 py-1 text-[10px] tabular-nums', book.book === best.book ? 'border-teal-500/35 bg-teal-500/[0.06]' : 'border-[#242424] bg-[#161616]')}>
+                <span className={cn('w-8 font-bold', book.book === best.book ? 'text-teal-300' : 'text-zinc-300')}>{book.book}</span>
                 <span className="w-8 text-zinc-200">{book.line}</span>
                 <span className="text-zinc-500">O {formatOdds(book.over)}</span>
                 <span className="text-zinc-500">U {formatOdds(book.under)}</span>
-                {book.book === best.book && <span className="rounded bg-[#F5C542] px-1 text-[8px] font-bold text-black">BEST</span>}
+                {book.book === best.book && <span className="rounded bg-teal-400 px-1 text-[8px] font-bold text-black">BEST</span>}
               </div>
             ))}
           </PopoverContent>
@@ -147,7 +148,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
 
   return (
     <TooltipProvider>
-      <div className="overflow-hidden rounded-xl border border-[#1f1f1f] bg-[#101010]">
+      <div className="overflow-hidden rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-surface)]">
         <div className="flex items-center justify-between border-b border-[#1f1f1f] px-3 py-1.5">
           <p className="text-xs text-zinc-500">{sorted.length} props</p>
           <div className="flex items-center gap-2">
@@ -157,7 +158,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
                   key={option}
                   onClick={() => setDensity(option)}
                   aria-pressed={density === option}
-                  className={cn('rounded px-2 py-1 text-[10px] capitalize focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542]', density === option ? 'bg-[#F5C542]/15 text-[#F5C542]' : 'text-zinc-500 hover:text-zinc-300')}
+                  className={cn('rounded px-2 py-1 text-[10px] capitalize focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-500', density === option ? 'bg-teal-500/15 text-teal-300' : 'text-zinc-500 hover:text-zinc-300')}
                 >
                   {option}
                 </button>
@@ -166,7 +167,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
             <div className="relative">
             <button
               onClick={() => setColMenu((c) => !c)}
-              className="rounded-md border border-[#2a2a2a] px-2.5 py-1 text-xs text-zinc-300 hover:bg-[#1a1a1a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]"
+              className="rounded-md border border-[#2a2a2a] px-2.5 py-1 text-xs text-zinc-300 hover:bg-[#1a1a1a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
               aria-haspopup="menu" aria-expanded={colMenu}
             >
               Columns
@@ -183,7 +184,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
                         setVisible(next);
                         localStorage.setItem('pp-columns', JSON.stringify(next));
                       }}
-                      className="accent-[#F5C542]"
+                      className="accent-teal-500"
                     />
                     {c.label}
                   </label>
@@ -194,7 +195,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[980px] border-collapse text-xs">
             <thead className="sticky top-0 z-10">
               <tr className="bg-[#141414] text-left">
@@ -214,9 +215,9 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
                           <button
                             onClick={() => toggleSort(c.sortKey!)}
                             className={cn(
-                              'inline-flex items-center gap-1 uppercase focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542] rounded',
+                              'inline-flex items-center gap-1 uppercase focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-500 rounded',
                               c.align === 'right' && 'flex-row-reverse',
-                              sortKey === c.sortKey ? 'text-[#F5C542]' : 'hover:text-zinc-300',
+                              sortKey === c.sortKey ? 'text-teal-300' : 'hover:text-zinc-300',
                             )}
                           >
                             {SORT_LABELS[c.sortKey]}
@@ -244,16 +245,16 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
                     onClick={() => openDrawer(p.id)}
                     onKeyDown={(e) => { if (e.key === 'Enter') openDrawer(p.id); }}
                     tabIndex={0}
-                    className="cursor-pointer border-t border-[#181818] transition-colors hover:bg-[#161616] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[#F5C542]"
+                    className="cursor-pointer border-t border-[#181818] transition-colors hover:bg-[#161616] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-teal-500"
                   >
                     <td className={cn('px-2', rowPad)}>
                       <button
                         onClick={(e) => { e.stopPropagation(); toggleSave('props', p.id); }}
                         aria-label={isSaved ? `Remove ${pl.name} ${p.market} from saved` : `Save ${pl.name} ${p.market}`}
                         aria-pressed={isSaved}
-                        className="rounded p-1 text-zinc-600 hover:text-[#F5C542] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F5C542]"
+                        className="rounded p-1 text-zinc-600 hover:text-teal-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-500"
                       >
-                        <Bookmark className={cn('h-3.5 w-3.5', isSaved && 'fill-[#F5C542] text-[#F5C542]')} />
+                        <Bookmark className={cn('h-3.5 w-3.5', isSaved && 'fill-current text-teal-300')} />
                       </button>
                     </td>
                     {cols.map((c) => {
@@ -277,7 +278,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
                         case 'line': return <td key={c.key} className={cn('px-3 text-right font-semibold tabular-nums text-zinc-100', rowPad)}>{p.line}</td>;
                         case 'books': return <td key={c.key} className={cn('px-3', rowPad)}><BooksCell prop={p} density={density} /></td>;
                         case 'avg': return <td key={c.key} className={cn('px-3 text-right tabular-nums text-zinc-300', rowPad)}>{p.avg}</td>;
-                        case 'projection': return <td key={c.key} className={cn('px-3 text-right font-semibold tabular-nums text-[#F5C542]', rowPad)}>{p.projection.toFixed(1)}</td>;
+                        case 'projection': return <td key={c.key} className={cn('px-3 text-right font-semibold tabular-nums text-teal-300', rowPad)}>{p.projection.toFixed(1)}</td>;
                         case 'diff': return <td key={c.key} className={cn('px-3 text-right', rowPad)}><DiffBadge diff={p.diff} /></td>;
                         case 'l5': case 'l10': case 'l15': case 'season': case 'h2h': {
                           const v = p[c.key as 'l5' | 'l10' | 'l15' | 'season' | 'h2h'];
@@ -304,6 +305,8 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
           </table>
         </div>
 
+        <div className="divide-y divide-[var(--dashboard-border)] md:hidden">{rows.map((p) => { const player = playerById(p.playerId)!; const best = bestBook(p, 'over'); const isSaved = saved.props.includes(p.id); return <article key={p.id} className="px-3 py-3"><div className="flex items-start gap-2"><button onClick={() => openDrawer(p.id)} className="min-w-0 flex-1 text-left"><EntityIdentity name={player.name} meta={<span className="text-teal-300">{p.market} · Line {p.line}</span>} detail={`${player.home ? 'vs' : '@'} ${player.opponent} · ${player.gameTime}`} /></button><button onClick={() => toggleSave('props', p.id)} aria-label={isSaved ? `Remove ${player.name} ${p.market} from saved` : `Save ${player.name} ${p.market}`} className="rounded-md p-2 text-zinc-600 hover:text-teal-300"><Bookmark className={cn('h-4 w-4', isSaved && 'fill-current text-teal-300')} /></button></div><MetricStrip compact className="mt-3" metrics={[{ label: 'Proj', value: p.projection.toFixed(1), sample: `line ${p.line}`, tone: 'active' }, { label: 'Diff', value: `${p.diff >= 0 ? '+' : ''}${p.diff.toFixed(1)}`, sample: 'vs line', tone: p.diff >= 0 ? 'positive' : 'negative' }, { label: 'L5', value: `${p.l5}%`, sample: 'hit rate', tone: p.l5 >= 60 ? 'positive' : 'warning' }, { label: 'L10', value: `${p.l10}%`, sample: 'hit rate', tone: p.l10 >= 60 ? 'positive' : 'warning' }]} /><button onClick={() => openDrawer(p.id)} className="mt-2 flex w-full items-center justify-between rounded-md bg-white/[0.025] px-2.5 py-2 text-[10px] text-zinc-400"><span><strong className="text-zinc-200">{best.book}</strong> · Over {formatOdds(best.over)}</span><span className="font-semibold text-teal-300">Research</span></button></article>; })}</div>
+
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#1f1f1f] px-3 py-2">
           <p className="text-xs text-zinc-500">Page {cur + 1} / {totalPages}</p>
           <div className="flex items-center gap-2">
@@ -312,7 +315,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
               <select
                 value={pageSize}
                 onChange={(e) => { setPageSize(Number(e.target.value)); setPage(0); }}
-                className="rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 text-xs text-zinc-200 focus:border-[#F5C542]/50 focus:outline-none"
+                className="rounded border border-[#2a2a2a] bg-[#141414] px-1.5 py-1 text-xs text-zinc-200 focus:border-teal-500/50 focus:outline-none"
                 aria-label="Rows per page"
               >
                 {[10, 25, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
@@ -321,7 +324,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={cur === 0}
-              className="rounded-md border border-[#2a2a2a] p-1.5 text-zinc-300 hover:bg-[#1a1a1a] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]"
+              className="rounded-md border border-[#2a2a2a] p-1.5 text-zinc-300 hover:bg-[#1a1a1a] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
               aria-label="Previous page"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -329,7 +332,7 @@ export function PropsTable({ props, showSport = false }: { props: Prop[]; showSp
             <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={cur >= totalPages - 1}
-              className="rounded-md border border-[#2a2a2a] p-1.5 text-zinc-300 hover:bg-[#1a1a1a] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]"
+              className="rounded-md border border-[#2a2a2a] p-1.5 text-zinc-300 hover:bg-[#1a1a1a] disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
               aria-label="Next page"
             >
               <ChevronRight className="h-4 w-4" />

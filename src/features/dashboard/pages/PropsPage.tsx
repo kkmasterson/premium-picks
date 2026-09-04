@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { Activity, ArrowDown, ArrowUp, ChevronDown, ChevronsUpDown, Clock3, ListPlus, TrendingDown, TrendingUp } from 'lucide-react';
-import { useSearchParams } from 'react-router';
 import type { LineType, PropBoardRow, PropOffer, Side } from '@arena/contracts';
 import { PROPS, bestBook, playerById } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
@@ -13,9 +12,7 @@ import { LIVE_DEMO_REFRESH_MS, liveDemoRowsAt } from '@/features/dashboard/live-
 import type { Filters } from '@/features/dashboard/types';
 import { cn } from '@/lib/utils';
 
-type PhaseFilter = 'all' | 'live';
 type LineFilter = 'all' | LineType;
-type ProjectionSort = 'default' | 'positive' | 'negative';
 type StatSortField = 'moneyline' | 'projection' | 'confidence' | 'l5' | 'l10' | 'l15' | 'h2h' | 'streak' | 'ev';
 type SortDirection = 'asc' | 'desc';
 
@@ -25,14 +22,6 @@ interface StatSort {
 }
 const GOBLIN_ASSET = '/assets/green-goblin.png';
 const DEVIL_ASSET = '/assets/red-devil.png';
-
-const LINE_LABELS: Record<LineFilter, string> = {
-  all: 'All lines',
-  regular: 'Regular',
-  goblin: 'Goblins',
-  devil: 'Devils',
-  alternate: 'Alternates',
-};
 
 const TYPE_STYLE: Record<LineType, string> = {
   regular: 'text-zinc-500',
@@ -143,16 +132,12 @@ function OfferSelector({ row, selected, side, onChange, lineFilter, compact = fa
 }
 
 function percentTone(value: number) {
-  if (value >= 80) return 'text-emerald-400';
-  if (value >= 60) return 'text-teal-300';
-  if (value >= 40) return 'text-amber-300';
+  if (value >= 50) return 'text-emerald-400';
   return 'text-red-400';
 }
 
 function heatColor(value: number) {
-  if (value >= 80) return '34 197 94';
-  if (value >= 60) return '20 184 166';
-  if (value >= 40) return '245 158 11';
+  if (value >= 50) return '34 197 94';
   return '239 68 68';
 }
 
@@ -188,7 +173,7 @@ function ConfidenceMeter({ score, grade }: { score: number; grade: string }) {
       <span className="text-[8px] font-semibold uppercase tracking-wide text-zinc-600">{grade.slice(0, 3)}</span>
     </div>
     <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/[0.07]">
-      <span className={cn('block h-full rounded-full', score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-teal-400' : score >= 40 ? 'bg-amber-400' : 'bg-red-400')} style={{ width: `${score}%` }} />
+      <span className={cn('block h-full rounded-full', score >= 50 ? 'bg-emerald-400' : 'bg-red-400')} style={{ width: `${score}%` }} />
     </div>
   </div>;
 }
@@ -233,13 +218,6 @@ function selectedOfferFor(row: PropBoardRow, lineFilter: LineFilter, selectedOff
   return offerFor(row, eligibleId);
 }
 
-function projectionDifference(row: PropBoardRow, lineFilter: LineFilter, selectedOfferId?: string) {
-  const selected = selectedOfferFor(row, lineFilter, selectedOfferId);
-  const metrics = metricsFor(row, selected.line).over;
-  if (metrics.edge !== null) return metrics.edge;
-  return metrics.projection === null ? null : metrics.projection - selected.line;
-}
-
 function statSortValue(
   row: PropBoardRow,
   field: StatSortField,
@@ -252,7 +230,7 @@ function statSortValue(
   if (field === 'moneyline') {
     return row.moneylines.find((price) => price.providerId === selected.providerId)?.playerTeamOdds ?? null;
   }
-  if (field === 'projection') return metrics.projection;
+  if (field === 'projection') return metrics.edge ?? (metrics.projection === null ? null : metrics.projection - selected.line);
   if (field === 'confidence') return metrics.confidence?.score ?? null;
   if (field === 'ev') return selected.ev[side].details?.evPercent ?? null;
   if (field === 'streak') return metrics.streak.count * (metrics.streak.side === side ? 1 : -1);
@@ -261,7 +239,6 @@ function statSortValue(
 
 function sortRows(
   rows: PropBoardRow[],
-  projectionSort: ProjectionSort,
   statSort: StatSort | null,
   lineFilter: LineFilter,
   selectedOfferIds: Record<string, string>,
@@ -278,14 +255,7 @@ function sortRows(
       return difference || a.id.localeCompare(b.id);
     });
   }
-  if (projectionSort === 'default') return interleaveRowsByPlayer(rows);
-  return [...rows].sort((a, b) => {
-    const aDifference = projectionDifference(a, lineFilter, selectedOfferIds[a.id]);
-    const bDifference = projectionDifference(b, lineFilter, selectedOfferIds[b.id]);
-    if (aDifference === null) return 1;
-    if (bDifference === null) return -1;
-    return projectionSort === 'positive' ? bDifference - aDifference : aDifference - bDifference;
-  });
+  return interleaveRowsByPlayer(rows);
 }
 
 function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChange, onSideChange }: {
@@ -368,13 +338,14 @@ function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChang
   </article>;
 }
 
-function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferChange, onSideChange }: {
+function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferChange, onSideChange, alternate }: {
   row: PropBoardRow;
   lineFilter: LineFilter;
   selectedOfferId?: string;
   selectedSide: Side;
   onOfferChange: (offerId: string) => void;
   onSideChange: (side: Side) => void;
+  alternate: boolean;
 }) {
   const { accessTier, addPick, navigate } = useDashboard();
   const side = selectedSide;
@@ -388,12 +359,14 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
   const streakMatches = metrics.streak.side === side;
 
   return <tr className={cn(
-    'group border-t border-white/[0.05] bg-[#0d1010] transition-colors hover:bg-[#121616]',
+    'group border-t border-white/[0.05] transition-colors hover:bg-[#171b1a]',
+    alternate ? 'bg-[#121515]' : 'bg-[#0d1010]',
     selected.lineType === 'goblin' && 'shadow-[inset_0_-1px_0_rgba(34,197,94,0.18)]',
     selected.lineType === 'devil' && 'shadow-[inset_0_-1px_0_rgba(239,68,68,0.18)]',
   )}>
     <td className={cn(
-      'sticky left-0 z-10 bg-[#0d1010] px-3 py-2 group-hover:bg-[#121616]',
+      'sticky left-0 z-10 px-3 py-2 transition-colors group-hover:bg-[#171b1a]',
+      alternate ? 'bg-[#121515]' : 'bg-[#0d1010]',
       selected.lineType === 'goblin' && 'shadow-[inset_2px_0_0_#22c55e]',
       selected.lineType === 'devil' && 'shadow-[inset_2px_0_0_#ef4444]',
     )}>
@@ -433,7 +406,7 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
     <td className="border-l border-white/[0.045] px-1 py-2 text-center">
       <span className="text-[9px]">{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Detected</span> : <span className="text-zinc-700">—</span> : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-bold text-emerald-300' : 'text-red-300'}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}%</span> : <span className="text-zinc-700">—</span>}</span>
     </td>
-    <td className="sticky right-0 z-10 bg-[#0d1010] px-2 py-2 text-right group-hover:bg-[#121616]">
+    <td className={cn('sticky right-0 z-10 px-2 py-2 text-right transition-colors group-hover:bg-[#171b1a]', alternate ? 'bg-[#121515]' : 'bg-[#0d1010]')}>
       <button
         disabled={selected.status !== 'active'}
         onClick={() => addPick(builderSelectionFor(row, selected, side))}
@@ -498,14 +471,10 @@ function SortableStatHeader({ label, field, sort, onSort, className }: {
 export function PropsPage() {
   const [demoNow, setDemoNow] = useState(() => Date.now());
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
-  const [phase, setPhase] = useState<PhaseFilter>('all');
   const [lineType, setLineType] = useState<LineFilter>('all');
   const [selectedOfferIds, setSelectedOfferIds] = useState<Record<string, string>>({});
   const [selectedSides, setSelectedSides] = useState<Record<string, Side>>({});
   const [statSort, setStatSort] = useState<StatSort | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const requestedSort = searchParams.get('sort');
-  const projectionSort: ProjectionSort = requestedSort === 'positive' || requestedSort === 'negative' ? requestedSort : 'default';
   const { sport, setSport } = useDashboard();
   useEffect(() => {
     const interval = window.setInterval(() => setDemoNow(Date.now()), LIVE_DEMO_REFRESH_MS);
@@ -522,52 +491,27 @@ export function PropsPage() {
   ), [filters, sport]);
   const allowedIds = new Set(oldFiltered.map((prop) => prop.id));
   const rows = liveDemoRows.filter((row) => allowedIds.has(row.id)
-    && (phase === 'all' || row.event.phase === 'live')
     && (lineType === 'all' || row.offers.some((offer) => offer.lineType === lineType)));
-  const visibleRows = sortRows(rows, projectionSort, statSort, lineType, selectedOfferIds, selectedSides).slice(0, 60);
-  const setProjectionSort = (mode: ProjectionSort) => {
-    const next = new URLSearchParams(searchParams);
-    if (mode === 'default') next.delete('sort');
-    else next.set('sort', mode);
-    setSearchParams(next, { replace: true });
-  };
+  const visibleRows = sortRows(rows, statSort, lineType, selectedOfferIds, selectedSides).slice(0, 60);
   const updateOffer = (propId: string, offerId: string) => setSelectedOfferIds((current) => ({ ...current, [propId]: offerId }));
   const updateSide = (propId: string, side: Side) => setSelectedSides((current) => ({ ...current, [propId]: side }));
   const updateStatSort = (field: StatSortField) => {
     setStatSort((current) => current?.field === field
       ? { field, direction: current.direction === 'desc' ? 'asc' : 'desc' }
       : { field, direction: 'desc' });
-    setProjectionSort('default');
   };
 
   return <div className="space-y-3">
-    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-teal-500/20 bg-teal-500/5 px-3 py-2.5">
-      <div><p className="flex items-center gap-2 text-xs font-semibold text-teal-200"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-50" /><span className="relative inline-flex h-2 w-2 rounded-full bg-teal-400" /></span>Interactive demo preview</p><p className="mt-0.5 text-[10px] text-zinc-400">Simulated books, odds, moneylines, projections, confidence, EV and movement · No sportsbook/API connection.</p></div>
-      <p className="text-[9px] tabular-nums text-zinc-500">Updated {new Date(demoNow).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' })} · refreshes every {LIVE_DEMO_REFRESH_MS / 1000}s</p>
+    <div className="sticky top-14 z-30 space-y-1.5 rounded-xl border border-white/[0.065] bg-[#0d1010]/95 p-1.5 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur">
+      <GlobalSearch onPickPlayer={(id) => setFilters({ ...filters, playerId: id })} />
+      <FilterToolbar
+        filters={filters}
+        setFilters={setFilters}
+        resultCount={rows.length}
+        lineType={lineType}
+        setLineType={setLineType}
+      />
     </div>
-    <GlobalSearch onPickPlayer={(id) => setFilters({ ...filters, playerId: id })} />
-    <FilterToolbar filters={filters} setFilters={setFilters} />
-    <div className="flex flex-wrap items-center justify-between gap-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="flex rounded-lg border border-[#252525] bg-[#101010] p-1">{(['all', 'live'] as PhaseFilter[]).map((value) => <button key={value} onClick={() => setPhase(value)} className={cn('rounded px-3 py-1.5 text-xs font-semibold capitalize', phase === value ? 'bg-teal-500 text-black' : 'text-zinc-500')}>{value === 'all' ? 'All' : 'Live'}</button>)}</div>
-        <div className="flex max-w-full items-center gap-1 overflow-x-auto" role="group" aria-label="Sort props by projection difference" title="Difference between the Arena Props projection and the selected sportsbook line">
-          {([
-            ['positive', 'Largest Positive Diff'],
-            ['negative', 'Largest Negative Diff'],
-          ] as const).map(([value, label]) => <button
-            key={value}
-            onClick={() => { setStatSort(null); setProjectionSort(projectionSort === value ? 'default' : value); }}
-            aria-pressed={projectionSort === value}
-            className={cn(
-              'h-8 whitespace-nowrap rounded-md border px-2.5 text-[10px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/60',
-              projectionSort === value ? 'border-teal-500/45 bg-teal-500/[0.12] text-teal-200' : 'border-[#272727] bg-[#111] text-zinc-500 hover:border-white/10 hover:text-zinc-300',
-            )}
-          >{label}</button>)}
-        </div>
-      </div>
-      <div className="flex max-w-full gap-1 overflow-x-auto pb-1">{(Object.keys(LINE_LABELS) as LineFilter[]).map((value) => <button key={value} onClick={() => setLineType(value)} className={cn('whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px]', lineType === value ? 'border-teal-500/50 bg-teal-500/10 text-teal-200' : 'border-[#2a2a2a] text-zinc-500')}>{LINE_LABELS[value]}</button>)}</div>
-    </div>
-    <div className="flex items-center justify-between px-1"><h1 className="text-sm font-semibold text-zinc-200">{sport === 'All' ? 'All Sports' : sport} Player Props</h1><p className="text-[10px] text-zinc-600">{rows.length} props</p></div>
     <div className="flex gap-1 overflow-x-auto pb-1 md:hidden" role="group" aria-label="Sort props by stats">
       {([['moneyline', 'Moneyline'], ['projection', 'Projection'], ['confidence', 'Confidence'], ['l5', 'L5'], ['l10', 'L10'], ['l15', 'L15'], ['h2h', 'H2H'], ['streak', 'Streak'], ['ev', '+EV']] as const).map(([field, label]) => {
         const active = statSort?.field === field;
@@ -611,17 +555,15 @@ export function PropsPage() {
                 <th className="sticky right-0 z-20 w-[48px] bg-[#101212] px-2 py-2.5 text-center" aria-label="Builder"><ListPlus className="mx-auto h-3.5 w-3.5 text-zinc-700" /></th>
               </tr>
             </thead>
-            <tbody>{visibleRows.map((row) => <PropTableRow key={`${row.id}:${lineType}:row`} row={row} lineFilter={lineType} selectedOfferId={selectedOfferIds[row.id]} selectedSide={selectedSides[row.id] ?? 'over'} onOfferChange={(offerId) => updateOffer(row.id, offerId)} onSideChange={(side) => updateSide(row.id, side)} />)}</tbody>
+            <tbody>{visibleRows.map((row, index) => <PropTableRow key={`${row.id}:${lineType}:row`} row={row} lineFilter={lineType} selectedOfferId={selectedOfferIds[row.id]} selectedSide={selectedSides[row.id] ?? 'over'} onOfferChange={(offerId) => updateOffer(row.id, offerId)} onSideChange={(side) => updateSide(row.id, side)} alternate={index % 2 === 1} />)}</tbody>
           </table>
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/[0.045] px-3 py-2 text-[8px] text-zinc-600">
           <span className="font-semibold uppercase tracking-wider text-zinc-500">Percentage grade</span>
-          <span className="text-emerald-300">80–100 Strong</span>
-          <span className="text-teal-300">60–79 Good</span>
-          <span className="text-amber-300">40–59 Mixed</span>
-          <span className="text-red-300">0–39 Weak</span>
+          <span className="text-emerald-300">50% and above Green</span>
+          <span className="text-red-300">Below 50% Red</span>
         </div>
       </div>
-    </> : <EmptyState title="No props match these filters." action={<button onClick={() => { setFilters(DEFAULT_FILTERS); setLineType('all'); setPhase('all'); setSport('All'); }} className="rounded border border-teal-500/40 px-3 py-1.5 text-xs text-teal-300">Clear filters</button>} />}
+    </> : <EmptyState title="No props match these filters." action={<button onClick={() => { setFilters(DEFAULT_FILTERS); setLineType('all'); setSport('All'); }} className="rounded border border-teal-500/40 px-3 py-1.5 text-xs text-teal-300">Clear filters</button>} />}
   </div>;
 }

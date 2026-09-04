@@ -78,7 +78,7 @@ export function GlobalSearch({ onPickPlayer }: Props) {
         aria-label="Search players, teams, games, or props"
         role="combobox"
         aria-expanded={open && !!results}
-        className="h-10 w-full rounded-lg border border-[#242424] bg-[#111111] pl-9 pr-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-[#F5C542]/50 focus:outline-none focus:ring-1 focus:ring-[#F5C542]/40"
+        className="h-10 w-full rounded-lg border border-white/[0.055] bg-[#151919] pl-9 pr-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-teal-500/45 focus:outline-none focus:ring-1 focus:ring-teal-500/35"
       />
 
       {open && results && (

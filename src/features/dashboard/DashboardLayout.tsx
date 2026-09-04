@@ -12,7 +12,7 @@ function Shell() {
       <TopSportNav />
       <div className="flex w-full min-w-0 max-w-full">
         <Sidebar />
-        <main className="min-w-0 flex-1 overflow-x-hidden px-3 pb-24 pt-4 sm:px-5 md:pb-8">
+        <main className="min-w-0 flex-1 overflow-x-clip px-3 pb-24 pt-2 sm:px-5 md:pb-8">
           <Suspense fallback={<div className="grid min-h-64 place-items-center text-xs text-zinc-600">Loading research…</div>}><Outlet /></Suspense>
         </main>
         <PickBuilderRail />

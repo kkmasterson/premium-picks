@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { PLAYERS, propsForPlayer } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { EmptyState, PlayerAvatar } from '@/features/dashboard/components/common';
+import { DashboardPageHeader, DashboardToolbar, EntityIdentity, ResearchSurface } from '@/features/dashboard/components/dashboard-ui';
 import { cn } from '@/lib/utils';
 
 export function PlayersPage() {
@@ -20,18 +21,18 @@ export function PlayersPage() {
     (!pos || p.pos === pos),
   );
 
-  const selectCls = 'h-8 rounded-md border border-[#2a2a2a] bg-[#141414] px-2 text-xs text-zinc-200 focus:border-[#F5C542]/50 focus:outline-none';
+  const selectCls = 'h-8 rounded-md border border-[var(--dashboard-border-strong)] bg-[var(--dashboard-surface-raised)] px-2 text-xs text-zinc-200 focus:border-teal-500/50 focus:outline-none';
 
   return (
     <div className="space-y-3">
-      <h1 className="px-1 text-sm font-semibold text-zinc-200">Players {sport !== 'All' && <span className="text-zinc-500">· {sport}</span>}</h1>
-      <div className="flex flex-wrap gap-1.5">
+      <DashboardPageHeader eyebrow="Research" title={`Players${sport !== 'All' ? ` · ${sport}` : ''}`} description="Find a player, review today's matchup, and open their full market research workspace." />
+      <DashboardToolbar className="flex flex-wrap gap-1.5">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search players..."
           aria-label="Search players"
-          className="h-8 w-56 rounded-md border border-[#2a2a2a] bg-[#141414] px-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-[#F5C542]/50 focus:outline-none"
+          className="h-8 min-w-0 flex-1 rounded-md border border-[var(--dashboard-border-strong)] bg-[var(--dashboard-surface-raised)] px-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-teal-500/50 focus:outline-none sm:max-w-xs"
         />
         <select value={team ?? ''} onChange={(e) => setTeam(e.target.value || null)} className={selectCls} aria-label="Filter by team">
           <option value="">All teams</option>
@@ -41,15 +42,15 @@ export function PlayersPage() {
           <option value="">All positions</option>
           {positions.map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
-      </div>
+      </DashboardToolbar>
 
       {filtered.length === 0 ? (
         <EmptyState title={q ? `No players or teams found for "${q}".` : 'No players match these filters.'} />
       ) : (
-        <div className="overflow-hidden rounded-xl border border-[#1f1f1f] bg-[#101010]">
-          <table className="w-full text-sm">
+        <ResearchSurface>
+          <table className="hidden w-full text-sm md:table">
             <thead>
-              <tr className="bg-[#141414] text-left text-[11px] uppercase tracking-wider text-zinc-500">
+              <tr className="bg-white/[0.02] text-left text-[10px] uppercase tracking-wider text-zinc-500">
                 <th className="px-4 py-2.5">Player</th>
                 <th className="px-3 py-2.5">Team</th>
                 <th className="px-3 py-2.5">Pos</th>
@@ -57,14 +58,14 @@ export function PlayersPage() {
                 <th className="px-3 py-2.5 text-right">Props Available</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#181818]">
+            <tbody className="divide-y divide-[var(--dashboard-border)]">
               {filtered.map((p) => (
                 <tr
                   key={p.id}
                   onClick={() => navigate('player', { playerId: p.id, sport: p.sport })}
                   onKeyDown={(e) => e.key === 'Enter' && navigate('player', { playerId: p.id, sport: p.sport })}
                   tabIndex={0}
-                  className="cursor-pointer hover:bg-[#161616] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[#F5C542]"
+                  className="cursor-pointer hover:bg-[var(--dashboard-surface-hover)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-teal-500"
                 >
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-2.5">
@@ -76,12 +77,15 @@ export function PlayersPage() {
                   <td className="px-3 py-2.5 text-zinc-400">{p.team}</td>
                   <td className="px-3 py-2.5 text-zinc-400">{p.pos}</td>
                   <td className="px-3 py-2.5 text-zinc-400">{p.home ? 'vs' : '@'} {p.opponent} · {p.gameTime}</td>
-                  <td className="px-3 py-2.5 text-right tabular-nums text-[#F5C542]">{propsForPlayer(p.id).length}</td>
+                  <td className="px-3 py-2.5 text-right"><span className="rounded-md bg-teal-500/[0.08] px-2 py-1 text-[11px] font-semibold tabular-nums text-teal-300">{propsForPlayer(p.id).length} props</span></td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+          <div className="divide-y divide-[var(--dashboard-border)] md:hidden">
+            {filtered.map((p) => <button key={p.id} onClick={() => navigate('player', { playerId: p.id, sport: p.sport })} className="flex w-full min-w-0 items-center gap-3 px-3 py-3 text-left hover:bg-[var(--dashboard-surface-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-500"><EntityIdentity name={p.name} meta={`${p.team} · ${p.pos}${sport === 'All' ? ` · ${p.sport}` : ''}`} detail={`${p.home ? 'vs' : '@'} ${p.opponent} · ${p.gameTime}`} /><span className="ml-auto shrink-0 rounded-md bg-teal-500/[0.08] px-2 py-1 text-[10px] font-semibold tabular-nums text-teal-300">{propsForPlayer(p.id).length} props</span></button>)}
+          </div>
+        </ResearchSurface>
       )}
     </div>
   );

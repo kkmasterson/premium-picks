@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router';
 import App from '@/app/App';
@@ -49,9 +49,12 @@ describe('player-screen route state', () => {
 
     const provider = await screen.findByRole('combobox', { name: 'Sportsbook provider' });
     fireEvent.click(provider);
-    const providerOption = screen.getAllByRole('option').find((option) => !option.textContent?.includes('All books'))!;
+    const sportsbookOffers = screen.getByRole('listbox', { name: 'Sportsbook offers' });
+    const providerOption = within(sportsbookOffers)
+      .getAllByRole('option')
+      .find((option) => !option.textContent?.includes('All books'))!;
     fireEvent.click(providerOption);
-    expect(provider).toHaveTextContent(/Line/);
+    await waitFor(() => expect(provider).toHaveTextContent(/Line/));
 
     const firstQuarter = screen.getByRole('button', { name: '1Q' });
     fireEvent.click(firstQuarter);
@@ -99,6 +102,6 @@ describe('player-screen route state', () => {
     unmount();
     render(<MemoryRouter initialEntries={['/dashboard/players/NHL-connor-mcdavid']}><App /></MemoryRouter>);
     expect(await screen.findByText('Analysis Awaiting Reference')).toBeInTheDocument();
-    expect(screen.getAllByText(/awaiting a validated reference/i)).toHaveLength(2);
+    expect(screen.getAllByText(/awaiting a validated reference/i)).toHaveLength(1);
   });
 });

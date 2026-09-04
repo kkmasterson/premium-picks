@@ -1,4 +1,17 @@
-# Master Dashboard Shared Player Shell
+# Master Dashboard Visual System
+
+## Props-led source of truth
+
+The live Props screen defines the visual language for every `/dashboard` route. The system uses a near-black canvas, one quiet research surface, hairline dividers, compact evidence rows, and high-contrast values. Page-specific card grids and title bars are retired.
+
+- Gold is reserved for the Arena Props identity, the selected global sport, premium access, and premium notices.
+- Teal identifies page navigation, filters, tabs, focus, selections, and primary actions.
+- Green, red, and amber communicate positive, negative, and mixed data meaning only.
+- Every color-coded state includes a visible label, value, or accessibility description.
+- Three elevation levels are available: canvas, research surface, and a restrained raised/hover state.
+- Core comparison values remain 11px or larger.
+
+The shared presentation layer is implemented by `DashboardPageHeader`, `DashboardToolbar`, `ResearchSurface`, `MetricStrip`, `EntityIdentity`, and compact status/delta primitives. They centralize hierarchy and semantics without changing provider or API contracts.
 
 ## Stable page regions
 
@@ -52,7 +65,9 @@ specification.
 - Exact results appear on or above the bars so color is never the only signal.
 - Supporting charts reuse the same event timeline when practical.
 - The right column swaps contextual modules without leaving the player page.
-- Long market rows, tables, and depth charts may scroll horizontally.
+- Intentional metric lanes may scroll horizontally and remain discoverable. Page-level horizontal overflow is not allowed.
+- Desktop research uses aligned rows or tables; phone layouts use purpose-built lists and cards instead of squeezed desktop columns.
+- Mobile navigation remains Props, Players, Popular, Builder, More.
 
 ## Required sport overrides
 

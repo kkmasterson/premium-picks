@@ -54,7 +54,8 @@ describe('expanded dashboard destinations', () => {
 
   it('pairs sportsbook logos with the selected side price and filter choices', async () => {
     renderRoute('/dashboard/props');
-    expect(await screen.findByRole('heading', { name: /Player Props/ })).toBeInTheDocument();
+    expect(await screen.findByRole('table', { name: 'Props research table' })).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Props filters' })).toHaveTextContent('Filters');
 
     const selectedOffers = screen.getAllByRole('button', { name: /Choose sportsbook offer\..*over/i });
     expect(selectedOffers.length).toBeGreaterThan(0);
@@ -70,17 +71,45 @@ describe('expanded dashboard destinations', () => {
     expect(document.querySelector('img[src="/assets/sportsbooks/bet365.svg"]')).toBeInTheDocument();
   });
 
-  it('sorts the new Props table by positive or negative projection difference', async () => {
+  it('sorts projection difference directly from the Props table header', async () => {
     renderRoute('/dashboard/props');
     const table = await screen.findByRole('table', { name: 'Props research table' });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Largest Positive Diff' }));
-    expect(screen.getByRole('button', { name: 'Largest Positive Diff' })).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Projection descending' }));
     expect(within(within(table).getAllByRole('row')[1]).getByTitle(/Projection .* versus line/)).toHaveTextContent('+');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Largest Negative Diff' }));
-    expect(screen.getByRole('button', { name: 'Largest Negative Diff' })).toHaveAttribute('aria-pressed', 'true');
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Projection ascending' }));
     expect(within(within(table).getAllByRole('row')[1]).getByTitle(/Projection .* versus line/)).toHaveTextContent('-');
+  });
+
+  it('uses continuous alternating surfaces for desktop research rows', async () => {
+    renderRoute('/dashboard/props');
+    const table = await screen.findByRole('table', { name: 'Props research table' });
+    const [, firstRow, secondRow] = within(table).getAllByRole('row');
+
+    expect(firstRow).toHaveClass('bg-[#0d1010]');
+    expect(secondRow).toHaveClass('bg-[#121515]');
+    expect(within(firstRow).getAllByRole('cell')[0]).toHaveClass('bg-[#0d1010]');
+    expect(within(secondRow).getAllByRole('cell')[0]).toHaveClass('bg-[#121515]');
+  });
+
+  it('keeps line type and advanced controls in one filter surface', async () => {
+    renderRoute('/dashboard/props');
+    await screen.findByRole('table', { name: 'Props research table' });
+
+    const toolbar = screen.getByRole('group', { name: 'Props filters' });
+    expect(within(toolbar).getByRole('button', { name: 'Line Type' })).toBeInTheDocument();
+    expect(within(toolbar).getByRole('button', { name: 'More Filters' })).toBeInTheDocument();
+
+    fireEvent.click(within(toolbar).getByRole('button', { name: 'Line Type' }));
+    expect(screen.getByRole('menuitemradio', { name: 'Goblins' }).querySelector('img[src="/assets/green-goblin.png"]')).toBeInTheDocument();
+    expect(screen.getByRole('menuitemradio', { name: 'Devils' }).querySelector('img[src="/assets/red-devil.png"]')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('menuitemradio', { name: 'Regular' }));
+    fireEvent.click(within(toolbar).getByRole('button', { name: /Clear all/ }));
+
+    expect(within(toolbar).queryByRole('button', { name: 'Status' })).not.toBeInTheDocument();
+    expect(within(toolbar).getByRole('button', { name: 'Line Type' })).toBeInTheDocument();
+    expect(within(toolbar).queryByRole('button', { name: 'Sort' })).not.toBeInTheDocument();
   });
 
   it('sorts every research metric in descending or ascending order', async () => {
@@ -96,16 +125,20 @@ describe('expanded dashboard destinations', () => {
     expect(screen.getByRole('columnheader', { name: '+EV' })).toHaveAttribute('aria-sort', 'ascending');
 
     fireEvent.click(screen.getByRole('button', { name: 'Sort by L5 descending' }));
-    expect(within(within(table).getAllByRole('row')[1]).getByTitle(/Last 5:/)).toHaveTextContent('100%');
+    const highestL5 = within(within(table).getAllByRole('row')[1]).getByTitle(/Last 5:/);
+    expect(highestL5).toHaveTextContent('100%');
+    expect(highestL5).toHaveClass('text-emerald-400');
 
     fireEvent.click(screen.getByRole('button', { name: 'Sort by L5 ascending' }));
-    expect(within(within(table).getAllByRole('row')[1]).getByTitle(/Last 5:/)).toHaveTextContent('0%');
+    const lowestL5 = within(within(table).getAllByRole('row')[1]).getByTitle(/Last 5:/);
+    expect(lowestL5).toHaveTextContent('0%');
+    expect(lowestL5).toHaveClass('text-red-400');
   }, 15_000);
 
   it('merges the old Projections destination into Props', async () => {
     renderRoute('/dashboard/projections');
-    expect(await screen.findByRole('heading', { name: /Player Props/ })).toBeInTheDocument();
+    expect(await screen.findByRole('table', { name: 'Props research table' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Projections' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Largest Positive Diff' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByRole('button', { name: 'Sort' })).not.toBeInTheDocument();
   });
 });

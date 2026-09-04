@@ -5,6 +5,7 @@ import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { propBoardRowById } from '@/features/dashboard/props-fixtures';
 import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo';
 import { cn } from '@/lib/utils';
+import { DashboardPageHeader, MetricStrip, ResearchSurface } from '@/features/dashboard/components/dashboard-ui';
 
 function formatOdds(odds: number | null) { return odds === null ? 'Payout unavailable' : odds > 0 ? `+${odds}` : String(odds); }
 function decimalOdds(odds: number | null) { return odds === null ? null : odds > 0 ? 1 + odds / 100 : 1 + 100 / Math.abs(odds); }
@@ -41,9 +42,9 @@ function BuilderContent({ onClose, onCollapse, routed = false }: { onClose?: () 
       {warnings.length > 0 && <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-[10px] text-amber-200"><p className="mb-1 flex items-center gap-1 font-semibold"><AlertTriangle className="h-3.5 w-3.5"/>Review warnings</p>{warnings.map((warning) => <p key={warning}>• {warning}</p>)}</div>}
       {groups.map((items) => {
         const product = items.map((item) => decimalOdds(item.capturedOdds)).reduce<number | null>((total, odds) => total === null || odds === null ? null : total * odds, 1);
-        return <section key={items[0].providerId} className="rounded-xl border border-[#252525] bg-[#0d0d0d] p-3"><div className="mb-2 flex items-center justify-between gap-3"><div className="flex min-w-0 items-center gap-2"><SportsbookLogo shortName={items[0].providerShortName} /><span className="min-w-0"><p className="truncate text-xs font-semibold text-teal-300">{items[0].providerName}</p><p className="text-[9px] text-zinc-600">Compatible provider group</p></span></div><p className="shrink-0 text-[10px] text-zinc-400">{product === null ? 'Payout unavailable' : `${product.toFixed(2)}x combined decimal`}</p></div><div className="space-y-2">{items.map((item) => {
+        return <section key={items[0].providerId} className="border-b border-[var(--dashboard-border)] pb-4 last:border-0"><div className="mb-2 flex items-center justify-between gap-3"><div className="flex min-w-0 items-center gap-2"><SportsbookLogo shortName={items[0].providerShortName} /><span className="min-w-0"><p className="truncate text-xs font-semibold text-teal-300">{items[0].providerName}</p><p className="text-[9px] text-zinc-600">Compatible provider group</p></span></div><p className="shrink-0 text-[10px] text-zinc-400">{product === null ? 'Payout unavailable' : `${product.toFixed(2)}x combined decimal`}</p></div><div className="divide-y divide-[var(--dashboard-border)] rounded-lg bg-white/[0.018]">{items.map((item) => {
           const row = propBoardRowById(item.propId); const current = row?.offers.find((offer) => offer.id === item.offerId);
-          return <article key={item.key} className="rounded-lg border border-[#222] bg-[#121212] p-3"><div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="truncate text-xs font-semibold text-zinc-100">{row?.playerName ?? 'Unavailable prop'}</p><p className="text-[9px] text-zinc-500">{row?.market} · {item.lineType}</p></div><button onClick={() => removePick(item.key)} aria-label="Remove selection" className="rounded p-1 text-zinc-600 hover:bg-red-500/10 hover:text-red-400"><Trash2 className="h-3.5 w-3.5"/></button></div><div className="mt-2 flex items-end justify-between border-t border-[#222] pt-2"><p className="text-sm font-bold text-white">{item.side === 'over' ? 'Over' : 'Under'} {item.capturedLine}</p><div className="text-right"><p className="text-xs font-semibold text-teal-300">{formatOdds(item.capturedOdds)}</p><p className="text-[9px] text-zinc-600">Captured {new Date(item.capturedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}{current?.status !== 'active' ? ` · ${current?.status ?? 'removed'}` : ''}</p></div></div></article>;
+          return <article key={item.key} className="p-3"><div className="flex items-start justify-between gap-2"><div className="min-w-0"><p className="truncate text-xs font-semibold text-zinc-100">{row?.playerName ?? 'Unavailable prop'}</p><p className="text-[9px] text-zinc-500">{row?.market} · {item.lineType}</p></div><button onClick={() => removePick(item.key)} aria-label="Remove selection" className="rounded p-1 text-zinc-600 hover:bg-red-500/10 hover:text-red-400"><Trash2 className="h-3.5 w-3.5"/></button></div><div className="mt-2 flex items-end justify-between"><p className="text-sm font-bold text-white">{item.side === 'over' ? 'Over' : 'Under'} {item.capturedLine}</p><div className="text-right"><p className="text-xs font-semibold text-teal-300">{formatOdds(item.capturedOdds)}</p><p className="text-[9px] text-zinc-600">Captured {new Date(item.capturedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}{current?.status !== 'active' ? ` · ${current?.status ?? 'removed'}` : ''}</p></div></div></article>;
         })}</div></section>;
       })}
     </div>}</div>
@@ -51,7 +52,14 @@ function BuilderContent({ onClose, onCollapse, routed = false }: { onClose?: () 
   </div>;
 }
 
-export function BuilderPage() { return <div className="mx-auto min-h-[70vh] max-w-3xl overflow-hidden rounded-xl border border-[#232323] bg-[#0b0b0b]"><BuilderContent routed /></div>; }
+function BuilderSummary() {
+  const { pickBuilder } = useDashboard();
+  const providerCount = new Set(pickBuilder.map((item) => item.providerId)).size;
+  const warnings = warningsFor(pickBuilder);
+  return <aside className="space-y-3 lg:sticky lg:top-[4.5rem] lg:self-start"><ResearchSurface><div className="border-b border-[var(--dashboard-border)] px-4 py-3"><h2 className="text-xs font-semibold text-zinc-100">Research summary</h2><p className="mt-0.5 text-[9px] text-zinc-600">Updates as selections change</p></div><MetricStrip metrics={[{ label: 'Picks', value: pickBuilder.length, sample: 'selected', tone: 'active' }, { label: 'Groups', value: providerCount, sample: 'providers' }, { label: 'Alerts', value: warnings.length, sample: 'to review', tone: warnings.length ? 'warning' : 'positive' }]} /><div className="space-y-2 px-4 py-3 text-[10px] leading-relaxed text-zinc-500"><p>Selections are grouped by compatible provider so the research context stays accurate.</p>{providerCount > 1 && <p className="rounded-md bg-amber-500/[0.07] p-2 text-amber-200">Mixed-provider selections never produce one actionable combined payout.</p>}</div></ResearchSurface></aside>;
+}
+
+export function BuilderPage() { return <div className="space-y-3"><DashboardPageHeader eyebrow="Build" title="Pick Builder" description="Organize exact providers, sides, and captured lines into a research workspace." /><div className="grid min-h-[70vh] gap-3 lg:grid-cols-[minmax(0,1fr)_300px]"><ResearchSurface><BuilderContent routed /></ResearchSurface><BuilderSummary /></div></div>; }
 export function PickBuilderRail() {
   const { pickBuilder } = useDashboard();
   const [collapsed, setCollapsed] = useState(true);
