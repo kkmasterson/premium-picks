@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { LineType } from '@arena/contracts';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo';
+import { bestAvailableOdds, OddsPriceCell } from '@/features/dashboard/components/SportsbookOdds';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import type { MarketSnapshot, PlayerFilterKey, PlayerResearchViewModel, PlayerRouteSelection, ResearchFilters } from '../types';
@@ -10,9 +11,10 @@ import type { MarketSnapshot, PlayerFilterKey, PlayerResearchViewModel, PlayerRo
 const GREEN_GOBLIN_ASSET = '/assets/green-goblin.png';
 const DEVIL_ASSET = '/assets/red-devil.png';
 
-const lineTypeMeta: Partial<Record<LineType, { label: string; asset: string; color: string; surface: string }>> = {
+const lineTypeMeta: Partial<Record<LineType, { label: string; asset?: string; color: string; surface: string }>> = {
   goblin: { label: 'Goblin', asset: GREEN_GOBLIN_ASSET, color: 'text-emerald-300', surface: 'border-emerald-500/35 bg-emerald-500/[0.07]' },
   devil: { label: 'Devil', asset: DEVIL_ASSET, color: 'text-red-300', surface: 'border-red-500/35 bg-red-500/[0.07]' },
+  alternate: { label: 'Alternate', color: 'text-sky-300', surface: 'border-sky-500/30 bg-sky-500/[0.06]' },
 };
 
 function rate(history: MarketSnapshot['history'], line: number, count?: number): number | null {
@@ -85,6 +87,9 @@ function SportsbookOfferSelector({
 }) {
   const [open, setOpen] = useState(false);
   const selectedType = selectedOffer?.lineType ? lineTypeMeta[selectedOffer.lineType] : undefined;
+  const availableOffers = offers.filter((offer) => !offer.status || offer.status === 'active');
+  const bestOverOdds = bestAvailableOdds(availableOffers.map((offer) => offer.overOdds));
+  const bestUnderOdds = bestAvailableOdds(availableOffers.map((offer) => offer.underOdds));
 
   const choose = (offer: MarketSnapshot['offers'][number] | null) => {
     onSelect(offer);
@@ -108,12 +113,9 @@ function SportsbookOfferSelector({
           >
             {selectedOffer ? <SportsbookLogo shortName={selectedOffer.shortName} compact /> : <span aria-hidden="true" className="grid h-5 w-8 place-items-center rounded bg-teal-500/10 text-[7px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">ALL</span>}
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[10px] font-semibold leading-none text-zinc-100">{selectedOffer?.name ?? 'All Books'}</span>
-              <span className="mt-0.5 block truncate text-[8px] leading-none text-zinc-500">
-                {selectedOffer ? `${selectedType ? `${selectedType.label} · ` : ''}O ${formatOdds(selectedOffer.overOdds)} · U ${formatOdds(selectedOffer.underOdds)} · Line ${selectedOffer.line}` : `${offers.length} available offers`}
-              </span>
+              <span className="flex min-w-0 items-center gap-1"><span className="truncate text-[9px] font-semibold leading-none text-zinc-100">{selectedOffer?.name ?? 'All Books'}</span>{selectedType && <span className={cn('inline-flex shrink-0 items-center gap-0.5 text-[7px] font-semibold', selectedType.color)}>{selectedType.asset && <img src={selectedType.asset} alt="" className="h-3.5 w-3.5 object-contain" />}{selectedType.label}</span>}</span>
+              {selectedOffer ? <span className="mt-0.5 flex items-center gap-1 text-[7px] leading-none tabular-nums"><span className="text-zinc-500">Line <strong className="text-zinc-200">{selectedOffer.line}</strong></span><span className="text-emerald-400">O {formatOdds(selectedOffer.overOdds)}</span><span className="text-red-400">U {formatOdds(selectedOffer.underOdds)}</span></span> : <span className="mt-0.5 block truncate text-[8px] leading-none text-zinc-500">{offers.length} available offers</span>}
             </span>
-            {selectedType && <img src={selectedType.asset} alt="" className="h-4 w-4 shrink-0 object-contain" />}
             <ChevronDown className={cn('h-3.5 w-3.5 shrink-0 text-zinc-500 transition-transform', open && 'rotate-180')} />
           </button>
         </PopoverTrigger>
@@ -125,7 +127,7 @@ function SportsbookOfferSelector({
           align="start"
           sideOffset={6}
           collisionPadding={16}
-          className="z-50 max-h-[var(--radix-popover-content-available-height)] w-[min(320px,calc(100vw-32px))] overflow-y-auto rounded-xl border-white/[0.12] bg-[#151818] p-1.5 text-zinc-100 shadow-[0_18px_60px_rgba(0,0,0,0.65)]"
+          className="z-50 max-h-[var(--radix-popover-content-available-height)] w-[min(430px,calc(100vw-24px))] overflow-y-auto rounded-xl border-white/[0.12] bg-[#151818] p-1.5 text-zinc-100 shadow-[0_18px_60px_rgba(0,0,0,0.65)]"
         >
             <button
               type="button"
@@ -141,6 +143,10 @@ function SportsbookOfferSelector({
 
             <div className="my-1 h-px bg-white/[0.06]" />
 
+            <div className="grid grid-cols-[minmax(120px,1fr)_44px_58px_58px] items-center gap-1.5 px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.12em] text-zinc-600">
+              <span>Sportsbook</span><span className="text-center">Line</span><span className="text-center">Over</span><span className="text-center">Under</span>
+            </div>
+
             {offers.map((offer) => {
               const type = offer.lineType ? lineTypeMeta[offer.lineType] : undefined;
               const disabled = offer.status === 'suspended' || offer.status === 'closed';
@@ -153,20 +159,20 @@ function SportsbookOfferSelector({
                   disabled={disabled}
                   onClick={() => choose(offer)}
                   className={cn(
-                    'flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400 disabled:cursor-not-allowed disabled:opacity-40',
+                    'grid w-full grid-cols-[minmax(120px,1fr)_44px_58px_58px] items-center gap-1.5 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400 disabled:cursor-not-allowed disabled:opacity-40',
                     selectedOffer?.id === offer.id && 'bg-teal-500/[0.09]',
                   )}
                 >
-                  <SportsbookLogo shortName={offer.shortName} />
-                  <span className="min-w-0 flex-1">
-                    <span className="flex items-center gap-1.5">
+                  <span className="flex min-w-0 items-center gap-1.5"><SportsbookLogo shortName={offer.shortName} compact /><span className="min-w-0">
+                    <span className="flex min-w-0 items-center gap-1">
                       <span className="truncate text-[11px] font-semibold text-zinc-100">{offer.name}</span>
-                      {type && <span className={cn('inline-flex shrink-0 items-center gap-0.5 text-[9px] font-semibold', type.color)}><img src={type.asset} alt="" className="h-4 w-4 object-contain" />{type.label}</span>}
-                      {offer.lineType === 'alternate' && <span className="shrink-0 text-[9px] font-semibold text-sky-300">Alternate</span>}
+                      {type && <span className={cn('inline-flex shrink-0 items-center gap-0.5 text-[9px] font-semibold', type.color)}>{type.asset && <img src={type.asset} alt="" className="h-4 w-4 object-contain" />}{type.label}</span>}
                     </span>
-                    <span className="mt-0.5 block text-[10px] tabular-nums text-zinc-400">Line <strong className="font-semibold text-zinc-100">{offer.line}</strong> · O {formatOdds(offer.overOdds)} · U {formatOdds(offer.underOdds)}</span>
-                  </span>
-                  <span className={cn('shrink-0 text-[9px] capitalize', offer.status === 'active' ? 'text-emerald-400' : offer.status === 'stale' ? 'text-amber-300' : 'text-zinc-500')}>{offer.status}</span>
+                    <span className={cn('mt-0.5 block text-[8px] capitalize', offer.status === 'active' ? 'text-zinc-600' : offer.status === 'stale' ? 'text-amber-300' : 'text-zinc-500')}>{offer.status}</span>
+                  </span></span>
+                  <span className="text-center text-[11px] font-semibold tabular-nums text-zinc-200">{offer.line}</span>
+                  <OddsPriceCell side="over" odds={offer.overOdds} best={offer.overOdds !== null && offer.overOdds === bestOverOdds} />
+                  <OddsPriceCell side="under" odds={offer.underOdds} best={offer.underOdds !== null && offer.underOdds === bestUnderOdds} />
                 </button>
               );
             })}

@@ -8,6 +8,8 @@ import { DiffBadge, HitRateBadge, PlayerAvatar, hitTone } from './common';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { EntityIdentity, MetricStrip } from './dashboard-ui';
+import { SportsbookLogo } from './SportsbookLogo';
+import { OddsPriceCell } from './SportsbookOdds';
 
 type SortKey = 'line' | 'avg' | 'projection' | 'diff' | 'l5' | 'l10' | 'l15' | 'season' | 'h2h' | 'streak' | 'time';
 
@@ -68,15 +70,15 @@ function sortValue(p: Prop, key: SortKey): number | string {
 }
 
 function BooksCell({ prop, density }: { prop: Prop; density: Density }) {
-  const best = bestBook(prop, 'over');
+  const bestOver = bestBook(prop, 'over');
+  const bestUnder = bestBook(prop, 'under');
   return (
     <div className="flex items-center gap-1.5">
-      <div className="flex w-fit items-center gap-1.5 whitespace-nowrap rounded border border-teal-500/30 bg-teal-500/[0.06] px-1.5 py-px text-[10px] tabular-nums">
-        <span className="w-7 font-bold text-teal-300">{best.book}</span>
-        <span className="text-zinc-200">{best.line}</span>
-        <span className="text-zinc-500">O {formatOdds(best.over)}</span>
-        {density !== 'compact' && <span className="text-zinc-500">U {formatOdds(best.under)}</span>}
-        <span className="rounded bg-teal-400 px-1 text-[8px] font-bold text-black">BEST</span>
+      <div className={cn('grid w-fit grid-cols-[auto_32px_auto_auto] items-center whitespace-nowrap rounded border border-white/[0.08] bg-white/[0.025] px-1.5 py-1 text-[10px] tabular-nums', density === 'compact' ? 'gap-0.5' : 'gap-1')}>
+        <span className="flex items-center gap-1"><SportsbookLogo shortName={bestOver.book} compact /><span className="font-bold text-zinc-200">{bestOver.book}</span></span>
+        <span className="text-center text-zinc-200">{bestOver.line}</span>
+        <OddsPriceCell side="over" odds={bestOver.over} best compact />
+        <OddsPriceCell side="under" odds={bestOver.under} best={bestOver.book === bestUnder.book} compact />
       </div>
       {prop.books.length > 1 && (
         <Popover>
@@ -94,13 +96,13 @@ function BooksCell({ prop, density }: { prop: Prop; density: Density }) {
             className="w-max min-w-56 space-y-1 border-[#2a2a2a] bg-[#111] p-2 shadow-2xl shadow-black/70"
             onClick={(e) => e.stopPropagation()}
           >
+            <div className="grid grid-cols-[minmax(90px,1fr)_36px_52px_52px] gap-1 px-2 text-[7px] font-semibold uppercase tracking-wider text-zinc-600"><span>Sportsbook</span><span className="text-center">Line</span><span className="text-center">Over</span><span className="text-center">Under</span></div>
             {prop.books.map((book) => (
-              <div key={book.book} className={cn('flex items-center gap-2 rounded border px-2 py-1 text-[10px] tabular-nums', book.book === best.book ? 'border-teal-500/35 bg-teal-500/[0.06]' : 'border-[#242424] bg-[#161616]')}>
-                <span className={cn('w-8 font-bold', book.book === best.book ? 'text-teal-300' : 'text-zinc-300')}>{book.book}</span>
-                <span className="w-8 text-zinc-200">{book.line}</span>
-                <span className="text-zinc-500">O {formatOdds(book.over)}</span>
-                <span className="text-zinc-500">U {formatOdds(book.under)}</span>
-                {book.book === best.book && <span className="rounded bg-teal-400 px-1 text-[8px] font-bold text-black">BEST</span>}
+              <div key={book.book} className="grid grid-cols-[minmax(90px,1fr)_36px_52px_52px] items-center gap-1 rounded px-2 py-1 text-[10px] tabular-nums hover:bg-white/[0.035]">
+                <span className="flex min-w-0 items-center gap-1.5"><SportsbookLogo shortName={book.book} compact /><span className="truncate font-bold text-zinc-300">{book.book}</span></span>
+                <span className="text-center text-zinc-200">{book.line}</span>
+                <OddsPriceCell side="over" odds={book.over} best={book.book === bestOver.book} compact />
+                <OddsPriceCell side="under" odds={book.under} best={book.book === bestUnder.book} compact />
               </div>
             ))}
           </PopoverContent>

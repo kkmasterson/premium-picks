@@ -5,6 +5,7 @@ import { PROPS, bestBook, playerById } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { GlobalSearch } from '@/features/dashboard/components/GlobalSearch';
 import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo';
+import { bestAvailableOdds, OddsPriceCell } from '@/features/dashboard/components/SportsbookOdds';
 import { DEFAULT_FILTERS, FilterToolbar, filterProps } from '@/features/dashboard/components/FilterToolbar';
 import { EmptyState, PlayerAvatar } from '@/features/dashboard/components/common';
 import { PROP_BOARD_ROWS, builderSelectionFor, metricsFor, offerFor, redactEvForTier } from '@/features/dashboard/props-fixtures';
@@ -80,72 +81,101 @@ function freshness(observedAt: string) {
   return seconds < 60 ? `${seconds}s` : `${Math.round(seconds / 60)}m`;
 }
 
-function OfferSelector({ row, selected, side, onChange, lineFilter, compact = false }: {
+function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter, compact = false }: {
   row: PropBoardRow;
   selected: PropOffer;
   side: Side;
   onChange: (offer: PropOffer) => void;
+  onSideChange: (side: Side) => void;
   lineFilter: LineFilter;
   compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const offers = lineFilter === 'all' ? row.offers : row.offers.filter((offer) => offer.lineType === lineFilter);
-  const groups = Object.entries(offers.reduce<Record<string, PropOffer[]>>((result, offer) => {
-    (result[`${offer.line}:${offer.lineType}`] ??= []).push(offer);
-    return result;
-  }, {}));
-
+  const availableOffers = offers.filter((offer) => offer.status === 'active');
+  const otherOfferCount = offers.filter((offer) => offer.id !== selected.id).length;
+  const bestOverOdds = bestAvailableOdds(availableOffers.map((offer) => offer.overOdds));
+  const bestUnderOdds = bestAvailableOdds(availableOffers.map((offer) => offer.underOdds));
   const selectedOdds = side === 'over' ? selected.overOdds : selected.underOdds;
-  const selectedSide = side === 'over' ? 'O' : 'U';
 
-  return <div className={cn('relative max-w-full shrink-0', compact ? 'w-[136px]' : 'w-[144px]')}>
+  return <div
+    role="group"
+    aria-label={`${selected.providerName} sportsbook offer, line ${selected.line}, over ${oddsLabel(selected.overOdds)}, under ${oddsLabel(selected.underOdds)}`}
+    className={cn(
+      'relative grid h-8 max-w-full shrink-0 grid-cols-[minmax(0,1fr)_26px_46px_46px] items-center gap-0.5 rounded-md bg-white/[0.018] p-0.5',
+      compact ? 'w-[244px]' : 'w-[240px] sm:w-[244px]',
+    )}
+  >
     <button
+      type="button"
       onClick={() => setOpen((value) => !value)}
       aria-expanded={open}
       aria-label={`Choose sportsbook offer. ${selected.providerName}, ${side} ${oddsLabel(selectedOdds)}, line ${selected.line}`}
-      className="flex h-10 w-full items-center justify-between gap-1.5 rounded-md border border-white/[0.07] bg-white/[0.025] px-1.5 text-left transition-colors hover:border-teal-500/20 hover:bg-teal-500/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50"
+      className="flex h-7 min-w-0 items-center gap-1 rounded px-0.5 text-left transition-colors hover:bg-white/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50"
     >
-      <span className="flex min-w-0 items-center gap-1.5">
+      <span className="flex min-w-0 flex-1 items-center gap-1">
         <span className="relative shrink-0">
-          <SportsbookLogo shortName={selected.providerShortName} compact />
+          <SportsbookLogo shortName={selected.providerShortName} compact className="w-5 rounded" />
           {selected.lineType === 'goblin' && <img src={GOBLIN_ASSET} alt="Goblin line" className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#111] object-contain drop-shadow-[0_0_4px_rgba(34,197,94,0.45)]" />}
           {selected.lineType === 'devil' && <img src={DEVIL_ASSET} alt="Devil line" className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#111] object-contain drop-shadow-[0_0_4px_rgba(239,68,68,0.45)]" />}
         </span>
-        <span className="min-w-0">
-          <span className="block truncate text-[11px] font-semibold tabular-nums text-teal-300">{selectedSide} {oddsLabel(selectedOdds)}</span>
-          <span className="mt-0.5 block truncate text-[9px] text-zinc-500">{selected.line} · {selected.providerShortName}</span>
+        <span className="flex min-w-0 flex-1 items-center gap-0.5">
+          <span className="min-w-0 truncate text-[9px] font-semibold text-zinc-100">{selected.providerName}</span>
+          {otherOfferCount > 0 && <span
+            data-other-offer-count={otherOfferCount}
+            title={`${otherOfferCount} other sportsbook offers`}
+              className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-white/[0.09] bg-white/[0.07] px-1 text-[10px] font-bold leading-none tabular-nums text-zinc-200"
+          >+{otherOfferCount}</span>}
         </span>
       </span>
-      <ChevronDown className="h-3 w-3 shrink-0 text-zinc-500" />
+      <ChevronDown className="h-2 w-2 shrink-0 text-zinc-600" />
     </button>
 
-    {open && <div className="absolute right-0 z-30 mt-1 max-h-80 w-64 overflow-y-auto rounded-xl border border-[#303030] bg-[#101010] p-2 shadow-2xl">
-      {groups.length === 0 ? <p className="p-3 text-xs text-zinc-500">No offers in this line group.</p> : groups.map(([key, group]) => <section key={key} className="mb-2 last:mb-0">
-        <div className="flex items-center gap-1.5 px-2 pb-1 text-[9px] font-semibold uppercase tracking-wide">
-          <span className={TYPE_STYLE[group[0].lineType]}>{group[0].lineType}</span>
-          <span className="text-zinc-600">· Line {group[0].line}</span>
-        </div>
-        {group.map((offer) => <button
+    <span aria-label={`Line ${selected.line}`} className="text-center text-[10px] font-semibold tabular-nums text-zinc-400">{selected.line}</span>
+    {(['over', 'under'] as Side[]).map((value) => <button
+      key={value}
+      type="button"
+      onClick={() => onSideChange(value)}
+      aria-label={`${value} ${oddsLabel(value === 'over' ? selected.overOdds : selected.underOdds)}`}
+      aria-pressed={side === value}
+      className="h-6 min-w-0 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/60"
+    ><OddsPriceCell
+      side={value}
+      odds={value === 'over' ? selected.overOdds : selected.underOdds}
+      best={value === 'over'
+        ? selected.overOdds !== null && selected.overOdds === bestOverOdds
+        : selected.underOdds !== null && selected.underOdds === bestUnderOdds}
+      compact
+      className={cn(
+        'w-full',
+        side === value && (value === 'over'
+          ? 'border-emerald-300/55 bg-emerald-500/[0.14] shadow-[0_0_8px_rgba(52,211,153,0.10)]'
+          : 'border-red-300/55 bg-red-500/[0.14] shadow-[0_0_8px_rgba(248,113,113,0.10)]'),
+      )}
+    /></button>)}
+
+    {open && <div className="absolute right-0 top-full z-30 mt-1 max-h-80 w-[min(410px,calc(100vw-24px))] overflow-y-auto rounded-xl border border-[#303030] bg-[#101010] p-2 shadow-2xl md:left-0 md:right-auto">
+      {offers.length === 0 ? <p className="p-3 text-xs text-zinc-500">No offers in this line group.</p> : <>
+        <div className="grid grid-cols-[minmax(120px,1fr)_42px_58px_58px] items-center gap-1.5 px-2 py-1 text-[7px] font-semibold uppercase tracking-[0.12em] text-zinc-600"><span>Sportsbook</span><span className="text-center">Line</span><span className="text-center">Over</span><span className="text-center">Under</span></div>
+        {offers.map((offer) => <button
           key={offer.id}
           disabled={offer.status !== 'active'}
           onClick={() => { onChange(offer); setOpen(false); }}
           aria-label={`${offer.providerName}, ${offer.lineType} line ${offer.line}, over ${oddsLabel(offer.overOdds)}, under ${oddsLabel(offer.underOdds)}, ${offer.status}`}
           className={cn(
-            'mb-1 grid w-full grid-cols-[minmax(0,1fr)_36px_auto] items-center gap-2 overflow-hidden rounded-lg border border-transparent px-2.5 py-2 text-left last:mb-0',
+            'mb-1 grid w-full grid-cols-[minmax(120px,1fr)_42px_58px_58px] items-center gap-1.5 overflow-hidden rounded-lg border border-transparent px-2 py-1.5 text-left last:mb-0',
             selected.id === offer.id ? 'bg-teal-500/[0.08]' : 'hover:bg-white/[0.035]',
             offer.lineType === 'goblin' && 'border-emerald-500/10 bg-gradient-to-r from-emerald-500/[0.055] to-transparent',
             offer.lineType === 'devil' && 'border-red-500/10 bg-gradient-to-r from-red-500/[0.05] to-transparent',
             offer.status !== 'active' && 'cursor-not-allowed opacity-50',
           )}
         >
-          <span className="flex min-w-0 items-center gap-2"><SportsbookLogo shortName={offer.providerShortName} compact /><span className="min-w-0"><span className="block truncate text-xs font-medium text-zinc-100">{offer.providerName}</span><span className="text-[9px] tabular-nums"><span className="font-semibold text-teal-300">{side === 'over' ? 'O' : 'U'} {oddsLabel(side === 'over' ? offer.overOdds : offer.underOdds)}</span><span className="text-zinc-600"> · {side === 'over' ? 'U' : 'O'} {oddsLabel(side === 'over' ? offer.underOdds : offer.overOdds)}</span></span></span></span>
-          <span className="grid h-9 w-9 place-items-center" aria-hidden="true">
-            {offer.lineType === 'goblin' && <img src={GOBLIN_ASSET} alt="" className="h-9 w-9 object-contain drop-shadow-[0_0_7px_rgba(34,197,94,0.45)]" />}
-            {offer.lineType === 'devil' && <img src={DEVIL_ASSET} alt="" className="h-9 w-9 object-contain drop-shadow-[0_0_7px_rgba(239,68,68,0.45)]" />}
-          </span>
-          <span className="text-right text-[9px] text-zinc-600">{offer.status}<br />{freshness(offer.observedAt)} ago</span>
+          <span className="flex min-w-0 items-center gap-1.5"><SportsbookLogo shortName={offer.providerShortName} compact /><span className="min-w-0"><span className="flex min-w-0 items-center gap-1"><span className="truncate text-[10px] font-medium text-zinc-100">{offer.providerName}</span><LineTypeMark lineType={offer.lineType} compact /></span><span className="block text-[7px] text-zinc-600">{offer.status} · {freshness(offer.observedAt)} ago</span></span></span>
+          <span className="text-center text-[10px] font-semibold tabular-nums text-zinc-200">{offer.line}</span>
+          <OddsPriceCell side="over" odds={offer.overOdds} best={offer.overOdds !== null && offer.overOdds === bestOverOdds} compact />
+          <OddsPriceCell side="under" odds={offer.underOdds} best={offer.underOdds !== null && offer.underOdds === bestUnderOdds} compact />
         </button>)}
-      </section>)}
+      </>}
     </div>}
   </div>;
 }
@@ -300,30 +330,16 @@ function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChang
     selected.lineType === 'devil' && 'border-red-500/25 shadow-[inset_2px_0_0_#ef4444]',
     selected.lineType !== 'goblin' && selected.lineType !== 'devil' && 'border-[#202020]',
   )}>
-    <div className="flex items-start justify-between gap-2">
+    <div className="flex items-center justify-between gap-2">
       <button onClick={() => navigate('player', { playerId: row.playerId })} className="flex min-w-0 items-center gap-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">
         <PlayerAvatar name={row.playerName} size="xs" />
         <span className="min-w-0">
-          <span className="block truncate text-[11px] font-semibold text-white">{row.playerName}</span>
+          <span className="flex min-w-0 items-center gap-1"><span className="truncate text-[11px] font-semibold text-white">{row.playerName}</span><span className="rounded bg-white/[0.055] px-1 py-0.5 text-[7px] font-semibold text-zinc-500">{row.position}</span></span>
           <span className="block truncate text-[8px] text-zinc-500">{row.team} vs {row.opponent} · {row.event.startTimeLabel}</span>
+          <span className="mt-0.5 block truncate text-[8px] font-semibold text-zinc-300">{row.market} <span className="font-normal text-zinc-600">· {selected.lineType}</span></span>
         </span>
       </button>
-      <OfferSelector row={row} selected={selected} side={side} onChange={(offer) => onOfferChange(offer.id)} lineFilter={lineFilter} />
-    </div>
-
-    <div className="mt-2 flex items-center justify-between gap-1 rounded-md border border-[#242424] bg-[#0c0c0c] p-1.5">
-      <div className="min-w-0">
-        <p className="truncate text-[8px] text-zinc-500">{row.market}</p>
-        <p className="text-xs font-bold text-zinc-100">{side === 'over' ? 'Over' : 'Under'} {selected.line}</p>
-      </div>
-      <div className="grid shrink-0 grid-cols-2 gap-0.5 rounded bg-[#161616] p-0.5">
-        {(['over', 'under'] as Side[]).map((value) => <button
-          key={value}
-          onClick={() => onSideChange(value)}
-          aria-label={`${value} ${oddsLabel(value === 'over' ? selected.overOdds : selected.underOdds)}`}
-          className={cn('rounded px-1.5 py-1 text-[8px] font-semibold capitalize', side === value ? 'bg-teal-500 text-black' : 'text-zinc-500 hover:text-white')}
-        >{value[0].toUpperCase()} {oddsLabel(value === 'over' ? selected.overOdds : selected.underOdds)}</button>)}
-      </div>
+      <OfferSelector row={row} selected={selected} side={side} onChange={(offer) => onOfferChange(offer.id)} onSideChange={onSideChange} lineFilter={lineFilter} />
     </div>
 
     <div className="mt-1.5 grid grid-cols-4 gap-1">
@@ -397,15 +413,7 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
       </button>
     </td>
     <td className="px-2 py-2">
-      <OfferSelector row={row} selected={selected} side={side} onChange={(offer) => onOfferChange(offer.id)} lineFilter={lineFilter} compact />
-      <div className="mt-1 flex gap-1">
-        {(['over', 'under'] as Side[]).map((value) => <button
-          key={value}
-          onClick={() => onSideChange(value)}
-          aria-label={`${value} ${oddsLabel(value === 'over' ? selected.overOdds : selected.underOdds)}`}
-          className={cn('min-w-0 flex-1 rounded-md px-1 py-1 text-[9px] font-semibold transition-colors', side === value ? 'bg-teal-500/[0.15] text-teal-200 ring-1 ring-inset ring-teal-500/25' : 'text-zinc-600 hover:bg-white/[0.04] hover:text-zinc-300')}
-        >{value === 'over' ? 'Over' : 'Under'} {oddsLabel(value === 'over' ? selected.overOdds : selected.underOdds)}</button>)}
-      </div>
+      <OfferSelector row={row} selected={selected} side={side} onChange={(offer) => onOfferChange(offer.id)} onSideChange={onSideChange} lineFilter={lineFilter} compact />
     </td>
     <td className="border-l border-white/[0.045] px-1 py-2 text-center">
       {teamMoneyline === null ? <span className="text-[9px] text-zinc-600">N/A</span> : <span className="inline-flex min-w-11 justify-center rounded-full border border-teal-500/25 bg-teal-500/[0.08] px-2 py-1 text-[10px] font-semibold tabular-nums text-teal-300" title={`${row.team} moneyline at ${selected.providerShortName}`}>{oddsLabel(teamMoneyline)}</span>}
@@ -556,7 +564,7 @@ export function PropsPage() {
             <thead>
               <tr className="border-b border-white/[0.055] bg-[#101212] text-[8px] font-medium uppercase tracking-[0.14em] text-zinc-600">
                 <th className="sticky left-0 z-20 w-[210px] bg-[#101212] px-3 py-2.5">Player · Prop</th>
-                <th className="w-[160px] px-2 py-2.5">Line · Book · Side</th>
+                <th className="w-[260px] px-2 py-2.5">Book · Line · Odds</th>
                 <SortableStatHeader label="Moneyline" field="moneyline" sort={statSort} onSort={updateStatSort} className="w-[70px]" />
                 <SortableStatHeader label="Projection" field="projection" sort={statSort} onSort={updateStatSort} className="w-[82px]" />
                 <SortableStatHeader label="Confidence" field="confidence" sort={statSort} onSort={updateStatSort} className="w-[72px]" />

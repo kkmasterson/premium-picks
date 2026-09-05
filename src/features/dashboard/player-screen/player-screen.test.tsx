@@ -103,14 +103,14 @@ describe('player-screen route state', () => {
 
     fireEvent.click(provider);
     fireEvent.click(screen.getByRole('option', { name: /FanDuel.*Goblin/i }));
-    expect(screen.getByText(/Goblin · O/)).toBeInTheDocument();
+    expect(provider).toHaveTextContent(/Goblin.*O/);
     expect(document.querySelector('img[src="/assets/sportsbooks/fanduel.svg"]')).toBeInTheDocument();
     expect(document.querySelector('img[src="/assets/green-goblin.png"]')).toBeInTheDocument();
     expect(document.querySelector('img[src="/assets/red-devil.png"]')).not.toBeInTheDocument();
 
     fireEvent.click(provider);
     fireEvent.click(screen.getByRole('option', { name: /BetMGM.*Devil/i }));
-    expect(screen.getByText(/Devil · O/)).toBeInTheDocument();
+    expect(provider).toHaveTextContent(/Devil.*O/);
     expect(document.querySelector('img[src="/assets/sportsbooks/betmgm.jpg"]')).toBeInTheDocument();
     expect(document.querySelector('img[src="/assets/red-devil.png"]')).toBeInTheDocument();
     expect(document.querySelector('img[src="/assets/green-goblin.png"]')).not.toBeInTheDocument();

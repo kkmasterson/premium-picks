@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { PlayerAvatar } from '@/features/dashboard/components/common';
+import { TeamBadge } from '@/features/dashboard/components/EntityMedia';
 import { cn } from '@/lib/utils';
 import { BASKETBALL_SHOT_ZONE_POSITIONS, positionSoccer433, type BasketballShotZoneId } from '../spatialLayouts';
 import type { ContextModuleKey, MarketSnapshot, PlayerResearchViewModel } from '../types';
@@ -9,14 +10,52 @@ function Card({ title, subtitle, children }: { title: string; subtitle?: string;
   return <section className="rounded-lg border border-[#242424] bg-[#0c0c0c] p-4"><div className="flex items-start justify-between gap-3"><div><h3 className="text-xs font-semibold text-zinc-200">{title}</h3>{subtitle && <p className="mt-0.5 text-[10px] text-zinc-600">{subtitle}</p>}</div></div>{children}</section>;
 }
 
+function PredictorTeam({ team, probability, favored, align }: { team: string; probability: number; favored: boolean; align: 'left' | 'right' }) {
+  return <div className={cn('min-w-0 rounded-md border px-1.5 py-1.5', favored ? 'border-teal-400/25 bg-teal-400/[0.06] shadow-[0_0_16px_rgba(45,212,191,0.08)]' : 'border-transparent bg-white/[0.02]')}>
+    <div className={cn('flex items-center gap-1.5', align === 'right' && 'flex-row-reverse text-right')}>
+      <TeamBadge team={team} className="h-7 w-7 border-white/5 bg-[#141717] p-0.5" />
+      <div className="min-w-0">
+        <p className={cn('truncate text-[9px] font-bold tracking-wide', favored ? 'text-zinc-100' : 'text-zinc-500')}>{team}</p>
+        <p className={cn('text-sm font-black tabular-nums', favored ? 'text-teal-300' : 'text-zinc-400')}>{probability}%</p>
+      </div>
+    </div>
+  </div>;
+}
+
+function WinPredictor({ viewModel, esports }: { viewModel: PlayerResearchViewModel; esports: boolean }) {
+  const [teamProbability, opponentProbability] = viewModel.contextual.winProbability;
+  const difference = Math.abs(teamProbability - opponentProbability);
+  const teamFavored = teamProbability > opponentProbability;
+  const opponentFavored = opponentProbability > teamProbability;
+  const favorite = teamFavored ? viewModel.player.team : opponentFavored ? viewModel.player.opponent : null;
+
+  return <Card title={esports ? 'Series Win Predictor' : 'Win Predictor'}>
+    <div role="group" aria-label={`${viewModel.player.team} versus ${viewModel.player.opponent} projected win probability`} className="mt-2.5">
+      <p className="text-center text-[8px] font-semibold uppercase tracking-[0.14em] text-zinc-600">Projected win probability</p>
+      <div className="mt-2 grid grid-cols-[70px_minmax(74px,1fr)_70px] items-center gap-1">
+        <PredictorTeam team={viewModel.player.team} probability={teamProbability} favored={teamFavored} align="left" />
+        <div className="min-w-0 text-center">
+          <p className="mb-1 text-[8px] font-bold tracking-[0.18em] text-zinc-600">VS</p>
+          <div aria-hidden="true" className="flex h-2 overflow-hidden rounded-full bg-rose-500/60 ring-1 ring-white/[0.04]">
+            <span className="bg-teal-500" style={{ width: `${teamProbability}%` }} />
+          </div>
+          <p className="mt-1 min-h-2.5 truncate text-[8px] font-semibold text-zinc-500">
+            {favorite && difference >= 8 ? `${favorite} +${difference}% edge` : '\u00a0'}
+          </p>
+        </div>
+        <PredictorTeam team={viewModel.player.opponent} probability={opponentProbability} favored={opponentFavored} align="right" />
+      </div>
+    </div>
+  </Card>;
+}
+
 function Matchup({ viewModel }: { viewModel: PlayerResearchViewModel }) {
-  const [first] = viewModel.contextual.winProbability;
   if (viewModel.sportPayload.family === 'tennis') {
     const h2h = viewModel.sportPayload.h2h;
     return <div className="space-y-3"><Card title="Head-to-Head Matchup" subtitle="Direct meetings"><div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 text-center"><div data-testid="h2h-player" className="flex min-w-0 flex-col items-center"><PlayerAvatar name={viewModel.player.name} size="md" /><p className="mt-2 w-full truncate text-xs font-semibold text-zinc-200">{viewModel.player.name}</p><p className="text-xl font-bold text-emerald-400">{h2h.playerWins}</p></div><span className="self-center text-xs font-bold text-zinc-600">VS</span><div data-testid="h2h-opponent" className="flex min-w-0 flex-col items-center"><PlayerAvatar name={viewModel.player.opponent} size="md" /><p className="mt-2 w-full truncate text-xs font-semibold text-zinc-200">{viewModel.player.opponent}</p><p className="text-xl font-bold text-red-400">{h2h.opponentWins}</p></div></div></Card></div>;
   }
   const esports = viewModel.profile.family === 'esports';
-  return <div className="space-y-3"><Card title={esports ? 'Series Win Predictor' : 'Win Predictor'} subtitle="Current event projection"><div className="mt-4 flex items-center gap-3"><div className="text-center"><p className="text-xl font-bold text-emerald-400">{first}%</p><p className="text-[10px] text-zinc-500">{viewModel.player.team}</p></div><div className="flex h-3 flex-1 overflow-hidden rounded-full bg-red-500/70"><span className="bg-emerald-500" style={{ width: `${first}%` }} /></div><div className="text-center"><p className="text-xl font-bold text-red-400">{100 - first}%</p><p className="text-[10px] text-zinc-500">{viewModel.player.opponent}</p></div></div></Card><Card title={esports ? 'Match and Score Odds' : 'Matchup Odds'} subtitle="Mock provider consensus"><div className="mt-3 grid grid-cols-3 divide-x divide-[var(--dashboard-border)]">{(esports ? ['Moneyline', '2-0 Score', '2-1 Score'] : ['Moneyline', 'Spread', 'Total']).map((label, index) => <div key={label} className="p-2 text-center"><p className="text-[9px] text-zinc-600">{label}</p><p className="mt-1 text-sm font-bold text-teal-300">{index === 0 ? '-120' : esports ? index === 1 ? '+210' : '+165' : index === 1 ? '-2.5' : 'O 42.5'}</p></div>)}</div></Card></div>;
+  return <div className="space-y-3"><WinPredictor viewModel={viewModel} esports={esports} /><Card title={esports ? 'Match and Score Odds' : 'Matchup Odds'} subtitle="Mock provider consensus"><div className="mt-3 grid grid-cols-3 divide-x divide-[var(--dashboard-border)]">{(esports ? ['Moneyline', '2-0 Score', '2-1 Score'] : ['Moneyline', 'Spread', 'Total']).map((label, index) => <div key={label} className="p-2 text-center"><p className="text-[9px] text-zinc-600">{label}</p><p className="mt-1 text-sm font-bold text-teal-300">{index === 0 ? '-120' : esports ? index === 1 ? '+210' : '+165' : index === 1 ? '-2.5' : 'O 42.5'}</p></div>)}</div></Card></div>;
 }
 
 function Defense({ viewModel, market }: { viewModel: PlayerResearchViewModel; market: MarketSnapshot }) {

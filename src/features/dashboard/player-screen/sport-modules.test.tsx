@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { MemoryRouter } from 'react-router';
 import App from '@/app/App';
@@ -8,6 +8,16 @@ function renderPlayer(path: string) {
 }
 
 describe('sport-specific player modules', () => {
+  it('renders the win predictor as a logo-led head-to-head matchup', async () => {
+    renderPlayer('/dashboard/players/NBA-jalen-brunson');
+    const predictor = await screen.findByRole('group', { name: 'NYK versus BOS projected win probability' });
+
+    expect(within(predictor).getByRole('img', { name: 'New York Knicks badge' })).toBeInTheDocument();
+    expect(within(predictor).getByRole('img', { name: 'Boston Celtics badge' })).toBeInTheDocument();
+    expect(within(predictor).getByText('Projected win probability')).toBeInTheDocument();
+    expect(within(predictor).getByText('VS')).toBeInTheDocument();
+  });
+
   it('renders running-back usage and position-aware defense', async () => {
     renderPlayer('/dashboard/players/NFL-christian-mccaffrey?market=rush-rec-yds&period=full');
     expect(await screen.findByText('SF Pass vs Run Rate')).toBeInTheDocument();

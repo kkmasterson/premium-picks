@@ -61,10 +61,18 @@ describe('expanded dashboard destinations', () => {
     expect(selectedOffers.length).toBeGreaterThan(0);
     expect(selectedOffers[0]).toHaveAccessibleName(/line \d/i);
     expect(selectedOffers[0].querySelector('[data-sportsbook-logo="DK"]')).toBeInTheDocument();
+    const selectedOfferRow = screen.getAllByRole('group', { name: /DraftKings sportsbook offer, line .* over .* under/i })[0];
+    expect(selectedOfferRow).toHaveTextContent('DraftKings');
+    expect(selectedOfferRow.querySelector('[data-other-offer-count="3"]')).toHaveTextContent('+3');
+    expect(selectedOfferRow.querySelector('[aria-label^="Line "]')).toBeInTheDocument();
+    expect(within(selectedOfferRow).getByRole('button', { name: /^over /i })).toBeInTheDocument();
+    expect(within(selectedOfferRow).getByRole('button', { name: /^under /i })).toBeInTheDocument();
 
     fireEvent.click(selectedOffers[0]);
     const goblinOffer = screen.getByRole('button', { name: /FanDuel, goblin line/i });
     expect(goblinOffer.querySelector('img[src="/assets/green-goblin.png"]')).toBeInTheDocument();
+    expect(screen.getAllByTitle('Best available over price').length).toBeGreaterThan(0);
+    expect(screen.getAllByTitle('Best available under price').length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole('button', { name: 'Sportsbooks' }));
     expect(document.querySelector('img[src="/assets/sportsbooks/fanatics.svg"]')).toBeInTheDocument();
