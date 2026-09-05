@@ -19,7 +19,7 @@ export function PlayerAvatar({ name, size = 'md' }: { name: string; size?: 'xs' 
         <img
           src={asset.headshotUrl}
           alt=""
-          loading="lazy"
+          loading="eager"
           decoding="async"
           className="h-full w-full object-cover object-top"
           onError={() => setFailedUrl(asset.headshotUrl)}

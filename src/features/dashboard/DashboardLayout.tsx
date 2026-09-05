@@ -5,6 +5,7 @@ import { TopSportNav } from '@/features/dashboard/components/TopSportNav';
 import { MobileBottomNav, Sidebar } from '@/features/dashboard/components/Sidebar';
 import { PlayerDrawer } from '@/features/dashboard/components/PlayerDrawer';
 import { PickBuilderDrawer, PickBuilderRail } from '@/features/dashboard/components/PickBuilder';
+import { DiscordPrompt } from '@/features/dashboard/components/DiscordPrompt';
 
 function Shell() {
   return (
@@ -20,6 +21,7 @@ function Shell() {
       <MobileBottomNav />
       <PickBuilderDrawer />
       <PlayerDrawer />
+      <DiscordPrompt />
     </div>
   );
 }

@@ -1,16 +1,77 @@
 import { useState } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 
-const FOUR_DAYS_MS = 4 * 24 * 60 * 60 * 1000;
+const DISMISSED_KEY = 'arena-discord-prompt-dismissed';
 
-export function DiscordPrompt({ signedIn, discordUrl }: { signedIn: boolean; discordUrl: string | null }) {
-  const [visible, setVisible] = useState(() => {
-    if (!signedIn || !discordUrl || localStorage.getItem('arena-discord-never') === '1') return false;
-    const dismissedAt = Number(localStorage.getItem('arena-discord-dismissed-at') ?? 0);
-    return Date.now() - dismissedAt >= FOUR_DAYS_MS;
-  });
-  if (!visible || !signedIn || !discordUrl) return null;
-  const dismiss = () => { localStorage.setItem('arena-discord-dismissed-at', String(Date.now())); setVisible(false); };
-  const never = () => { localStorage.setItem('arena-discord-never', '1'); setVisible(false); };
-  return <aside className="fixed bottom-20 right-4 z-40 w-[min(22rem,calc(100vw-2rem))] rounded-xl border border-indigo-500/30 bg-[#111] p-4 shadow-2xl md:bottom-5" aria-label="Premium Picks Discord invitation"><button onClick={dismiss} aria-label="Close Discord invitation" className="absolute right-2 top-2 rounded p-1 text-zinc-600 hover:text-white"><X className="h-4 w-4"/></button><div className="flex gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-indigo-500 text-white"><MessageCircle className="h-5 w-5"/></span><div><p className="text-sm font-semibold text-white">Join Premium Picks on Discord</p><p className="mt-1 text-[10px] leading-relaxed text-zinc-400">Connect with the Premium Picks community for announcements and discussion.</p></div></div><a href={discordUrl} className="mt-3 block rounded-lg bg-indigo-500 py-2 text-center text-xs font-bold text-white">Open Discord</a><div className="mt-2 flex justify-center gap-4"><button onClick={dismiss} className="text-[9px] text-zinc-500 hover:text-white">Not now</button><button onClick={never} className="text-[9px] text-zinc-500 hover:text-white">Don't show again</button></div></aside>;
+function DiscordMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M19.5 5.3A16.3 16.3 0 0 0 15.4 4l-.5 1a14.1 14.1 0 0 0-5.8 0l-.5-1a16.3 16.3 0 0 0-4.1 1.3C1.9 9.1 1.2 12.8 1.5 16.4a16.7 16.7 0 0 0 5 2.5l1.2-1.7a10.8 10.8 0 0 1-1.9-.9l.5-.4a11.8 11.8 0 0 0 11.4 0l.5.4a10.8 10.8 0 0 1-1.9.9l1.2 1.7a16.7 16.7 0 0 0 5-2.5c.4-4.2-.7-7.9-3-11.1ZM8.8 14.7c-1.1 0-2-1-2-2.3 0-1.2.9-2.2 2-2.2s2 1 2 2.2c0 1.3-.9 2.3-2 2.3Zm6.4 0c-1.1 0-2-1-2-2.3 0-1.2.9-2.2 2-2.2s2 1 2 2.2c0 1.3-.9 2.3-2 2.3Z"
+      />
+    </svg>
+  );
+}
+
+export function DiscordPrompt() {
+  const [visible, setVisible] = useState(() => sessionStorage.getItem(DISMISSED_KEY) !== 'true');
+  const [previewed, setPreviewed] = useState(false);
+
+  const dismiss = () => {
+    sessionStorage.setItem(DISMISSED_KEY, 'true');
+    setVisible(false);
+  };
+
+  if (!visible) return null;
+
+  return (
+    <section
+      role="dialog"
+      aria-label="Join the Premium Picks Discord"
+      className="fixed bottom-20 right-3 z-40 w-[calc(100%-1.5rem)] max-w-[360px] overflow-hidden rounded-xl border border-[#2b2d38] bg-[#111318]/95 shadow-2xl shadow-black/70 backdrop-blur-md md:bottom-4 md:right-[72px]"
+    >
+      <div className="h-1 bg-gradient-to-r from-[#5865f2] via-violet-500 to-teal-400" />
+      <div className="p-3.5">
+        <button
+          type="button"
+          onClick={dismiss}
+          aria-label="Close Discord prompt"
+          className="absolute right-3 top-3 rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5865f2]"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="flex gap-3 pr-7">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#5865f2] text-white shadow-lg shadow-[#5865f2]/15">
+            <DiscordMark />
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-[13px] font-bold text-zinc-100">Join the Premium Picks Discord</h2>
+            <p className="mt-1 text-[10px] leading-relaxed text-zinc-400">
+              Connect with the Premium Picks community, compare research, and get your member role when Discord integration launches.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-3 flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setPreviewed(true)}
+            className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-md bg-[#5865f2] px-3 text-[11px] font-bold text-white transition-colors hover:bg-[#6672f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8b94ff]"
+          >
+            {previewed ? <><Check className="h-4 w-4" /> Coming soon</> : 'Connect Discord'}
+          </button>
+          <button
+            type="button"
+            onClick={dismiss}
+            className="h-8 rounded-md px-2.5 text-[10px] font-semibold text-zinc-400 transition-colors hover:bg-white/[0.04] hover:text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-600"
+          >
+            Maybe later
+          </button>
+        </div>
+        {previewed && <p className="mt-2 text-center text-[10px] text-violet-300" role="status">Discord connection is a frontend preview and is not active yet.</p>}
+      </div>
+    </section>
+  );
 }

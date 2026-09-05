@@ -1,28 +1,36 @@
 import { useState } from 'react';
 import {
-  Bookmark, Bot, CircleHelp, ExternalLink, Flame, GitCompareArrows, ListFilter, ListPlus, LockKeyhole, Menu, PanelLeftClose, PanelLeftOpen, TrendingUp, Users, Swords, User,
+  BookOpen, Bookmark, Bot, Calculator, ExternalLink, Flame, Gift, GitCompareArrows, ListFilter, ListPlus, LockKeyhole, Menu, PanelLeftClose, PanelLeftOpen, TrendingUp, Users, Swords, User,
 } from 'lucide-react';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { cn } from '@/lib/utils';
 import type { PageKey } from '@/features/dashboard/types';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { profileInitials, useArenaProfile } from '@/features/dashboard/profile';
 
 interface Item { key: PageKey; label: string; icon: React.ElementType; }
 
-const ANALYSIS: Item[] = [
+const RESEARCH: Item[] = [
   { key: 'props', label: 'Props', icon: ListFilter },
+  { key: 'players', label: 'Players', icon: Users },
+  { key: 'matchups', label: 'Matchups', icon: Swords },
+  { key: 'trends', label: 'Trends', icon: TrendingUp },
+];
+const EDGE: Item[] = [
   { key: 'ev', label: '+EV', icon: LockKeyhole },
   { key: 'discrepancies', label: 'Discrepancies', icon: GitCompareArrows },
-  { key: 'players', label: 'Players', icon: Users },
-  { key: 'trends', label: 'Trends', icon: TrendingUp },
-  { key: 'matchups', label: 'Matchups', icon: Swords },
 ];
-const BUILD: Item[] = [{ key: 'builder', label: 'Builder', icon: ListPlus }];
-const COMMUNITY: Item[] = [{ key: 'popular', label: 'Popular', icon: Flame }];
-const PERSONAL: Item[] = [{ key: 'saved', label: 'Saved', icon: Bookmark }];
-const SUPPORT: Item[] = [{ key: 'help', label: 'Help / Guide', icon: CircleHelp }];
-
+const WORKSPACE: Item[] = [
+  { key: 'builder', label: 'Builder', icon: ListPlus },
+  { key: 'popular', label: 'Popular', icon: Flame },
+  { key: 'saved', label: 'Saved', icon: Bookmark },
+];
+const TOOLS: Item[] = [
+  { key: 'calculators', label: 'Calculators', icon: Calculator },
+  { key: 'promos', label: 'Promos', icon: Gift },
+  { key: 'guides', label: 'Guides', icon: BookOpen },
+];
 function NavItem({ item, collapsed }: { item: Item; collapsed: boolean }) {
   const { page, navigate } = useDashboard();
   const active = page === item.key || (item.key === 'players' && page === 'player') || (item.key === 'matchups' && page === 'game');
@@ -54,7 +62,7 @@ function NavItem({ item, collapsed }: { item: Item; collapsed: boolean }) {
 function Group({ label, items, collapsed }: { label: string; items: Item[]; collapsed: boolean }) {
   return (
     <div>
-      {!collapsed && <p className="px-3 pb-1 pt-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-600">{label}</p>}
+      {!collapsed && <div className="flex items-center gap-2 px-3 pb-1.5 pt-4"><p className="shrink-0 text-[9px] font-bold uppercase tracking-[0.18em] text-zinc-600">{label}</p><span className="h-px flex-1 bg-[#202020]" /></div>}
       {collapsed && <div className="mx-3 my-3 border-t border-[#1c1c1c]" />}
       <div className="space-y-0.5">
         {items.map((i) => <NavItem key={i.key} item={i} collapsed={collapsed} />)}
@@ -65,6 +73,8 @@ function Group({ label, items, collapsed }: { label: string; items: Item[]; coll
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const { navigate } = useDashboard();
+  const [profile] = useArenaProfile();
   return (
     <TooltipProvider>
       <aside
@@ -74,27 +84,30 @@ export function Sidebar() {
         )}
         aria-label="Primary"
       >
-        <div className="flex-1 overflow-y-auto no-scrollbar">
-          <Group label="Analysis" items={ANALYSIS} collapsed={collapsed} />
-          <Group label="Build" items={BUILD} collapsed={collapsed} />
-          <Group label="Community" items={COMMUNITY} collapsed={collapsed} />
-          <Group label="Personal" items={PERSONAL} collapsed={collapsed} />
-          <Group label="Support" items={SUPPORT} collapsed={collapsed} />
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar">
+          <div>
+            <Group label="Research" items={RESEARCH} collapsed={collapsed} />
+            <Group label="Edge" items={EDGE} collapsed={collapsed} />
+            <Group label="Workspace" items={WORKSPACE} collapsed={collapsed} />
+          </div>
+          <div className="mt-auto pb-2">
+            <Group label="Tools" items={TOOLS} collapsed={collapsed} />
+          </div>
         </div>
 
         <div className="mt-2 border-t border-[#1c1c1c] pt-3">
-          <div className={cn('flex items-center gap-2.5 rounded-md px-2 py-2', collapsed && 'justify-center px-0')}>
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5C542] text-xs font-bold text-black">JD</span>
+          <button onClick={() => navigate('profile')} className={cn('flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left hover:bg-[#141414] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500', collapsed && 'justify-center px-0')} aria-label="Open profile">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F5C542] text-xs font-bold text-black">{profileInitials(profile.displayName)}</span>
             {!collapsed && (
               <div className="min-w-0">
                 <p className="flex items-center gap-1.5 truncate text-xs font-medium text-zinc-200">
-                  Jordan Davis
+                  {profile.displayName}
                   <Badge className="h-4 border border-[#F5C542]/30 bg-[#F5C542]/10 px-1 text-[9px] text-[#F5C542] hover:bg-[#F5C542]/10">PRO</Badge>
                 </p>
                 <p className="flex items-center gap-1 text-[10px] text-zinc-500"><User className="h-2.5 w-2.5" /> Premium plan</p>
               </div>
             )}
-          </div>
+          </button>
           <button
             onClick={() => setCollapsed((c) => !c)}
             className="mt-1 flex w-full items-center justify-center gap-2 rounded-md py-1.5 text-xs text-zinc-500 hover:bg-[#141414] hover:text-zinc-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
@@ -122,7 +135,9 @@ export function MobileBottomNav() {
     { key: 'trends', label: 'Trends', icon: TrendingUp },
     { key: 'matchups', label: 'Matchups', icon: Swords },
     { key: 'saved', label: 'Saved', icon: Bookmark },
-    { key: 'help', label: 'Help / Guide', icon: CircleHelp },
+    { key: 'calculators', label: 'Calculators', icon: Calculator },
+    { key: 'promos', label: 'Promos', icon: Gift },
+    { key: 'guides', label: 'Guides', icon: BookOpen },
   ];
   const moreActive = moreItems.some((item) => item.key === page);
   return (

@@ -63,7 +63,15 @@ const TEAM_NAMES: Record<string, string> = {
   NAVI: 'Natus Vincere', VIT: 'Vitality', G2E: 'G2 Esports', FZE: 'FaZe Clan', MOUZ: 'MOUZ', SPIR: 'Team Spirit',
   SEN: 'Sentinels', LOUD: 'LOUD', FNCV: 'Fnatic', PRX: 'Paper Rex', GENG: 'Gen.G', LEV: 'Leviatán',
 };
-export const teamName = (abbr: string) => TEAM_NAMES[abbr] ?? abbr;
+
+const SPORT_TEAM_NAME_OVERRIDES: Partial<Record<Sport, Record<string, string>>> = {
+  NFL: {
+    KC: 'Kansas City Chiefs', BUF: 'Buffalo Bills', SF: 'San Francisco 49ers', DAL: 'Dallas Cowboys',
+    PHI: 'Philadelphia Eagles', BAL: 'Baltimore Ravens', MIA: 'Miami Dolphins', CIN: 'Cincinnati Bengals',
+  },
+};
+
+export const teamName = (abbr: string, sport?: Sport) => SPORT_TEAM_NAME_OVERRIDES[sport ?? 'NBA']?.[abbr] ?? TEAM_NAMES[abbr] ?? abbr;
 
 interface PlayerSeed { name: string; team: string; pos: string; jersey: number; }
 

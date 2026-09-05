@@ -135,6 +135,10 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       saved: '/dashboard/saved',
       popular: '/dashboard/popular',
       builder: '/dashboard/builder',
+      profile: '/dashboard/profile',
+      calculators: '/dashboard/calculators',
+      promos: '/bonuses',
+      guides: '/dashboard/guides',
       help: '/dashboard/help',
     };
 

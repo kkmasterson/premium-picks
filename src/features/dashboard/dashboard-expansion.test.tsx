@@ -44,12 +44,52 @@ describe('expanded dashboard destinations', () => {
 
   it('exposes both new destinations in the desktop navigation', async () => {
     renderRoute('/dashboard/props');
+    const sportsNav = screen.getByRole('navigation', { name: 'Sports' });
+    expect(sportsNav).toHaveClass('sports-scrollbar', 'overflow-x-auto', 'overflow-y-hidden');
+    expect(sportsNav).not.toHaveClass('no-scrollbar');
     expect(await screen.findByRole('button', { name: 'Discrepancies' })).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Popular' }).length).toBeGreaterThan(0);
+    const primary = screen.getByLabelText('Primary');
+    expect(within(primary).getByText('Research')).toBeInTheDocument();
+    expect(within(primary).getByText('Edge')).toBeInTheDocument();
+    expect(within(primary).getByText('Workspace')).toBeInTheDocument();
+    expect(within(primary).getByText('Tools')).toBeInTheDocument();
+    expect(within(primary).getByRole('button', { name: 'Calculators' })).toBeInTheDocument();
+    expect(within(primary).getByRole('button', { name: 'Promos' })).toBeInTheDocument();
+    expect(within(primary).getByRole('button', { name: 'Guides' })).toBeInTheDocument();
+    expect(within(primary).getByRole('button', { name: 'Open profile' })).toBeInTheDocument();
+    expect(within(primary).queryByRole('button', { name: 'Help / Guide' })).not.toBeInTheDocument();
     const builder = screen.getByLabelText('Pick Builder');
     expect(builder).toHaveClass('w-14', 'min-w-[3.5rem]', 'max-w-[3.5rem]', 'shrink-0');
     fireEvent.click(screen.getByRole('button', { name: 'Expand Pick Builder' }));
     expect(builder).toHaveClass('w-72', 'min-w-[18rem]', 'max-w-[18rem]');
+  });
+
+  it('opens the placeholder calculator and guides tools', async () => {
+    renderRoute('/dashboard/calculators');
+    expect(await screen.findByRole('heading', { name: 'Calculators' })).toBeInTheDocument();
+    expect(screen.getByText('Calculator modules will be added here', { exact: false })).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'Guides' })[0]);
+    expect(await screen.findByRole('heading', { name: 'Guides' })).toBeInTheDocument();
+    expect(screen.getByText('reserved for guides', { exact: false })).toBeInTheDocument();
+  });
+
+  it('shows a dismissible frontend-only Discord community prompt', async () => {
+    const view = renderRoute('/dashboard/ev');
+    const prompt = await screen.findByRole('dialog', { name: 'Join the Premium Picks Discord' });
+    expect(prompt).toHaveTextContent('Connect Discord');
+
+    fireEvent.click(within(prompt).getByRole('button', { name: 'Connect Discord' }));
+    expect(within(prompt).getByRole('status')).toHaveTextContent('frontend preview and is not active yet');
+
+    fireEvent.click(within(prompt).getByRole('button', { name: 'Maybe later' }));
+    expect(screen.queryByRole('dialog', { name: 'Join the Premium Picks Discord' })).not.toBeInTheDocument();
+    expect(window.sessionStorage.getItem('arena-discord-prompt-dismissed')).toBe('true');
+
+    view.unmount();
+    renderRoute('/dashboard/props');
+    expect(screen.queryByRole('dialog', { name: 'Join the Premium Picks Discord' })).not.toBeInTheDocument();
   });
 
   it('pairs sportsbook logos with the selected side price and filter choices', async () => {
@@ -108,6 +148,7 @@ describe('expanded dashboard destinations', () => {
     const headshot = firstPlayerCell?.querySelector<HTMLImageElement>('img[src*="cdn.nba.com/headshots"]');
 
     expect(headshot).toHaveClass('absolute', 'bottom-0', 'object-contain', 'object-bottom');
+    expect(headshot).toHaveAttribute('loading', 'eager');
     expect(headshot?.parentElement).toHaveClass('absolute', 'inset-y-0', 'overflow-hidden');
     expect(firstPlayerCell?.querySelector('button')).toHaveClass('pl-[72px]');
   });
@@ -159,5 +200,16 @@ describe('expanded dashboard destinations', () => {
     expect(await screen.findByRole('table', { name: 'Props research table' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Projections' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Sort' })).not.toBeInTheDocument();
+  });
+
+  it('keeps shared team abbreviations scoped to the selected sport', async () => {
+    renderRoute('/dashboard/matchups');
+    fireEvent.click(await screen.findByRole('button', { name: 'NFL' }));
+
+    expect(await screen.findByText('Dallas Cowboys', { exact: false })).toBeInTheDocument();
+    expect(screen.getByText('Philadelphia Eagles', { exact: false })).toBeInTheDocument();
+    expect(screen.getByText('Miami Dolphins', { exact: false })).toBeInTheDocument();
+    expect(screen.queryByText('Dallas Mavericks', { exact: false })).not.toBeInTheDocument();
+    expect(screen.queryByAltText('Dallas Mavericks badge')).not.toBeInTheDocument();
   });
 });

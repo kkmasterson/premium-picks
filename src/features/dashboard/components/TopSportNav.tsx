@@ -1,4 +1,4 @@
-import { Bell, Bookmark, ChevronDown, CircleHelp, LogOut, Settings, User, CreditCard } from 'lucide-react';
+import { Bell, Bookmark, ChevronDown, CircleHelp, LogOut, User } from 'lucide-react';
 import { Link } from 'react-router';
 import { playerById, SPORTS } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { SportIcon } from '@/features/dashboard/components/EntityMedia';
+import { profileInitials, useArenaProfile } from '@/features/dashboard/profile';
 
 const ALL_SPORTS: (Sport | 'All')[] = ['All', ...SPORTS];
 
@@ -16,6 +17,7 @@ export function TopSportNav() {
   const { sport, setSport, navigate, saved, playerId } = useDashboard();
   const activeSport = playerId ? playerById(playerId)?.sport ?? sport : sport;
   const savedCount = saved.props.length + saved.players.length + saved.games.length;
+  const [profile] = useArenaProfile();
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#1a1a1a] bg-[#080808]/95 backdrop-blur">
@@ -31,14 +33,14 @@ export function TopSportNav() {
           </span>
         </button>
 
-        <nav aria-label="Sports" className="no-scrollbar flex h-14 flex-1 items-stretch gap-0.5 overflow-x-auto px-1">
+        <nav aria-label="Sports" className="sports-scrollbar flex h-14 flex-1 items-start gap-0.5 overflow-x-auto overflow-y-hidden px-1">
           {ALL_SPORTS.map((s) => (
             <button
               key={s}
               onClick={() => { setSport(s); if (playerId) navigate('props'); }}
               aria-current={activeSport === s ? 'page' : undefined}
               className={cn(
-                'relative inline-flex shrink-0 items-center gap-1.5 px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542] rounded-t',
+                'relative inline-flex h-[50px] shrink-0 items-center gap-1.5 px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542] rounded-t',
                 activeSport === s
                   ? 'text-[#F5C542] after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:rounded-full after:bg-[#F5C542]'
                   : 'text-zinc-400 hover:text-zinc-100',
@@ -87,19 +89,19 @@ export function TopSportNav() {
                 className="ml-1 flex h-9 items-center gap-1.5 rounded-md px-1.5 hover:bg-[#171717] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F5C542]"
                 aria-label="Account menu"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5C542] text-xs font-bold text-black">JD</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F5C542] text-xs font-bold text-black">{profileInitials(profile.displayName)}</span>
                 <ChevronDown className="h-3.5 w-3.5 text-zinc-500" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 border-[#262626] bg-[#111111] text-zinc-200">
               <DropdownMenuLabel className="flex items-center justify-between">
-                <span>Jordan Davis</span>
+                <span>{profile.displayName}</span>
                 <Badge className="bg-[#F5C542]/15 text-[#F5C542] hover:bg-[#F5C542]/15 border border-[#F5C542]/30">Premium</Badge>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-[#262626]" />
-              <DropdownMenuItem className="focus:bg-[#1d1d1d] focus:text-white"><User className="mr-2 h-4 w-4" /> Profile</DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-[#1d1d1d] focus:text-white"><CreditCard className="mr-2 h-4 w-4" /> Subscription</DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-[#1d1d1d] focus:text-white"><Settings className="mr-2 h-4 w-4" /> Settings</DropdownMenuItem>
+              <DropdownMenuItem asChild className="focus:bg-[#1d1d1d] focus:text-white">
+                <Link to="/dashboard/profile"><User className="mr-2 h-4 w-4" /> Profile</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-[#262626]" />
               <DropdownMenuItem asChild className="focus:bg-[#1d1d1d] focus:text-white">
                 <Link to="/"><LogOut className="mr-2 h-4 w-4" /> Log Out</Link>

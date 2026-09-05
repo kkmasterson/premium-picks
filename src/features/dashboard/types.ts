@@ -84,6 +84,10 @@ export type PageKey =
   | 'saved'
   | 'popular'
   | 'builder'
+  | 'profile'
+  | 'calculators'
+  | 'promos'
+  | 'guides'
   | 'player'
   | 'game'
   | 'help';

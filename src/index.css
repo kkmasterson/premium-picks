@@ -177,6 +177,29 @@
   scrollbar-width: none;
 }
 
+.sports-scrollbar {
+  scrollbar-color: #3f4646 #111414;
+  scrollbar-width: thin;
+}
+
+.sports-scrollbar::-webkit-scrollbar {
+  height: 5px;
+}
+
+.sports-scrollbar::-webkit-scrollbar-track {
+  background: #111414;
+  border-radius: 999px;
+}
+
+.sports-scrollbar::-webkit-scrollbar-thumb {
+  background: #3f4646;
+  border-radius: 999px;
+}
+
+.sports-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #5b6666;
+}
+
 @layer components {
   .stat-heat-cell {
     background-image: linear-gradient(

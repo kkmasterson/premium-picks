@@ -33,17 +33,17 @@ export function MatchupsPage() {
               onKeyDown={(e) => e.key === 'Enter' && navigate('game', { gameId: g.id })}
               tabIndex={0}
               role="link"
-              aria-label={`${teamName(g.awayTeam)} at ${teamName(g.homeTeam)}, ${g.time}`}
+              aria-label={`${teamName(g.awayTeam, g.sport)} at ${teamName(g.homeTeam, g.sport)}, ${g.time}`}
             >
               <div className="grid min-w-0 gap-3 sm:grid-cols-[minmax(220px,1.5fr)_minmax(290px,1fr)_auto] sm:items-center">
                 <div className="flex min-w-0 items-center gap-2.5">
                   <span className="flex shrink-0 -space-x-1.5" aria-hidden="true">
-                    <TeamBadge team={g.awayTeam} className="h-9 w-9 bg-[#111515]" />
-                    <TeamBadge team={g.homeTeam} className="h-9 w-9 bg-[#111515]" />
+                    <TeamBadge team={g.awayTeam} sport={g.sport} className="h-9 w-9 bg-[#111515]" />
+                    <TeamBadge team={g.homeTeam} sport={g.sport} className="h-9 w-9 bg-[#111515]" />
                   </span>
                   <div className="min-w-0">
                     <p className="text-[13px] font-bold text-white sm:text-base">{g.awayTeam} <span className="text-zinc-600">@</span> {g.homeTeam}</p>
-                    <p className="truncate text-[10px] text-zinc-500">{teamName(g.awayTeam)} at {teamName(g.homeTeam)}</p>
+                    <p className="truncate text-[10px] text-zinc-500">{teamName(g.awayTeam, g.sport)} at {teamName(g.homeTeam, g.sport)}</p>
                     <p className="mt-1 text-[10px] font-medium text-teal-300">{g.time} · {g.status} · {g.sport}</p>
                   </div>
                 </div>
@@ -81,15 +81,15 @@ export function GamePage() {
         <ArrowLeft className="h-3.5 w-3.5" /> Back to Games
       </button>
 
-      <div className="flex items-center gap-2.5 text-xs text-zinc-400" aria-label={`${teamName(game.awayTeam)} at ${teamName(game.homeTeam)}`}>
-        <TeamBadge team={game.awayTeam} className="h-10 w-10" />
+      <div className="flex items-center gap-2.5 text-xs text-zinc-400" aria-label={`${teamName(game.awayTeam, game.sport)} at ${teamName(game.homeTeam, game.sport)}`}>
+        <TeamBadge team={game.awayTeam} sport={game.sport} className="h-10 w-10" />
         <span className="font-semibold text-zinc-200">{game.awayTeam}</span>
         <span className="text-zinc-600">@</span>
-        <TeamBadge team={game.homeTeam} className="h-10 w-10" />
+        <TeamBadge team={game.homeTeam} sport={game.sport} className="h-10 w-10" />
         <span className="font-semibold text-zinc-200">{game.homeTeam}</span>
       </div>
 
-      <DashboardPageHeader eyebrow={`${game.sport} · ${game.status} · ${game.time}`} title={`${game.awayTeam} @ ${game.homeTeam}`} description={`${teamName(game.awayTeam)} at ${teamName(game.homeTeam)} · ${props.length} props · ${players.length} players · ${new Set(props.flatMap((p) => p.books.map((b) => b.book))).size} providers`} />
+      <DashboardPageHeader eyebrow={`${game.sport} · ${game.status} · ${game.time}`} title={`${game.awayTeam} @ ${game.homeTeam}`} description={`${teamName(game.awayTeam, game.sport)} at ${teamName(game.homeTeam, game.sport)} · ${props.length} props · ${players.length} players · ${new Set(props.flatMap((p) => p.books.map((b) => b.book))).size} providers`} />
 
       {props.length === 0 ? (
         <EmptyState title="No supported sportsbook lines are currently available for this game." />

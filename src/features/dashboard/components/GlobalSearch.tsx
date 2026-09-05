@@ -30,7 +30,8 @@ export function GlobalSearch({ onPickPlayer }: Props) {
     const pool = sport === 'All' ? PLAYERS : PLAYERS.filter((p) => p.sport === sport);
     const players = pool.filter((p) => p.name.toLowerCase().includes(query)).slice(0, 5);
     const teamSet = [...new Set(pool.map((p) => p.team))];
-    const teams = teamSet.filter((t) => t.toLowerCase().includes(query) || teamName(t).toLowerCase().includes(query)).slice(0, 4);
+    const selectedSport = sport === 'All' ? undefined : sport;
+    const teams = teamSet.filter((t) => t.toLowerCase().includes(query) || teamName(t, selectedSport).toLowerCase().includes(query)).slice(0, 4);
     const markets = [...new Set(PROPS.filter((p) => sport === 'All' || pool.some((pl) => pl.id === p.playerId)).map((p) => p.market))]
       .filter((m) => m.toLowerCase().includes(query)).slice(0, 4);
     return { players, teams, markets };
@@ -121,7 +122,7 @@ export function GlobalSearch({ onPickPlayer }: Props) {
                     className={`flex w-full items-center gap-3 px-3 py-2 text-left ${highlight === idx ? 'bg-[#1c1c1c]' : 'hover:bg-[#181818]'}`}
                   >
                     <span className="flex h-8 w-8 items-center justify-center rounded-md bg-[#1c1c1c] text-[10px] font-bold text-[#F5C542]">{t.slice(0, 4)}</span>
-                    <span className="flex-1 text-sm text-zinc-100">{teamName(t)}</span>
+                    <span className="flex-1 text-sm text-zinc-100">{teamName(t, sport === 'All' ? undefined : sport)}</span>
                   </button>
                 );
               })}

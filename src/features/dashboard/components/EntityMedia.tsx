@@ -24,8 +24,8 @@ export function SportIcon({ sport, className }: { sport: Sport; className?: stri
   );
 }
 
-export function TeamBadge({ team, className }: { team: string; className?: string }) {
-  const asset = teamMediaFor(team);
+export function TeamBadge({ team, sport, className }: { team: string; sport?: Sport; className?: string }) {
+  const asset = sport && sport !== 'NBA' ? undefined : teamMediaFor(team);
   const [failedUrl, setFailedUrl] = useState<string>();
   const failed = asset ? failedUrl === asset.badgeUrl : false;
 

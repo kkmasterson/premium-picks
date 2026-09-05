@@ -66,7 +66,7 @@ function PlayerCutout({ name, src }: { name: string; src: string | null }) {
     {showHeadshot ? <img
       src={src!}
       alt=""
-      loading="lazy"
+      loading="eager"
       decoding="async"
       className="absolute bottom-0 left-[-4px] h-[78px] w-[82px] max-w-none object-contain object-bottom drop-shadow-[0_4px_8px_rgba(0,0,0,0.45)]"
       onError={() => setFailedSrc(src!)}
