@@ -28,8 +28,13 @@ export function TopSportNav() {
           aria-label="Arena Props home"
         >
           <img src="/logo.png" alt="" aria-hidden="true" className="h-9 w-9 rounded-md object-contain" />
-          <span className="hidden sm:block text-sm font-bold tracking-wide text-white">
-            Arena <span className="text-[#F5C542]">Props</span>
+          <span className="hidden text-left sm:block">
+            <span className="block text-sm font-bold leading-none tracking-wide text-white">
+              Arena <span className="text-[#F5C542]">Props</span>
+            </span>
+            <span className="mt-1 block text-[7px] font-medium uppercase leading-none tracking-[0.18em] text-zinc-600">
+              Premium Picks
+            </span>
           </span>
         </button>
 
