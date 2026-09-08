@@ -1,5 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { DashboardMockup } from '@/features/landing/components/DashboardMockup'
+import { PlayerAvatar } from '@/features/dashboard/components/common'
+import { TeamBadge } from '@/features/dashboard/components/EntityMedia'
 import type { ProductTourId } from '@/features/landing/data'
 
 const performance = [24, 31, 29, 22, 35, 33, 26, 30] as const
@@ -21,17 +23,17 @@ const opponents = [
 
 function PreviewShell({ children, path }: { children: ReactNode; path: string }) {
   return (
-    <div data-preview-source="landing-static" className="overflow-hidden rounded-2xl border border-line bg-ink-850 shadow-gold-glow">
-      <div className="flex items-center gap-2 border-b border-line px-4 py-3">
+    <div data-preview-source="landing-static" className="overflow-hidden rounded-2xl border border-white/[0.07] bg-ink-900 shadow-card">
+      <div className="flex items-center gap-2 border-b border-white/[0.07] bg-ink-950 px-4 py-3">
         <span className="h-2.5 w-2.5 rounded-full bg-ink-700" />
         <span className="h-2.5 w-2.5 rounded-full bg-ink-700" />
-        <span className="h-2.5 w-2.5 rounded-full bg-gold/70" />
-        <div className="ml-2 min-w-0 flex-1 truncate rounded-md border border-line bg-ink-950 px-3 py-1.5 text-[11px] text-mist-muted">
+        <span className="h-2.5 w-2.5 rounded-full bg-teal-500/70" />
+        <div className="ml-2 min-w-0 flex-1 truncate rounded-md border border-white/[0.07] bg-ink-900 px-3 py-1.5 text-[11px] text-zinc-600">
           Arena Props / {path}
         </div>
-        <span className="hidden items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold sm:flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          Fixed Mock Data
+        <span className="hidden items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-teal-300 sm:flex">
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+          Fixed Mock Data · No live connection
         </span>
       </div>
       <div className="min-h-[390px] p-3 sm:p-5">{children}</div>
@@ -51,17 +53,17 @@ function PlayerPreview({ onInteraction }: { onInteraction?: () => void }) {
 
   return (
     <PreviewShell path="players/mock-jalen-brunson">
-      <div className="rounded-xl border border-line bg-ink-900 p-4 sm:p-5">
+      <div className="rounded-xl border border-white/[0.065] bg-ink-900 p-4 sm:p-5">
         <div className="flex flex-col justify-between gap-4 border-b border-line pb-4 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-gold/25 bg-gold/10 text-sm font-extrabold text-gold">JB</span>
+            <PlayerAvatar name="Jalen Brunson" size="lg" />
             <div>
               <p className="text-base font-bold text-mist">Jalen Brunson</p>
               <p className="text-xs text-mist-muted">NYK · PG · Player research profile</p>
             </div>
           </div>
           <div className="flex gap-2">
-            <span className="rounded-md border border-gold/35 bg-gold/10 px-3 py-2 text-xs font-semibold text-gold">Points 27.5</span>
+            <span className="rounded-md border border-teal-500/35 bg-teal-500/10 px-3 py-2 text-xs font-semibold text-teal-300">Points 27.5</span>
             <span className="rounded-md border border-line bg-ink-850 px-3 py-2 text-xs font-semibold text-mist-secondary">Full game</span>
           </div>
         </div>
@@ -75,9 +77,9 @@ function PlayerPreview({ onInteraction }: { onInteraction?: () => void }) {
                 type="button"
                 aria-pressed={isSelected}
                 onClick={() => selectSample(sample)}
-                className={`rounded-lg border p-3 text-left transition-colors ${isSelected ? 'border-gold/50 bg-gold/10' : 'border-line bg-ink-950 hover:border-gold/30'}`}
+                className={`rounded-lg border p-3 text-left transition-colors ${isSelected ? 'border-teal-500/40 bg-teal-500/10' : 'border-line bg-ink-950 hover:border-teal-500/30'}`}
               >
-                <span className={`block text-[9px] uppercase tracking-[0.14em] ${isSelected ? 'text-gold' : 'text-mist-muted'}`}>{sample}</span>
+                <span className={`block text-[9px] uppercase tracking-[0.14em] ${isSelected ? 'text-teal-300' : 'text-mist-muted'}`}>{sample}</span>
                 <span className="mt-1 block text-lg font-extrabold text-pos">{sampleData[sample].rate}</span>
               </button>
             )
@@ -88,10 +90,10 @@ function PlayerPreview({ onInteraction }: { onInteraction?: () => void }) {
           <div className="rounded-lg border border-line bg-ink-950 p-4">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-mist">{activeSample} performance</span>
-              <span className="rounded border border-gold/30 bg-gold/10 px-2 py-1 font-semibold text-gold">Line 27.5</span>
+              <span className="rounded border border-teal-500/40 bg-teal-500/10 px-2 py-1 font-semibold text-teal-300">Line 27.5</span>
             </div>
             <div className="relative mt-4 flex h-36 items-end gap-2 border-b border-line">
-              <span className="absolute inset-x-0 bottom-[68%] border-t border-dashed border-gold/55" aria-hidden="true" />
+              <span className="absolute inset-x-0 bottom-[68%] border-t border-dashed border-teal-400/55" aria-hidden="true" />
               {chartValues.map((value, index) => (
                 <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center justify-end gap-1">
                   <span className="text-[9px] font-semibold text-mist-muted">{value}</span>
@@ -107,8 +109,8 @@ function PlayerPreview({ onInteraction }: { onInteraction?: () => void }) {
               <p className="mt-2 text-sm font-bold text-mist">{activeSample} · {selected.rate} hit rate</p>
               <p className="mt-1 text-xs text-mist-muted">{selected.over} of {selected.games} matching results</p>
             </div>
-            <div className="rounded-lg border border-gold/30 bg-gold/5 p-4">
-              <p className="text-[9px] uppercase tracking-[0.14em] text-gold">Mock research</p>
+            <div className="rounded-lg border border-teal-500/25 bg-teal-500/[0.055] p-4">
+              <p className="text-[9px] uppercase tracking-[0.14em] text-teal-300">Mock research</p>
               <p className="mt-2 text-sm font-bold text-mist">Points · Over 27.5</p>
               <p className="mt-1 text-xs text-mist-muted">No account or dashboard data</p>
             </div>
@@ -134,7 +136,7 @@ function TrendsPreview({ onInteraction }: { onInteraction?: () => void }) {
       <div className="rounded-xl border border-line bg-ink-900 p-4 sm:p-5">
         <div className="flex flex-col gap-4 border-b border-line pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Mock trend explorer</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-teal-300">Mock trend explorer</p>
             <h3 className="mt-1 text-lg font-bold text-mist">Jalen Brunson · Points</h3>
             <p className="text-xs text-mist-muted">Recent results against the selected line</p>
           </div>
@@ -147,7 +149,7 @@ function TrendsPreview({ onInteraction }: { onInteraction?: () => void }) {
                   type="button"
                   aria-pressed={isSelected}
                   onClick={() => selectSample(sample)}
-                  className={`rounded-md border px-3 py-2 text-xs font-semibold transition-colors ${isSelected ? 'border-gold/45 bg-gold/10 text-gold' : 'border-line bg-ink-850 text-mist-muted hover:border-gold/30'}`}
+                  className={`rounded-md border px-3 py-2 text-xs font-semibold transition-colors ${isSelected ? 'border-teal-500/40 bg-teal-500/10 text-teal-300' : 'border-line bg-ink-850 text-mist-muted hover:border-teal-500/30'}`}
                 >
                   {sample}
                 </button>
@@ -161,8 +163,8 @@ function TrendsPreview({ onInteraction }: { onInteraction?: () => void }) {
             <span className="text-xs font-bold text-pos">{selected.over} of {selected.games} over · {selected.rate}</span>
           </div>
           <div className="relative mt-5 flex h-52 items-end gap-3 border-b border-line">
-            <div className="absolute inset-x-0 bottom-[64%] flex items-center border-t border-dashed border-gold/60">
-              <span className="ml-auto -translate-y-3 rounded bg-gold px-2 py-0.5 text-[9px] font-bold text-ink-950">27.5 line</span>
+            <div className="absolute inset-x-0 bottom-[64%] flex items-center border-t border-dashed border-teal-400/60">
+              <span className="ml-auto -translate-y-3 rounded border border-teal-400/40 bg-teal-500/15 px-2 py-0.5 text-[9px] font-bold text-teal-200">27.5 line</span>
             </div>
             {chartValues.map((value, index) => (
               <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center justify-end gap-1.5">
@@ -192,7 +194,7 @@ function MatchupsPreview({ onInteraction }: { onInteraction?: () => void }) {
       <div className="rounded-xl border border-line bg-ink-900 p-4 sm:p-5">
         <div className="flex items-center justify-between border-b border-line pb-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Mock matchup context</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-teal-300">Mock matchup context</p>
             <h3 className="mt-1 text-lg font-bold text-mist">Jalen Brunson vs {selected.name}</h3>
           </div>
           <span className="hidden rounded-md border border-line bg-ink-950 px-3 py-2 text-xs font-semibold text-mist-secondary sm:block">Selected event</span>
@@ -211,9 +213,9 @@ function MatchupsPreview({ onInteraction }: { onInteraction?: () => void }) {
                   aria-pressed={isSelected}
                   aria-label={`Use ${item.name} mock matchup`}
                   onClick={() => selectOpponent(item.team)}
-                  className={`grid w-full grid-cols-[0.6fr_1.2fr_0.8fr_0.6fr] items-center border-b border-line/60 px-4 py-4 text-left text-xs transition-colors last:border-0 ${isSelected ? 'bg-gold/10' : 'hover:bg-ink-850'}`}
+                  className={`grid w-full grid-cols-[0.6fr_1.2fr_0.8fr_0.6fr] items-center border-b border-line/60 px-4 py-4 text-left text-xs transition-colors last:border-0 ${isSelected ? 'bg-teal-500/10 shadow-[inset_2px_0_0_#14b8a6]' : 'hover:bg-ink-850'}`}
                 >
-                  <span className="font-extrabold text-gold">{item.team}</span>
+                  <span className="flex items-center gap-2 font-extrabold text-zinc-200"><TeamBadge team={item.team} sport="NBA" className="h-7 w-7" />{item.team}</span>
                   <span className="font-semibold text-mist">{item.rank}<small className="mt-0.5 block font-normal text-mist-muted">{item.meetings}</small></span>
                   <span className="font-bold text-mist-secondary">{item.average}</span>
                   <span className="font-extrabold text-pos">{item.rate}</span>
@@ -225,13 +227,13 @@ function MatchupsPreview({ onInteraction }: { onInteraction?: () => void }) {
             <div className="rounded-lg border border-line bg-ink-950 p-4">
               <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">Selected mock matchup</p>
               <div className="mt-4 flex items-center justify-between">
-                <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-gold/25 bg-gold/10 text-xs font-extrabold text-gold">NYK</span>
+                <TeamBadge team="NYK" sport="NBA" className="h-11 w-11" />
                 <span className="text-xs font-semibold text-mist-muted">at</span>
-                <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-ink-850 text-xs font-extrabold text-mist">{selected.team}</span>
+                <TeamBadge team={selected.team} sport="NBA" className="h-11 w-11" />
               </div>
             </div>
-            <div className="rounded-lg border border-gold/30 bg-gold/5 p-4">
-              <p className="text-[9px] uppercase tracking-[0.14em] text-gold">Mock research note</p>
+            <div className="rounded-lg border border-teal-500/25 bg-teal-500/[0.055] p-4">
+              <p className="text-[9px] uppercase tracking-[0.14em] text-teal-300">Mock research note</p>
               <p className="mt-2 text-sm font-semibold leading-relaxed text-mist">{selected.note}</p>
             </div>
           </div>

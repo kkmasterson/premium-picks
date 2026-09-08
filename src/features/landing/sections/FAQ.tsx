@@ -26,12 +26,12 @@ export function FAQ() {
                       onClick={() => setOpenIndex(open ? null : i)}
                       className="flex w-full items-center justify-between gap-4 py-5 text-left"
                     >
-                      <span className={`text-base font-semibold transition-colors ${open ? 'text-gold' : 'text-mist'}`}>
+                      <span className={`text-base font-semibold transition-colors ${open ? 'text-teal-300' : 'text-mist'}`}>
                         {item.question}
                       </span>
                       <span
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-all duration-300 ${
-                          open ? 'rotate-45 border-gold/50 bg-gold/10 text-gold' : 'border-line text-mist-muted'
+                          open ? 'rotate-45 border-teal-500/45 bg-teal-500/10 text-teal-300' : 'border-line text-mist-muted'
                         }`}
                         aria-hidden="true"
                       >

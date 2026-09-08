@@ -45,7 +45,7 @@ export function ProductPreview() {
     <section id="product-tour" className="relative overflow-hidden py-20 md:py-28">
       <div
         className="pointer-events-none absolute left-1/2 top-16 h-[420px] w-[820px] -translate-x-1/2 rounded-full opacity-60"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(245,197,66,0.08), transparent 65%)' }}
+        style={{ background: 'radial-gradient(ellipse at center, rgba(20,184,166,0.09), transparent 65%)' }}
         aria-hidden="true"
       />
       <div className="container-site relative">
@@ -79,14 +79,14 @@ export function ProductPreview() {
                       tabIndex={selected ? 0 : -1}
                       onClick={() => setActiveId(item.id)}
                       onKeyDown={(event) => onTabKeyDown(event, index)}
-                      className={`group min-w-[220px] rounded-xl border p-4 text-left transition-all duration-200 lg:min-w-0 ${selected ? 'border-gold/55 bg-gold/10 shadow-gold-soft' : 'border-line bg-ink-850 hover:border-gold/30 hover:bg-ink-800'}`}
+                      className={`group min-w-[220px] rounded-xl border p-4 text-left transition-all duration-200 lg:min-w-0 ${selected ? 'border-teal-500/40 bg-teal-500/10 shadow-teal-soft' : 'border-line bg-ink-850 hover:border-teal-500/30 hover:bg-ink-800'}`}
                     >
                       <span className="flex items-center gap-3">
-                        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${selected ? 'border-gold/40 bg-gold text-ink-950' : 'border-line bg-ink-950 text-mist-muted group-hover:text-gold'}`}>
+                        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${selected ? 'border-teal-400/40 bg-teal-400 text-ink-950' : 'border-line bg-ink-950 text-mist-muted group-hover:text-teal-300'}`}>
                           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[item.id]}</svg>
                         </span>
                         <span className="min-w-0">
-                          <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-gold">
+                          <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-teal-300">
                             {item.step}
                             {isComplete && <span aria-label="Preview step tried" className="text-pos">✓ Tried</span>}
                             {selected && !isComplete && <span className="text-mist-muted">Try it →</span>}
@@ -102,8 +102,8 @@ export function ProductPreview() {
               <div className="mt-5 min-w-0 overflow-hidden rounded-xl border border-line bg-ink-850 p-5" aria-live="polite">
                 <p className="text-lg font-bold leading-snug text-mist">{active.title}</p>
                 <p className="mt-3 text-sm leading-relaxed text-mist-muted">{active.description}</p>
-                <p className="mt-4 border-t border-line pt-4 text-xs font-semibold leading-relaxed text-gold">{active.proof}</p>
-                <Link to={active.route} className="btn-secondary mt-5 w-full">
+                <p className="mt-4 border-t border-line pt-4 text-xs font-semibold leading-relaxed text-teal-300">{active.proof}</p>
+                <Link to={active.route} className="mt-5 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-teal-500/35 bg-teal-500/10 px-6 text-sm font-semibold text-teal-200 transition hover:bg-teal-500/15 hover:text-white">
                   {active.cta}
                   <span aria-hidden="true">→</span>
                 </Link>

@@ -48,7 +48,7 @@ export function Navbar() {
             <li key={l.label}>
               <a
                 href={l.href}
-                className="text-sm font-medium text-mist-secondary transition-colors hover:text-gold"
+                className="text-sm font-medium text-mist-secondary transition-colors hover:text-teal-300"
               >
                 {l.label}
               </a>
@@ -59,7 +59,7 @@ export function Navbar() {
         <div className="hidden items-center gap-3 lg:flex">
           <Link
             to="/dashboard/props"
-            className="rounded-lg px-4 py-2 text-sm font-semibold text-mist-secondary transition-colors hover:text-mist"
+            className="rounded-lg px-4 py-2 text-sm font-semibold text-mist-secondary transition-colors hover:text-teal-300"
           >
             Log In
           </Link>
@@ -103,7 +103,7 @@ export function Navbar() {
                 <a
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-4 py-3 text-base font-medium text-mist-secondary transition-colors hover:bg-ink-850 hover:text-gold"
+                  className="block rounded-lg px-4 py-3 text-base font-medium text-mist-secondary transition-colors hover:bg-ink-850 hover:text-teal-300"
                 >
                   {l.label}
                 </a>

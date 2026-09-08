@@ -42,11 +42,11 @@ const advancedRoadmap = [
   'Highly sophisticated real-time alerting',
 ]
 
-function GoldCheck() {
+function TealCheck() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="mt-0.5 shrink-0">
-      <circle cx="12" cy="12" r="10" fill="rgba(245,197,66,0.14)" />
-      <path d="m8 12.5 2.5 2.5L16 9.5" stroke="#F5C542" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="10" fill="rgba(45,212,191,0.14)" />
+      <path d="m8 12.5 2.5 2.5L16 9.5" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -54,7 +54,7 @@ function GoldCheck() {
 export function Comparison() {
   return (
     <section id="advantage" className="relative overflow-hidden border-t border-line py-20 md:py-28">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(245,197,66,0.07),transparent_65%)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(45,212,191,0.07),transparent_65%)]" aria-hidden="true" />
       <div className="container-site">
         <SectionHeader
           eyebrow="Competitive Coverage"
@@ -75,7 +75,7 @@ export function Comparison() {
               <ul className="mt-7 space-y-4">
                 {categoryStandard.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm leading-relaxed text-mist-secondary">
-                    <GoldCheck />
+                    <TealCheck />
                     {item}
                   </li>
                 ))}
@@ -84,19 +84,19 @@ export function Comparison() {
           </Reveal>
 
           <Reveal direction="right" delay={80}>
-            <article className="relative h-full overflow-hidden rounded-xl border border-gold/35 bg-gradient-to-br from-gold/[0.11] via-ink-850 to-ink-900 p-6 shadow-gold-glow md:p-8">
+            <article className="relative h-full overflow-hidden rounded-xl border border-teal-500/35 bg-gradient-to-br from-teal-500/[0.10] via-ink-850 to-ink-900 p-6 shadow-teal-soft md:p-8">
               <img src="/logo.png" alt="" aria-hidden="true" className="pointer-events-none absolute -bottom-14 -right-10 w-52 opacity-[0.08] mix-blend-screen" />
               <div className="relative flex items-center gap-4">
                 <img src="/logo.png" alt="" aria-hidden="true" className="h-14 w-14 rounded-lg object-contain" />
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">Arena advantage</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-teal-300">Arena advantage</p>
                   <h3 className="mt-1 text-xl font-bold text-mist">More connected ways to research</h3>
                 </div>
               </div>
               <ul className="relative mt-7 space-y-4">
                 {arenaAdvantages.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-sm font-medium leading-relaxed text-mist">
-                    <GoldCheck />
+                    <TealCheck />
                     {item}
                   </li>
                 ))}
@@ -108,7 +108,7 @@ export function Comparison() {
         <Reveal delay={140} className="mx-auto mt-8 max-w-5xl">
           <div id="capability-classification" className="overflow-hidden rounded-xl border border-line bg-ink-900/80">
             <div className="border-b border-line px-6 py-5 md:px-8">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gold">Capability Classification</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-teal-300">Capability Classification</p>
               <h3 className="mt-2 text-xl font-bold text-mist">What the data unlocks—and what Arena Props builds.</h3>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-mist-muted">Available provider inputs make the MVP possible. Arena Props turns those inputs into the research engines, scanners, models, and alerts users interact with.</p>
             </div>
@@ -119,7 +119,7 @@ export function Comparison() {
                 <ul className="mt-6 space-y-5">
                   {mvpInputs.map((item) => (
                     <li key={item.title} className="flex items-start gap-3">
-                      <GoldCheck />
+                      <TealCheck />
                       <span>
                         <span className="block text-sm font-bold text-mist">{item.title}</span>
                         <span className="mt-1 block text-xs leading-relaxed text-mist-muted">{item.detail}</span>
@@ -130,11 +130,11 @@ export function Comparison() {
               </div>
 
               <div className="border-b border-line p-6 lg:border-b-0 lg:border-r md:p-8">
-                <p className="inline-flex rounded-full border border-gold/30 bg-gold/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-gold">Arena Props Features We Build</p>
+                <p className="inline-flex rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-teal-300">Arena Props Features We Build</p>
                 <ul className="mt-6 space-y-3.5">
                   {arenaBuilds.map((item) => (
                     <li key={item} className="flex items-center gap-3 text-sm font-semibold text-mist">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-gold/25 bg-gold/10 text-xs text-gold" aria-hidden="true">⚙</span>
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-teal-500/25 bg-teal-500/10 text-xs text-teal-300" aria-hidden="true">⚙</span>
                       {item}
                     </li>
                   ))}

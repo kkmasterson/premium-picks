@@ -1,27 +1,44 @@
 import { useState } from 'react'
+import { BarChart3, ChevronDown, ListPlus, Search, SlidersHorizontal } from 'lucide-react'
+import { PlayerAvatar } from '@/features/dashboard/components/common'
+import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo'
 import { propRows } from '@/features/landing/data'
 
-function hitClass(v: number) {
-  if (v >= 70) return 'bg-pos/15 text-pos'
-  if (v >= 50) return 'bg-gold/10 text-gold'
-  return 'bg-neg/10 text-neg'
+const fullNames: Record<string, string> = {
+  'J. Brunson': 'Jalen Brunson',
+  'T. Haliburton': 'Tyrese Haliburton',
+  'A. Davis': 'Anthony Davis',
+  'S. Gilgeous-Alexander': 'Shai Gilgeous-Alexander',
+  'J. Tatum': 'Jayson Tatum',
+  'N. Jokic': 'Nikola Jokic',
 }
 
-function SportPills() {
-  const pills = ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA']
+function rateTone(value: number) {
+  return value >= 50
+    ? 'border-[#66ff33]/20 bg-[#66ff33]/[0.10] text-[#66ff33] shadow-[inset_0_-2px_0_rgba(102,255,51,0.68)]'
+    : 'border-[#ff5252]/20 bg-[#ff5252]/[0.10] text-[#ff5252] shadow-[inset_0_-2px_0_rgba(255,82,82,0.68)]'
+}
+
+function SportNav() {
   return (
-    <div className="flex items-center gap-1.5 overflow-hidden">
-      {pills.map((p, i) => (
+    <div className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto">
+      {['All', 'NBA', 'NFL', 'MLB', 'NHL', 'WNBA'].map((sport) => (
         <span
-          key={p}
-          className={`rounded-md px-2.5 py-1 text-[11px] font-semibold tracking-wide ${
-            i === 0 ? 'bg-gold text-ink-950' : 'bg-ink-700 text-mist-secondary'
-          }`}
+          key={sport}
+          className={`relative shrink-0 px-2.5 py-2 text-[9px] font-semibold ${sport === 'NBA' ? 'text-teal-300 after:absolute after:inset-x-2 after:bottom-0 after:h-px after:bg-teal-400' : 'text-zinc-500'}`}
         >
-          {p}
+          {sport}
         </span>
       ))}
     </div>
+  )
+}
+
+function FilterButton({ active = false, children }: { active?: boolean; children: React.ReactNode }) {
+  return (
+    <span className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border px-2.5 text-[9px] font-semibold ${active ? 'border-teal-500/35 bg-teal-500/10 text-teal-300' : 'border-white/[0.08] bg-[#111515] text-zinc-500'}`}>
+      {children}<ChevronDown className="h-3 w-3" />
+    </span>
   )
 }
 
@@ -40,125 +57,81 @@ export function DashboardMockup({ compact = false, onInteraction }: { compact?: 
     setHighHitRate((value) => !value)
     onInteraction?.()
   }
+
   return (
-    <div className="w-full min-w-0 overflow-hidden rounded-xl border border-line bg-ink-900 text-left shadow-card">
-      {/* App top bar */}
-      <div className="flex items-center justify-between gap-3 border-b border-line bg-ink-850 px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="" aria-hidden="true" className="h-6 w-6 object-contain" />
-          <span className="text-xs font-bold uppercase tracking-[0.18em] text-mist">
-            Premium <span className="text-gold">Picks</span>
-          </span>
+    <div data-demo-source="landing-static" className="w-full min-w-0 overflow-hidden rounded-xl border border-white/[0.07] bg-[#0d1010] text-left shadow-card">
+      <div className="flex h-11 items-center gap-3 border-b border-white/[0.07] bg-[#080909] px-3">
+        <div className="flex shrink-0 items-center gap-2">
+          <img src="/logo.png" alt="" aria-hidden="true" className="h-7 w-7 object-contain" />
+          <span className="hidden text-[10px] font-bold text-white sm:block">Arena <span className="text-gold">Props</span><small className="mt-0.5 block text-[5px] font-medium uppercase tracking-[0.18em] text-zinc-600">Premium Picks</small></span>
         </div>
-        <SportPills />
-        <span className="hidden rounded-md border border-line px-2.5 py-1 text-[11px] text-mist-muted sm:block">
-          Props
-        </span>
+        <SportNav />
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-teal-400 text-[8px] font-bold text-ink-950">JD</span>
       </div>
 
-      {/* Search + filters */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3">
-        <div className="flex min-w-[160px] flex-1 items-center gap-2 rounded-md border border-line bg-ink-950 px-3 py-1.5">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8E8E8E" strokeWidth="2.4" aria-hidden="true">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" />
-          </svg>
-          <span className="text-xs text-mist-muted">Search players, teams, props…</span>
+      <div className="border-b border-white/[0.055] bg-[#0d1010] p-2.5">
+        <div className="flex h-9 items-center gap-2 rounded-lg border border-white/[0.08] bg-[#111515] px-3 text-[10px] text-zinc-600">
+          <Search className="h-3.5 w-3.5" />
+          Search players, teams, games, or props…
         </div>
-        <button
-          type="button"
-          aria-pressed={pointsOnly}
-          onClick={togglePoints}
-          className={`hidden rounded-md border px-2.5 py-1.5 text-[11px] transition-colors md:block ${pointsOnly ? 'border-gold/45 bg-gold/10 text-gold' : 'border-line bg-ink-800 text-mist-secondary hover:border-gold/30'}`}
-        >
-          Market: {pointsOnly ? 'Points' : 'All'}
-        </button>
-        <span className="hidden rounded-md border border-line bg-ink-800 px-2.5 py-1.5 text-[11px] text-mist-secondary md:block">Odds: selected range</span>
-        <button
-          type="button"
-          aria-pressed={highHitRate}
-          onClick={toggleHitRate}
-          className={`hidden rounded-md border px-2.5 py-1.5 text-[11px] transition-colors md:block ${highHitRate ? 'border-gold/45 bg-gold/10 text-gold' : 'border-line bg-ink-800 text-mist-secondary hover:border-gold/30'}`}
-        >
-          Hit Rate: {highHitRate ? '60%+' : 'All'}
-        </button>
-        <span className="hidden items-center gap-1 rounded-md border border-gold/40 bg-gold/10 px-2.5 py-1.5 text-[11px] font-medium text-gold md:flex">
-          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          Sportsbook Lines
-        </span>
+        <div className="no-scrollbar mt-2 flex items-center gap-1.5 overflow-x-auto">
+          <FilterButton>Game</FilterButton>
+          <button type="button" aria-label={`Market: ${pointsOnly ? 'Points' : 'All'}`} aria-pressed={pointsOnly} onClick={togglePoints} className="contents"><FilterButton active={pointsOnly}>Prop: {pointsOnly ? 'Points' : 'All'}</FilterButton></button>
+          <FilterButton>Sportsbooks</FilterButton>
+          <FilterButton>Line Type</FilterButton>
+          <button type="button" aria-pressed={highHitRate} onClick={toggleHitRate} className="contents"><FilterButton active={highHitRate}>Hit Rate: {highHitRate ? '60%+' : 'All'}</FilterButton></button>
+          <span className="ml-auto inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] px-2.5 text-[9px] font-semibold text-zinc-400"><SlidersHorizontal className="h-3 w-3" />More</span>
+          <span className="shrink-0 text-[8px] text-zinc-600">{rows.length} props</span>
+        </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto">
-        <table className={`w-full border-collapse text-xs ${compact ? 'min-w-[500px]' : 'min-w-[560px]'}`}>
+        <table className={`w-full border-collapse text-[9px] ${compact ? 'min-w-[650px]' : 'min-w-[760px]'}`}>
           <thead>
-            <tr className="border-b border-line text-[10px] uppercase tracking-[0.14em] text-mist-muted">
-              <th className="px-4 py-2.5 text-left font-medium">Player</th>
-              <th className="px-2 py-2.5 text-left font-medium">Prop</th>
-              <th className="px-2 py-2.5 text-right font-medium">Line</th>
-              <th className="px-2 py-2.5 text-right font-medium">Odds</th>
-              <th className="px-2 py-2.5 text-right font-medium">Avg</th>
-              <th className="px-2 py-2.5 text-center font-medium">L5</th>
-              <th className="px-2 py-2.5 text-center font-medium">L10</th>
-              {!compact && <th className="px-2 py-2.5 text-center font-medium">L15</th>}
-              <th className="px-4 py-2.5 text-center font-medium">Season</th>
+            <tr className="border-b border-white/[0.055] bg-[#0b0d0d] text-[7px] uppercase tracking-[0.12em] text-zinc-600">
+              <th className="px-3 py-2 text-left font-semibold">Player · Prop</th>
+              <th className="px-2 py-2 text-left font-semibold">Book · Line · Odds</th>
+              <th className="px-2 py-2 text-center font-semibold">Projection</th>
+              <th className="px-2 py-2 text-center font-semibold">Confidence</th>
+              <th className="px-2 py-2 text-center font-semibold">L5</th>
+              <th className="px-2 py-2 text-center font-semibold">L10</th>
+              {!compact && <th className="px-2 py-2 text-center font-semibold">H2H</th>}
+              <th className="px-2 py-2 text-center font-semibold">Builder</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
-              <tr key={r.player} className="border-b border-line/60 last:border-0 hover:bg-ink-800/60">
-                <td className="px-4 py-2.5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line bg-ink-700 text-[10px] font-bold text-gold">
-                      {r.player.split(' ').map((n) => n[0]).join('').replace('.', '')}
-                    </span>
-                    <span>
-                      <span className="block font-semibold text-mist">{r.player}</span>
-                      <span className="block text-[10px] text-mist-muted">
-                        {r.team} · {r.position}
-                      </span>
-                    </span>
-                  </div>
-                </td>
-                <td className="px-2 py-2.5 text-mist-secondary">{r.prop}</td>
-                <td className="px-2 py-2.5 text-right font-semibold text-mist">{r.line}</td>
-                <td className="px-2 py-2.5 text-right text-mist-secondary">{r.odds}</td>
-                <td className="px-2 py-2.5 text-right text-mist-secondary">{r.avg}</td>
-                <td className="px-2 py-2.5 text-center">
-                  <span className={`inline-block min-w-[40px] rounded px-1.5 py-0.5 font-semibold ${hitClass(r.l5)}`}>
-                    {r.l5}%
-                  </span>
-                </td>
-                <td className="px-2 py-2.5 text-center">
-                  <span className={`inline-block min-w-[40px] rounded px-1.5 py-0.5 font-semibold ${hitClass(r.l10)}`}>
-                    {r.l10}%
-                  </span>
-                </td>
-                {!compact && (
-                  <td className="px-2 py-2.5 text-center">
-                    <span className={`inline-block min-w-[40px] rounded px-1.5 py-0.5 font-semibold ${hitClass(r.l15)}`}>
-                      {r.l15}%
-                    </span>
+            {rows.map((row, index) => {
+              const projection = Number(row.avg)
+              const line = Number(row.line)
+              const difference = projection - line
+              const confidence = Math.round((row.l5 + row.l10 + row.season) / 3)
+              return (
+                <tr key={row.player} className={`border-b border-white/[0.045] last:border-0 ${index % 2 ? 'bg-[#121515]' : 'bg-[#0d1010]'}`}>
+                  <td className="px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      <PlayerAvatar name={fullNames[row.player] ?? row.player} size="xs" />
+                      <span className="min-w-0"><strong className="block truncate text-[10px] text-zinc-100">{fullNames[row.player] ?? row.player}</strong><small className="block truncate text-[7px] text-zinc-600">{row.team} · {row.position} · {row.prop}</small></span>
+                    </div>
                   </td>
-                )}
-                <td className="px-4 py-2.5 text-center">
-                  <span className={`inline-block min-w-[40px] rounded px-1.5 py-0.5 font-semibold ${hitClass(r.season)}`}>
-                    {r.season}%
-                  </span>
-                </td>
-              </tr>
-            ))}
+                  <td className="px-2 py-2">
+                    <div className="flex items-center gap-1.5"><SportsbookLogo shortName="DK" compact /><span className="text-zinc-300">{row.line}</span><span className="rounded border border-[#66ff33]/35 bg-[#66ff33]/[0.10] px-1.5 py-1 font-semibold text-[#66ff33]">O {row.odds}</span><span className="rounded border border-[#ff5252]/25 bg-[#ff5252]/[0.08] px-1.5 py-1 text-[#ff7a7a]">U -105</span></div>
+                  </td>
+                  <td className="px-2 py-2 text-center"><strong className="text-[10px] text-zinc-100">{row.avg}</strong><small className={`ml-1 ${difference >= 0 ? 'text-[#66ff33]' : 'text-[#ff5252]'}`}>{difference >= 0 ? '+' : ''}{difference.toFixed(1)}</small></td>
+                  <td className={`border-l border-white/[0.04] px-2 py-2 text-center ${rateTone(confidence)}`}><strong>{confidence}</strong><small className="ml-1 opacity-55">{confidence >= 60 ? 'MOD' : 'LOW'}</small></td>
+                  <td className={`border-l border-white/[0.04] px-2 py-2 text-center font-bold ${rateTone(row.l5)}`}>{row.l5}%</td>
+                  <td className={`border-l border-white/[0.04] px-2 py-2 text-center font-bold ${rateTone(row.l10)}`}>{row.l10}%</td>
+                  {!compact && <td className={`border-l border-white/[0.04] px-2 py-2 text-center font-bold ${rateTone(row.season)}`}>{row.season}%</td>}
+                  <td className="px-2 py-2 text-center"><span className="inline-grid h-7 w-7 place-items-center rounded-md border border-teal-500/25 bg-teal-500/[0.08] text-teal-300"><ListPlus className="h-3.5 w-3.5" /></span></td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
 
-      {/* Footer strip */}
-      <div className="flex items-center justify-between border-t border-line bg-ink-850 px-4 py-2">
-        <span className="text-[10px] text-mist-muted">{rows.length} matching results · Preview data</span>
-        <span className="flex items-center gap-1 text-[10px] font-medium text-gold">
-          <span className="h-1.5 w-1.5 rounded-full bg-gold" />
-          Mock Data
-        </span>
+      <div className="flex items-center justify-between border-t border-white/[0.055] bg-[#0b0d0d] px-3 py-2">
+        <span className="text-[9px] text-zinc-600">{rows.length} matching results · Preview data</span>
+        <span className="flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.12em] text-teal-300"><BarChart3 className="h-3 w-3" />Fixed Mock Data · No live connection</span>
       </div>
     </div>
   )

@@ -39,7 +39,7 @@ describe('landing page interactive product tour', () => {
   })
 
   it('filters the prop preview and labels its data state', () => {
-    render(
+    const { container } = render(
       <MemoryRouter>
         <ProductPreview />
       </MemoryRouter>,
@@ -54,6 +54,9 @@ describe('landing page interactive product tour', () => {
     expect(screen.getByText('✓ Tried')).toBeInTheDocument()
     expect(screen.queryByText('Synced')).not.toBeInTheDocument()
     expect(screen.queryByText('Live Lines')).not.toBeInTheDocument()
+    expect(container.querySelector('[data-preview-source="landing-static"]')).toBeInTheDocument()
+    expect(container.querySelector('[data-demo-source="landing-static"]')).toBeInTheDocument()
+    expect(screen.getAllByText(/Fixed Mock Data · No live connection/i).length).toBeGreaterThan(0)
   })
 
   it('changes player and trend samples without leaving the mock tour', () => {

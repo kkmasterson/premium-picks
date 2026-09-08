@@ -1,11 +1,19 @@
 import { SectionHeader } from '@/features/landing/components/SectionHeader'
 import { Reveal } from '@/features/landing/hooks/Reveal'
 import { lineComparison, matchupRows, propRows, trendGames } from '@/features/landing/data'
+import { PlayerAvatar } from '@/features/dashboard/components/common'
+import { SportsbookLogo } from '@/features/dashboard/components/SportsbookLogo'
+import { TeamBadge } from '@/features/dashboard/components/EntityMedia'
+
+const fullNames: Record<string, string> = {
+  'J. Brunson': 'Jalen Brunson',
+  'T. Haliburton': 'Tyrese Haliburton',
+  'A. Davis': 'Anthony Davis',
+  'S. Gilgeous-Alexander': 'Shai Gilgeous-Alexander',
+}
 
 function hitClass(v: number) {
-  if (v >= 70) return 'text-pos'
-  if (v >= 50) return 'text-gold'
-  return 'text-neg'
+  return v >= 50 ? 'text-pos' : 'text-neg'
 }
 
 /* ---------- Mini visuals ---------- */
@@ -16,7 +24,7 @@ function PropsTableVisual() {
       <table className="w-full min-w-[440px] text-[11px]">
         <thead>
           <tr className="border-b border-line text-[9px] uppercase tracking-[0.14em] text-mist-muted">
-            {['Player', 'Prop', 'Line', 'Avg', 'L5', 'L10', 'Season'].map((h) => (
+            {['Player · Prop', 'Book', 'Projection', 'L5', 'L10', 'Season'].map((h) => (
               <th key={h} className="px-3 py-2 text-left font-medium first:pl-4 last:pr-4">
                 {h}
               </th>
@@ -24,12 +32,11 @@ function PropsTableVisual() {
           </tr>
         </thead>
         <tbody>
-          {propRows.slice(0, 4).map((r) => (
+          {propRows.slice(0, 4).map((r, index) => (
             <tr key={r.player} className="border-b border-line/50 last:border-0">
-              <td className="px-3 py-2 pl-4 font-semibold text-mist">{r.player}</td>
-              <td className="px-3 py-2 text-mist-secondary">{r.prop}</td>
-              <td className="px-3 py-2 font-medium text-mist">{r.line}</td>
-              <td className="px-3 py-2 text-mist-secondary">{r.avg}</td>
+              <td className="px-3 py-2 pl-4"><span className="flex items-center gap-2"><PlayerAvatar name={fullNames[r.player] ?? r.player} size="xs" /><span><strong className="block text-mist">{r.player}</strong><small className="text-[8px] text-mist-muted">{r.prop}</small></span></span></td>
+              <td className="px-3 py-2"><span className="flex items-center gap-1.5"><SportsbookLogo shortName={index % 2 ? 'FD' : 'DK'} compact /><span className="text-mist-secondary">{r.line}</span></span></td>
+              <td className="px-3 py-2 font-medium text-mist">{r.avg}</td>
               <td className={`px-3 py-2 font-semibold ${hitClass(r.l5)}`}>{r.l5}%</td>
               <td className={`px-3 py-2 font-semibold ${hitClass(r.l10)}`}>{r.l10}%</td>
               <td className={`px-3 py-2 pr-4 font-semibold ${hitClass(r.season)}`}>{r.season}%</td>
@@ -63,8 +70,8 @@ function FiltersVisual() {
           </div>
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-between rounded-md border border-gold/30 bg-gold/5 px-3 py-2">
-        <span className="text-[11px] font-medium text-gold">38 matching props found</span>
+      <div className="mt-3 flex items-center justify-between rounded-md border border-teal-500/30 bg-teal-500/[0.07] px-3 py-2">
+        <span className="text-[11px] font-medium text-teal-300">38 matching props found</span>
         <span className="text-[10px] text-mist-muted">Filters applied: 6</span>
       </div>
     </div>
@@ -78,14 +85,14 @@ function TrendsVisual() {
     <div className="rounded-lg border border-line bg-ink-950 p-4">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-[11px] font-semibold text-mist">J. Brunson · Points · Last 8</span>
-        <span className="rounded border border-gold/30 bg-gold/10 px-2 py-0.5 text-[10px] font-semibold text-gold">
+        <span className="rounded border border-teal-500/40 bg-teal-500/10 px-2 py-0.5 text-[10px] font-semibold text-teal-300">
           Line {line}
         </span>
       </div>
       <div className="relative flex h-32 items-end justify-between gap-2 border-b border-line pb-0">
         {/* line marker */}
         <div
-          className="pointer-events-none absolute left-0 right-0 border-t border-dashed border-gold/50"
+          className="pointer-events-none absolute left-0 right-0 border-t border-dashed border-teal-400/50"
           style={{ bottom: `${(line / max) * 100}%` }}
           aria-hidden="true"
         />
@@ -133,12 +140,12 @@ function LineComparisonVisual() {
           {lineComparison.map((l) => (
             <tr
               key={l.book}
-              className={`border-b border-line/50 last:border-0 ${l.best ? 'bg-gold/5' : ''}`}
+              className={`border-b border-line/50 last:border-0 ${l.best ? 'bg-teal-500/[0.06]' : ''}`}
             >
               <td className="px-3 py-2 pl-4 font-semibold text-mist">
-                {l.book}
+                <span className="inline-flex items-center gap-2"><SportsbookLogo shortName={l.book === 'Book A' ? 'DK' : l.book === 'Book B' ? 'FD' : l.book === 'Book C' ? 'MGM' : 'CZR'} compact />{l.book}</span>
                 {l.best && (
-                  <span className="ml-2 rounded border border-gold/40 bg-gold/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-gold">
+                  <span className="ml-2 rounded border border-teal-500/35 bg-teal-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-teal-300">
                     Best Price
                   </span>
                 )}
@@ -159,9 +166,7 @@ function MatchupVisual() {
     <div className="overflow-hidden rounded-lg border border-line bg-ink-950">
       {matchupRows.map((m) => (
         <div key={m.opponent} className="flex items-center gap-3 border-b border-line/50 px-4 py-3 last:border-0">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-line bg-ink-800 text-[11px] font-bold text-gold">
-            {m.opponent}
-          </span>
+          <TeamBadge team={m.opponent} sport="NBA" className="h-9 w-9" />
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-semibold text-mist">
               {m.posDefense} <span className="font-normal text-mist-muted">· {m.meetings}</span>
@@ -182,7 +187,7 @@ function ProjectionsVisual() {
       <div className="mt-4 flex items-end justify-between gap-4">
         <div>
           <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">AP Projection</p>
-          <p className="mt-1 text-3xl font-extrabold text-gold">34.8</p>
+          <p className="mt-1 text-3xl font-extrabold text-teal-300">34.8</p>
         </div>
         <div className="pb-1 text-right">
           <p className="text-[9px] uppercase tracking-[0.14em] text-mist-muted">Sportsbook Line</p>
@@ -190,7 +195,7 @@ function ProjectionsVisual() {
         </div>
       </div>
       <div className="mt-4 h-2 overflow-hidden rounded-full bg-ink-700">
-        <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-gold-muted via-gold to-gold-bright" />
+        <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-teal-800 via-teal-500 to-teal-300" />
       </div>
       <div className="mt-4 flex items-center justify-between rounded-md border border-pos/30 bg-pos/10 px-3 py-2">
         <span className="text-[11px] font-medium text-mist-secondary">Difference</span>
@@ -211,7 +216,7 @@ function DiscrepanciesVisual() {
     <div className="overflow-hidden rounded-lg border border-line bg-ink-950">
       <div className="flex items-center justify-between border-b border-line bg-ink-850 px-4 py-2.5">
         <span className="text-[11px] font-semibold text-mist">Largest line gaps</span>
-        <span className="rounded border border-gold/30 bg-gold/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-gold">Scan</span>
+        <span className="rounded border border-teal-500/30 bg-teal-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-teal-300">Scan</span>
       </div>
       {rows.map((row) => (
         <div key={row.player} className="grid grid-cols-[1fr_auto] items-center gap-4 border-b border-line/50 px-4 py-3 last:border-0">
@@ -219,7 +224,7 @@ function DiscrepanciesVisual() {
             <p className="text-[11px] font-semibold text-mist">{row.player} · {row.market}</p>
             <p className="mt-0.5 text-[10px] text-mist-muted">Sportsbook range · {row.spread}</p>
           </div>
-          <span className={`rounded-md border px-2 py-1 text-[10px] font-bold ${row.strength === 'Strong' ? 'border-pos/25 bg-pos/10 text-pos' : 'border-gold/25 bg-gold/10 text-gold'}`}>{row.strength}</span>
+          <span className={`rounded-md border px-2 py-1 text-[10px] font-bold ${row.strength === 'Strong' ? 'border-pos/25 bg-pos/10 text-pos' : 'border-teal-500/25 bg-teal-500/10 text-teal-300'}`}>{row.strength}</span>
         </div>
       ))}
     </div>
@@ -235,8 +240,8 @@ function ResearchSignalsVisual() {
           ['Saved', 'Your board'],
           ['Builder', '3 selections'],
         ].map(([title, detail], index) => (
-          <div key={title} className={`rounded-lg border p-3 ${index === 0 ? 'border-gold/35 bg-gold/10' : 'border-line bg-ink-850'}`}>
-            <span className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold ${index === 0 ? 'bg-gold text-ink-950' : 'bg-ink-700 text-mist-secondary'}`}>{index + 1}</span>
+          <div key={title} className={`rounded-lg border p-3 ${index === 2 ? 'border-teal-500/35 bg-teal-500/10' : 'border-line bg-ink-850'}`}>
+            <span className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold ${index === 2 ? 'bg-teal-400 text-ink-950' : 'bg-ink-700 text-mist-secondary'}`}>{index + 1}</span>
             <p className="mt-3 text-[11px] font-bold text-mist">{title}</p>
             <p className="mt-0.5 text-[9px] text-mist-muted">{detail}</p>
           </div>
@@ -305,7 +310,7 @@ export function Features() {
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
           {features.map((f, i) => (
             <Reveal key={f.title} delay={(i % 2) * 100}>
-              <article className="group card-surface flex h-full flex-col p-6 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 md:p-7">
+              <article className="group card-surface flex h-full flex-col p-6 transition-all duration-300 hover:-translate-y-1 hover:border-teal-500/30 md:p-7">
                 <h3 className="text-xl font-bold text-mist">{f.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-mist-muted">{f.copy}</p>
                 <div className="mt-6 flex-1">{f.visual}</div>

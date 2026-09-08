@@ -12,8 +12,8 @@ const trustPoints = [
 function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" fill="rgba(245,197,66,0.12)" />
-      <path d="m8 12.5 2.5 2.5L16 9.5" stroke="#F5C542" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="10" fill="rgba(45,212,191,0.12)" />
+      <path d="m8 12.5 2.5 2.5L16 9.5" stroke="#2DD4BF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -25,7 +25,7 @@ export function Hero() {
       <div className="hero-glow glow-drift pointer-events-none absolute inset-0" aria-hidden="true" />
       <div className="vignette pointer-events-none absolute inset-0" aria-hidden="true" />
       <div
-        className="pointer-events-none absolute -top-24 left-1/2 h-px w-[70%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/40 to-transparent"
+        className="pointer-events-none absolute -top-24 left-1/2 h-px w-[70%] -translate-x-1/2 bg-gradient-to-r from-transparent via-teal-400/40 to-transparent"
         aria-hidden="true"
       />
 
@@ -33,8 +33,8 @@ export function Hero() {
         {/* Copy */}
         <div className="hero-copy relative min-w-0">
           <Reveal>
-            <p className="eyebrow rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold" aria-hidden="true" />
+            <p className="eyebrow rounded-full border border-teal-500/30 bg-teal-500/5 px-4 py-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-teal-400" aria-hidden="true" />
               Built to Match the Category. Designed to Lead It.
             </p>
           </Reveal>
@@ -93,7 +93,7 @@ export function Hero() {
         <Reveal delay={200} direction="right" className="relative min-w-0">
           <div
             className="pointer-events-none absolute -inset-16 rounded-full opacity-70"
-            style={{ background: 'radial-gradient(ellipse at center, rgba(245,197,66,0.13), transparent 66%)' }}
+            style={{ background: 'radial-gradient(ellipse at center, rgba(45,212,191,0.12), transparent 66%)' }}
             aria-hidden="true"
           />
           <HeroDashboardStack />

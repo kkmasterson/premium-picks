@@ -86,7 +86,7 @@ export function Footer() {
                 key={s.name}
                 href={s.href}
                 aria-label={s.name}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-ink-850 text-mist-muted transition-all hover:border-gold/40 hover:text-gold"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-ink-850 text-mist-muted transition-all hover:border-teal-500/40 hover:text-teal-300"
               >
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   {s.icon}
@@ -106,14 +106,14 @@ export function Footer() {
                   {l.href.startsWith('/') ? (
                     <Link
                       to={l.href}
-                      className="text-sm text-mist-muted transition-colors hover:text-gold"
+                      className="text-sm text-mist-muted transition-colors hover:text-teal-300"
                     >
                       {l.label}
                     </Link>
                   ) : (
                     <a
                       href={l.href}
-                      className="text-sm text-mist-muted transition-colors hover:text-gold"
+                      className="text-sm text-mist-muted transition-colors hover:text-teal-300"
                     >
                       {l.label}
                     </a>

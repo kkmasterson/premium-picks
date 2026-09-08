@@ -9,11 +9,11 @@ module.exports = {
       },
       colors: {
         ink: {
-          950: "#080808",
-          900: "#0D0D0D",
-          850: "#121212",
-          800: "#171717",
-          700: "#1E1E1E",
+          950: "#080909",
+          900: "#0D1010",
+          850: "#111515",
+          800: "#151A19",
+          700: "#1C2221",
         },
         gold: {
           DEFAULT: "#F5C542",
@@ -28,10 +28,10 @@ module.exports = {
           muted: "#8E8E8E",
           disabled: "#646464",
         },
-        pos: "#35D07F",
-        neg: "#F15B64",
+        pos: "#66FF33",
+        neg: "#FF5252",
         info: "#5DA9FF",
-        line: "#252525",
+        line: "#202524",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -85,9 +85,10 @@ module.exports = {
       },
       boxShadow: {
         xs: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-        "gold-glow": "0 0 60px -12px rgba(245, 197, 66, 0.35)",
-        "gold-soft": "0 8px 40px -12px rgba(245, 197, 66, 0.25)",
-        card: "0 12px 40px -16px rgba(0, 0, 0, 0.7)",
+        "gold-glow": "0 18px 60px -30px rgba(245, 197, 66, 0.28)",
+        "gold-soft": "0 10px 34px -20px rgba(245, 197, 66, 0.22)",
+        "teal-soft": "0 10px 34px -20px rgba(20, 184, 166, 0.28)",
+        card: "0 14px 36px -24px rgba(0, 0, 0, 0.82)",
       },
       keyframes: {
         "accordion-down": {

@@ -3,11 +3,10 @@ import { Link } from 'react-router'
 import { SectionHeader } from '@/features/landing/components/SectionHeader'
 import { Reveal } from '@/features/landing/hooks/Reveal'
 import { sports } from '@/features/landing/data'
+import { PlayerAvatar } from '@/features/dashboard/components/common'
 
 function rateClass(value: number) {
-  if (value >= 70) return 'border-pos/25 bg-pos/10 text-pos'
-  if (value >= 55) return 'border-gold/25 bg-gold/10 text-gold'
-  return 'border-neg/25 bg-neg/10 text-neg'
+  return value >= 50 ? 'border-pos/25 bg-pos/10 text-pos' : 'border-neg/25 bg-neg/10 text-neg'
 }
 
 export function SportsCoverage() {
@@ -52,7 +51,7 @@ export function SportsCoverage() {
 
   return (
     <section id="sports" className="relative overflow-hidden border-t border-line bg-ink-900 py-20 md:py-28">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(245,197,66,0.07),transparent_65%)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(20,184,166,0.07),transparent_65%)]" aria-hidden="true" />
       <div className="container-site relative">
         <SectionHeader
           eyebrow="12-Sport Coverage Map"
@@ -76,7 +75,7 @@ export function SportsCoverage() {
                   tabIndex={active ? 0 : -1}
                   onClick={() => selectSport(sport.id)}
                   onKeyDown={(event) => onTabKeyDown(event, index)}
-                  className={`min-h-11 min-w-[86px] flex-1 rounded-lg px-4 py-2 text-sm font-bold transition-all ${active ? 'bg-gold text-ink-950 shadow-gold-soft' : 'text-mist-muted hover:bg-ink-800 hover:text-mist'}`}
+                  className={`min-h-11 min-w-[86px] flex-1 rounded-lg px-4 py-2 text-sm font-bold transition-all ${active ? 'bg-teal-400 text-ink-950 shadow-teal-soft' : 'text-mist-muted hover:bg-ink-800 hover:text-teal-200'}`}
                 >
                   {sport.abbr}
                 </button>
@@ -89,21 +88,21 @@ export function SportsCoverage() {
           <Reveal direction="left" className="sport-flip-stage min-w-0">
             <div className={`sport-flip-card flex h-full flex-col rounded-2xl border border-line bg-ink-850 p-6 shadow-card md:p-8 ${flipClass}`}>
               <div className="flex items-center justify-between">
-                <span className="inline-flex h-14 min-w-16 items-center justify-center rounded-xl border border-gold/35 bg-gold/10 px-3 text-base font-extrabold tracking-wide text-gold">{displayed.abbr}</span>
+                <span className="inline-flex h-14 min-w-16 items-center justify-center rounded-xl border border-teal-500/35 bg-teal-500/10 px-3 text-base font-extrabold tracking-wide text-teal-300">{displayed.abbr}</span>
                 <span className="rounded-full border border-line bg-ink-950 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-mist-muted">Sample preview</span>
               </div>
-              <p className="mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-gold">{displayed.league}</p>
+              <p className="mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-teal-300">{displayed.league}</p>
               <h3 className="mt-2 text-2xl font-extrabold text-mist">Built around {displayed.name.toLowerCase()} context.</h3>
               <p className="mt-4 text-sm leading-relaxed text-mist-muted">{displayed.summary}</p>
 
               <div className="mt-6 flex flex-wrap gap-2">
                 {displayed.markets.map((market, index) => (
-                  <span key={market} className={`rounded-md border px-3 py-2 text-xs font-semibold ${index === 0 ? 'border-gold/40 bg-gold/10 text-gold' : 'border-line bg-ink-950 text-mist-secondary'}`}>{market}</span>
+                  <span key={market} className={`rounded-md border px-3 py-2 text-xs font-semibold ${index === 0 ? 'border-teal-500/40 bg-teal-500/10 text-teal-300' : 'border-line bg-ink-950 text-mist-secondary'}`}>{market}</span>
                 ))}
               </div>
 
               <div className="mt-auto pt-8">
-                <Link to={`/dashboard/props?sport=${displayed.abbr}`} className="btn-secondary w-full">
+                <Link to={`/dashboard/props?sport=${displayed.abbr}`} className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-teal-500/35 bg-teal-500/10 px-6 text-sm font-semibold text-teal-200 transition hover:bg-teal-500/15 hover:text-white">
                   Explore {displayed.abbr} Props <span aria-hidden="true">→</span>
                 </Link>
               </div>
@@ -111,19 +110,19 @@ export function SportsCoverage() {
           </Reveal>
 
           <Reveal direction="right" delay={80} className="sport-flip-stage min-w-0">
-            <div className={`sport-flip-card relative overflow-hidden rounded-2xl border border-line bg-ink-950 p-3 shadow-gold-glow sm:p-5 ${flipClass}`}>
-              <div className="pointer-events-none absolute inset-0 opacity-40" style={{ backgroundImage: 'linear-gradient(rgba(245,197,66,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(245,197,66,0.035) 1px, transparent 1px)', backgroundSize: '32px 32px' }} aria-hidden="true" />
+            <div className={`sport-flip-card relative overflow-hidden rounded-2xl border border-line bg-ink-950 p-3 shadow-card sm:p-5 ${flipClass}`}>
+              <div className="pointer-events-none absolute inset-0 opacity-40" style={{ backgroundImage: 'linear-gradient(rgba(20,184,166,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,0.03) 1px, transparent 1px)', backgroundSize: '32px 32px' }} aria-hidden="true" />
               <div className="relative rounded-xl border border-line bg-ink-900/95 p-4 sm:p-5">
                 <div className="flex flex-col justify-between gap-4 border-b border-line pb-4 sm:flex-row sm:items-center">
                   <div className="flex items-center gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-xs font-extrabold text-gold">{displayed.samplePlayer.split(' ').map((part) => part[0]).join('').slice(0, 2)}</span>
+                    <PlayerAvatar name={displayed.samplePlayer} size="md" />
                     <div>
                       <p className="text-sm font-bold text-mist">{displayed.samplePlayer}</p>
                       <p className="text-[11px] text-mist-muted">{displayed.sampleTeam}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <span className="rounded-md border border-gold/35 bg-gold/10 px-3 py-2 text-xs font-bold text-gold">{displayed.sampleLine}</span>
+                    <span className="rounded-md border border-teal-500/35 bg-teal-500/10 px-3 py-2 text-xs font-bold text-teal-300">{displayed.sampleLine}</span>
                     <span className="rounded-md border border-line bg-ink-850 px-3 py-2 text-xs font-semibold text-mist-secondary">{displayed.sampleAverage}</span>
                   </div>
                 </div>
@@ -147,7 +146,7 @@ export function SportsCoverage() {
                       {displayed.chart.map((value, index) => (
                         <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center justify-end gap-1">
                           <span className="text-[8px] font-semibold text-mist-muted">{value}</span>
-                          <span className={`w-full max-w-8 rounded-t-sm ${index % 3 === 0 ? 'bg-gold/70' : 'bg-pos/75'}`} style={{ height: `${Math.max(18, (value / chartMax) * 92)}px` }} />
+                          <span className={`w-full max-w-8 rounded-t-sm ${index % 3 === 0 ? 'bg-neg/70' : 'bg-pos/75'}`} style={{ height: `${Math.max(18, (value / chartMax) * 92)}px` }} />
                           <span className="text-[8px] text-mist-disabled">{index + 1}</span>
                         </div>
                       ))}
@@ -159,8 +158,8 @@ export function SportsCoverage() {
                       <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-mist-muted">{displayed.contextLabel}</p>
                       <p className="mt-3 text-sm font-bold leading-relaxed text-mist">{displayed.contextValue}</p>
                     </div>
-                    <div className="rounded-lg border border-gold/30 bg-gold/5 p-4">
-                      <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-gold">Workspace stays familiar</p>
+                    <div className="rounded-lg border border-teal-500/30 bg-teal-500/[0.055] p-4">
+                      <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-teal-300">Workspace stays familiar</p>
                       <p className="mt-2 text-xs leading-relaxed text-mist-secondary">Markets and context change. The research flow does not.</p>
                     </div>
                   </div>

@@ -23,27 +23,29 @@ interface StatSort {
 }
 const GOBLIN_ASSET = '/assets/green-goblin.png';
 const DEVIL_ASSET = '/assets/red-devil.png';
+const POSITIVE_HEAT = '102 255 51';
+const NEGATIVE_HEAT = '255 82 82';
 
 const TYPE_STYLE: Record<LineType, string> = {
   regular: 'text-zinc-500',
-  goblin: 'text-emerald-400',
-  devil: 'text-red-400',
+  goblin: 'text-[#66ff33]',
+  devil: 'text-[#ff5252]',
   alternate: 'text-sky-400',
 };
 
 function LineTypeMark({ lineType, compact = false }: { lineType: LineType; compact?: boolean }) {
   if (lineType === 'goblin') {
-    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-emerald-300" title="Provider-designated Goblin line">
-      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-emerald-950/70 ring-1 ring-inset ring-emerald-400/30', compact ? 'h-4 w-4' : 'h-5 w-5')}>
-        <img src={GOBLIN_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_4px_rgba(34,197,94,0.55)]" />
+    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-[#8aff66]" title="Provider-designated Goblin line">
+      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-green-950/70 ring-1 ring-inset ring-[#66ff33]/50', compact ? 'h-4 w-4' : 'h-5 w-5')}>
+        <img src={GOBLIN_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_5px_rgba(102,255,51,0.8)]" />
       </span>
       <span className={compact ? 'text-[8px]' : 'text-[9px]'}>Goblin</span>
     </span>;
   }
   if (lineType === 'devil') {
-    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-red-300" title="Provider-designated Devil line">
-      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-red-950/70 ring-1 ring-inset ring-red-400/30', compact ? 'h-4 w-4' : 'h-5 w-5')}>
-        <img src={DEVIL_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_4px_rgba(239,68,68,0.55)]" />
+    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-[#ff7a7a]" title="Provider-designated Devil line">
+      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-red-950/70 ring-1 ring-inset ring-[#ff5252]/50', compact ? 'h-4 w-4' : 'h-5 w-5')}>
+        <img src={DEVIL_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_5px_rgba(255,82,82,0.8)]" />
       </span>
       <span className={compact ? 'text-[8px]' : 'text-[9px]'}>Devil</span>
     </span>;
@@ -149,8 +151,8 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
       className={cn(
         'w-full',
         side === value && (value === 'over'
-          ? 'border-emerald-300/55 bg-emerald-500/[0.14] shadow-[0_0_8px_rgba(52,211,153,0.10)]'
-          : 'border-red-300/55 bg-red-500/[0.14] shadow-[0_0_8px_rgba(248,113,113,0.10)]'),
+          ? 'border-[#8aff66]/75 bg-[#66ff33]/[0.18] shadow-[0_0_10px_rgba(102,255,51,0.24)]'
+          : 'border-[#ff7a7a]/75 bg-[#ff5252]/[0.18] shadow-[0_0_10px_rgba(255,82,82,0.24)]'),
       )}
     /></button>)}
 
@@ -165,8 +167,8 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
           className={cn(
             'mb-1 grid w-full grid-cols-[minmax(120px,1fr)_42px_58px_58px] items-center gap-1.5 overflow-hidden rounded-lg border border-transparent px-2 py-1.5 text-left last:mb-0',
             selected.id === offer.id ? 'bg-teal-500/[0.08]' : 'hover:bg-white/[0.035]',
-            offer.lineType === 'goblin' && 'border-emerald-500/10 bg-gradient-to-r from-emerald-500/[0.055] to-transparent',
-            offer.lineType === 'devil' && 'border-red-500/10 bg-gradient-to-r from-red-500/[0.05] to-transparent',
+            offer.lineType === 'goblin' && 'border-[#66ff33]/25 bg-gradient-to-r from-[#66ff33]/[0.10] to-transparent',
+            offer.lineType === 'devil' && 'border-[#ff5252]/25 bg-gradient-to-r from-[#ff5252]/[0.10] to-transparent',
             offer.status !== 'active' && 'cursor-not-allowed opacity-50',
           )}
         >
@@ -181,13 +183,13 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
 }
 
 function percentTone(value: number) {
-  if (value >= 50) return 'text-emerald-400';
-  return 'text-red-400';
+  if (value >= 50) return 'text-[#66ff33]';
+  return 'text-[#ff5252]';
 }
 
 function heatColor(value: number) {
-  if (value >= 50) return '34 197 94';
-  return '239 68 68';
+  if (value >= 50) return POSITIVE_HEAT;
+  return NEGATIVE_HEAT;
 }
 
 function heatStyle(value: number): CSSProperties {
@@ -196,7 +198,7 @@ function heatStyle(value: number): CSSProperties {
 
 function edgeHeatStyle(value: number | null): CSSProperties | undefined {
   if (value === null || value === 0) return undefined;
-  return { '--stat-heat': value > 0 ? '34 197 94' : '239 68 68' } as CSSProperties;
+  return { '--stat-heat': value > 0 ? POSITIVE_HEAT : NEGATIVE_HEAT } as CSSProperties;
 }
 
 function Metric({ label, value, percent }: { label: string; value: string; percent?: number }) {
@@ -222,7 +224,7 @@ function ConfidenceMeter({ score, grade }: { score: number; grade: string }) {
       <span className="text-[8px] font-semibold uppercase tracking-wide text-zinc-600">{grade.slice(0, 3)}</span>
     </div>
     <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/[0.07]">
-      <span className={cn('block h-full rounded-full', score >= 50 ? 'bg-emerald-400' : 'bg-red-400')} style={{ width: `${score}%` }} />
+      <span className={cn('block h-full rounded-full', score >= 50 ? 'bg-[#66ff33]' : 'bg-[#ff5252]')} style={{ width: `${score}%` }} />
     </div>
   </div>;
 }
@@ -233,7 +235,7 @@ function ProjectionSignal({ projection, line, edge }: { projection: number | nul
   return <div className="mx-auto w-20 text-center tabular-nums" title={`Projection ${projection} versus line ${line}`}>
     <div className="flex items-baseline justify-center gap-1.5">
       <span className="text-[13px] font-bold text-zinc-100">{projection}</span>
-      <span className={cn('text-[9px] font-semibold', delta > 0 ? 'text-emerald-400' : delta < 0 ? 'text-red-400' : 'text-zinc-500')}>{delta > 0 ? '+' : ''}{delta.toFixed(1)}</span>
+      <span className={cn('text-[9px] font-semibold', delta > 0 ? 'text-[#66ff33]' : delta < 0 ? 'text-[#ff5252]' : 'text-zinc-500')}>{delta > 0 ? '+' : ''}{delta.toFixed(1)}</span>
     </div>
     <p className="mt-1 text-[8px] uppercase tracking-wide text-zinc-600">line {line}</p>
   </div>;
@@ -252,10 +254,10 @@ function MovementSparkline({ points }: { points: PropBoardRow['lineMovement'] })
   return <div className="mx-auto w-[62px] text-center" title={`Line history: ${values.join(' → ')}`}>
     <svg viewBox="0 0 56 22" className="mx-auto h-[22px] w-14 overflow-visible" aria-hidden="true">
       <path d="M4 18H52" stroke="currentColor" className="text-white/[0.06]" strokeWidth="1" />
-      <polyline points={coordinates} fill="none" stroke="currentColor" className={changed > 0 ? 'text-emerald-400' : changed < 0 ? 'text-red-400' : 'text-zinc-500'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={52} cy={18 - ((latest.line - min) / range) * 12} r="2" fill="currentColor" className={changed > 0 ? 'text-emerald-400' : changed < 0 ? 'text-red-400' : 'text-zinc-500'} />
+      <polyline points={coordinates} fill="none" stroke="currentColor" className={changed > 0 ? 'text-[#66ff33]' : changed < 0 ? 'text-[#ff5252]' : 'text-zinc-500'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={52} cy={18 - ((latest.line - min) / range) * 12} r="2" fill="currentColor" className={changed > 0 ? 'text-[#66ff33]' : changed < 0 ? 'text-[#ff5252]' : 'text-zinc-500'} />
     </svg>
-    <p className="text-[8px] tabular-nums text-zinc-500">{first.line} → <span className={changed > 0 ? 'text-emerald-400' : changed < 0 ? 'text-red-400' : 'text-zinc-400'}>{latest.line}</span></p>
+    <p className="text-[8px] tabular-nums text-zinc-500">{first.line} → <span className={changed > 0 ? 'text-[#66ff33]' : changed < 0 ? 'text-[#ff5252]' : 'text-zinc-400'}>{latest.line}</span></p>
   </div>;
 }
 
@@ -326,8 +328,8 @@ function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChang
 
   return <article className={cn(
     'min-w-0 rounded-lg border bg-[#101010] p-2 shadow-sm',
-    selected.lineType === 'goblin' && 'border-emerald-500/25 shadow-[inset_2px_0_0_#22c55e]',
-    selected.lineType === 'devil' && 'border-red-500/25 shadow-[inset_2px_0_0_#ef4444]',
+    selected.lineType === 'goblin' && 'border-[#66ff33]/45 shadow-[inset_2px_0_0_#66ff33]',
+    selected.lineType === 'devil' && 'border-[#ff5252]/45 shadow-[inset_2px_0_0_#ff5252]',
     selected.lineType !== 'goblin' && selected.lineType !== 'devil' && 'border-[#202020]',
   )}>
     <div className="flex items-center justify-between gap-2">
@@ -354,8 +356,8 @@ function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChang
       <div className="space-y-1.5 border-t border-[#202020] p-2">
         <div className="grid grid-cols-4 gap-1"><Metric label="L5" value={`${metrics.l5.pct}%`} percent={metrics.l5.pct} /><Metric label="L15" value={`${metrics.l15.pct}%`} percent={metrics.l15.pct} /><Metric label="Streak" value={`${metrics.streak.side === 'over' ? 'O' : 'U'}${metrics.streak.count}`} /><Metric label="Avg" value={String(metrics.average)} /></div>
         <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="text-zinc-600">Moneyline: </span>{moneyline?.playerTeamOdds === null || !moneyline ? 'Unavailable at selected book' : `${row.team} ${oddsLabel(moneyline.playerTeamOdds)} · ${row.opponent} ${oddsLabel(moneyline.opponentOdds)}`}</div>
-        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="inline-flex items-center gap-1 text-zinc-600">Movement {direction === 'up' ? <TrendingUp className="h-2.5 w-2.5 text-emerald-400" /> : direction === 'down' ? <TrendingDown className="h-2.5 w-2.5 text-red-400" /> : <Activity className="h-2.5 w-2.5" />}</span> {movement.map((point) => point.line).join(' → ') || 'Unavailable'}</div>
-        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="text-zinc-600">+EV: </span>{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Positive EV detected</span> : 'No positive EV signal' : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-semibold text-emerald-300' : ''}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}% · demo</span> : 'Unavailable'}</div>
+        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="inline-flex items-center gap-1 text-zinc-600">Movement {direction === 'up' ? <TrendingUp className="h-2.5 w-2.5 text-[#66ff33]" /> : direction === 'down' ? <TrendingDown className="h-2.5 w-2.5 text-[#ff5252]" /> : <Activity className="h-2.5 w-2.5" />}</span> {movement.map((point) => point.line).join(' → ') || 'Unavailable'}</div>
+        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="text-zinc-600">+EV: </span>{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Positive EV detected</span> : 'No positive EV signal' : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-semibold text-[#8aff66]' : ''}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}% · demo</span> : 'Unavailable'}</div>
       </div>
     </details>
 
@@ -407,7 +409,7 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
         <PlayerCutout name={row.playerName} src={row.headshotUrl} />
         <span className="relative min-w-0 flex-1">
           <span className="flex min-w-0 items-center gap-1.5"><span className="truncate text-[12px] font-semibold text-zinc-100">{row.playerName}</span><span className="rounded bg-white/[0.055] px-1 py-0.5 text-[8px] font-semibold text-zinc-500">{row.position}</span></span>
-          <span className="mt-0.5 flex items-center gap-1 truncate text-[9px] text-zinc-500"><span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', row.event.phase === 'live' ? 'bg-emerald-400' : 'bg-zinc-700')} />{row.team} vs {row.opponent} · {row.event.startTimeLabel}</span>
+          <span className="mt-0.5 flex items-center gap-1 truncate text-[9px] text-zinc-500"><span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', row.event.phase === 'live' ? 'bg-[#66ff33]' : 'bg-zinc-700')} />{row.team} vs {row.opponent} · {row.event.startTimeLabel}</span>
           <span className="mt-1 flex min-w-0 items-center gap-1.5"><span className="truncate text-[10px] font-semibold text-zinc-300">{row.market}</span><LineTypeMark lineType={selected.lineType} compact /></span>
         </span>
       </button>
@@ -424,10 +426,10 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
     <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2" style={heatStyle(metrics.l10.pct)}><RateBox value={metrics.l10.pct} sample={`${metrics.l10.hits}/${metrics.l10.total}`} title={`Last 10: ${metrics.l10.hits} of ${metrics.l10.total}`} /></td>
     <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2" style={heatStyle(metrics.l15.pct)}><RateBox value={metrics.l15.pct} sample={`${metrics.l15.hits}/${metrics.l15.total}`} title={`Last 15: ${metrics.l15.hits} of ${metrics.l15.total}`} /></td>
     <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2" style={heatStyle(metrics.h2h.pct)}><RateBox value={metrics.h2h.pct} sample={`${metrics.h2h.hits}/${metrics.h2h.total}`} title={`Head to head: ${metrics.h2h.hits} of ${metrics.h2h.total}`} /></td>
-    <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2 text-center" style={{ '--stat-heat': streakMatches ? '34 197 94' : '239 68 68' } as CSSProperties} title={`Streak ${metrics.streak.side} ${metrics.streak.count}; ${streakMatches ? 'supports' : 'opposes'} selected ${side}`}><span className={cn('inline-flex min-w-10 items-center justify-center gap-1 text-[11px] font-semibold', streakMatches ? 'text-emerald-400' : 'text-red-400')}><span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />{metrics.streak.side === 'over' ? 'O' : 'U'}{metrics.streak.count}</span></td>
+    <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2 text-center" style={{ '--stat-heat': streakMatches ? POSITIVE_HEAT : NEGATIVE_HEAT } as CSSProperties} title={`Streak ${metrics.streak.side} ${metrics.streak.count}; ${streakMatches ? 'supports' : 'opposes'} selected ${side}`}><span className={cn('inline-flex min-w-10 items-center justify-center gap-1 text-[11px] font-semibold', streakMatches ? 'text-[#66ff33]' : 'text-[#ff5252]')}><span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />{metrics.streak.side === 'over' ? 'O' : 'U'}{metrics.streak.count}</span></td>
     <td className="border-l border-white/[0.045] px-1 py-2 text-center"><MovementSparkline points={movement} /></td>
     <td className="border-l border-white/[0.045] px-1 py-2 text-center">
-      <span className="text-[9px]">{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Detected</span> : <span className="text-zinc-700">—</span> : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-bold text-emerald-300' : 'text-red-300'}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}%</span> : <span className="text-zinc-700">—</span>}</span>
+      <span className="text-[9px]">{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Detected</span> : <span className="text-zinc-700">—</span> : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-bold text-[#8aff66]' : 'text-[#ff7a7a]'}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}%</span> : <span className="text-zinc-700">—</span>}</span>
     </td>
     <td className={cn('sticky right-0 z-10 px-2 py-2 text-right transition-colors group-hover:bg-[#171b1a]', alternate ? 'bg-[#121515]' : 'bg-[#0d1010]')}>
       <button
@@ -583,8 +585,8 @@ export function PropsPage() {
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/[0.045] px-3 py-2 text-[8px] text-zinc-600">
           <span className="font-semibold uppercase tracking-wider text-zinc-500">Percentage grade</span>
-          <span className="text-emerald-300">50% and above Green</span>
-          <span className="text-red-300">Below 50% Red</span>
+          <span className="text-[#8aff66]">50% and above Green</span>
+          <span className="text-[#ff7a7a]">Below 50% Red</span>
         </div>
       </div>
     </> : <EmptyState title="No props match these filters." action={<button onClick={() => { setFilters(DEFAULT_FILTERS); setLineType('all'); setSport('All'); }} className="rounded border border-teal-500/40 px-3 py-1.5 text-xs text-teal-300">Clear filters</button>} />}
