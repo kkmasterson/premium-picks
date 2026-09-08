@@ -124,20 +124,21 @@ const visuals = [<FilterStage />, <TrendStage />, <ComparisonStage />, <ContextS
 
 export function Workflow() {
   return (
-    <section id="research-trail" className="relative overflow-hidden py-20 md:py-28">
-      <div className="container-site">
+    <section id="product-tour" className="arena-scroll-tour relative overflow-hidden py-20 md:py-28">
+      <div id="research-trail" className="container-site">
         <SectionHeader
           eyebrow="The Research Trail"
           title="Four Decisions. One Connected View."
           copy="Follow the same player and market from the first filter to the final matchup check."
         />
+        <p className="mt-5 text-center text-xs text-mist-muted">Scroll to explore · Illustrative data, no live connection</p>
 
         <div className="relative mx-auto mt-16 max-w-6xl space-y-20 md:space-y-28">
           <div className="research-trail-line pointer-events-none absolute bottom-8 left-1/2 top-8 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-teal-400/50 to-transparent lg:block" aria-hidden="true" />
           {steps.map((s, i) => (
             <article key={s.n} className="relative grid items-center gap-8 lg:grid-cols-2 lg:gap-20">
               <span className="absolute left-1/2 top-1/2 z-10 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-teal-500/45 bg-ink-950 text-[10px] font-extrabold text-teal-300 shadow-teal-soft lg:flex" aria-hidden="true">{s.n}</span>
-              <Reveal direction={i % 2 === 0 ? 'left' : 'right'} className={i % 2 === 1 ? 'lg:order-2' : ''}>
+              <Reveal direction={i % 2 === 0 ? 'left' : 'right'} className={`min-w-0 ${i % 2 === 1 ? 'lg:order-2' : ''}`}>
                 <div className={i % 2 === 1 ? 'lg:pl-4' : 'lg:pr-4'}>
                   <div className="flex items-center gap-3"><span className="text-5xl font-extrabold tracking-tight text-teal-400/20">{s.n}</span><span className="eyebrow">{s.kicker}</span></div>
                   <h3 className="mt-5 text-3xl font-extrabold leading-tight text-mist">{s.title}</h3>
@@ -149,7 +150,7 @@ export function Workflow() {
                 direction={i % 2 === 0 ? 'right' : 'left'}
                 delay={80}
                 observeParent
-                className={`research-step-visual ${i % 2 === 1 ? 'lg:order-1' : ''}`}
+                className={`research-step-visual min-w-0 ${i % 2 === 1 ? 'lg:order-1' : ''}`}
               >
                 <div>{visuals[i]}</div>
               </Reveal>

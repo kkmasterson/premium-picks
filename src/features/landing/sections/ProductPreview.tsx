@@ -50,9 +50,9 @@ export function ProductPreview() {
       />
       <div className="container-site relative">
         <SectionHeader
-          eyebrow="Interactive Product Tour"
-          title="Explore the Research Before You Sign Up"
-          copy="Choose a research view to see how Arena Props keeps the market, player, trend, and matchup connected."
+          eyebrow="Inside the platform"
+          title="Meet your research workspace."
+          copy="One connected view. Pick an angle below and try the tools for yourself."
         />
 
         <div className="mt-14 grid min-w-0 items-start gap-6 lg:grid-cols-[330px_minmax(0,1fr)] lg:gap-8">
@@ -61,7 +61,7 @@ export function ProductPreview() {
               <div
                 role="tablist"
                 aria-label="Arena Props product views"
-                className="no-scrollbar flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible"
+                className="sports-scrollbar flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible"
               >
                 {productTourItems.map((item, index) => {
                   const selected = item.id === activeId

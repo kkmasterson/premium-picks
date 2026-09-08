@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { MemoryRouter } from 'react-router'
 import { ProductPreview } from '@/features/landing/sections/ProductPreview'
@@ -97,46 +97,36 @@ describe('landing page interactive product tour', () => {
   })
 })
 
-describe('landing page Sport Lab', () => {
-  it('flips both cards before revealing the selected sport', async () => {
-    const { container } = render(
-      <MemoryRouter>
-        <SportsCoverage />
-      </MemoryRouter>,
-    )
-
+describe('landing page sports coverage', () => {
+  it('updates market context and destination immediately when a sport is selected', () => {
+    render(<MemoryRouter><SportsCoverage /></MemoryRouter>)
     const nflTab = screen.getByRole('tab', { name: 'NFL' })
     fireEvent.click(nflTab)
 
     expect(nflTab).toHaveAttribute('aria-selected', 'true')
-    expect(container.querySelectorAll('.sport-card-flip-out')).toHaveLength(2)
-    expect(screen.getByText('Jalen Brunson')).toBeInTheDocument()
-
-    await waitFor(() => {
-      expect(container.querySelectorAll('.sport-card-flip-in')).toHaveLength(2)
-      expect(screen.getByText('Patrick Mahomes')).toBeInTheDocument()
-      expect(screen.getByText('275.5 pass yds')).toBeInTheDocument()
-      expect(screen.getByRole('link', { name: /Explore NFL Props/i })).toHaveAttribute(
-        'href',
-        '/dashboard/props?sport=NFL',
-      )
-    })
+    const panel = screen.getByRole('tabpanel', { name: 'NFL' })
+    expect(within(panel).getByRole('heading', { name: 'Football' })).toBeInTheDocument()
+    expect(within(panel).getByText('Passing')).toBeInTheDocument()
+    expect(within(panel).queryByText('3-Pointers')).not.toBeInTheDocument()
+    expect(within(panel).getByRole('link', { name: /Explore NFL Props/i })).toHaveAttribute('href', '/dashboard/props?sport=NFL')
   })
 
-  it('supports arrow-key navigation between sport tabs', () => {
-    render(
-      <MemoryRouter>
-        <SportsCoverage />
-      </MemoryRouter>,
-    )
-
+  it('keeps focus, the selected sport, and the panel together through keyboard navigation', () => {
+    render(<MemoryRouter><SportsCoverage /></MemoryRouter>)
     const nbaTab = screen.getByRole('tab', { name: 'NBA' })
     fireEvent.keyDown(nbaTab, { key: 'ArrowRight' })
-
-    expect(screen.getByRole('tab', { name: 'NFL' })).toHaveAttribute('aria-selected', 'true')
+    const nflTab = screen.getByRole('tab', { name: 'NFL' })
+    expect(nflTab).toHaveAttribute('aria-selected', 'true')
+    expect(nflTab).toHaveFocus()
+    fireEvent.keyDown(nflTab, { key: 'End' })
+    const valorantTab = screen.getByRole('tab', { name: 'VAL' })
+    expect(valorantTab).toHaveFocus()
+    expect(screen.getByRole('tabpanel', { name: 'VAL' })).toHaveTextContent('First Bloods')
+    fireEvent.keyDown(valorantTab, { key: 'ArrowRight' })
+    expect(nbaTab).toHaveAttribute('aria-selected', 'true')
+    expect(nbaTab).toHaveFocus()
   })
 })
-
 describe('landing page pricing', () => {
   it('shows only paid tiers and labels the pricing as provisional', () => {
     render(
