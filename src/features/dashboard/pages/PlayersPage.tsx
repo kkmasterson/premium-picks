@@ -26,6 +26,7 @@ export function PlayersPage() {
   return (
     <div className="space-y-3">
       <DashboardPageHeader eyebrow="Research" title={`Players${sport !== 'All' ? ` · ${sport}` : ''}`} description="Find a player, review today's matchup, and open their full market research workspace." />
+      <p className="px-1 text-[11px] text-zinc-500">Demo research · Team assignments, matchups and prop counts shown here are sample data.</p>
       <DashboardToolbar className="flex flex-wrap gap-1.5">
         <input
           value={q}

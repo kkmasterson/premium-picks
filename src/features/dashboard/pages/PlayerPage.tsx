@@ -40,7 +40,7 @@ function ResolvedPlayerScreen({ viewModel }: { viewModel: PlayerResearchViewMode
   return (
     <div className="space-y-3">
       <PlayerHeader viewModel={viewModel} market={selectedMarket} />
-      <div className="grid min-w-0 items-start gap-3 xl:grid-cols-[minmax(0,2.7fr)_minmax(260px,1fr)]">
+      <div className="grid min-w-0 items-start gap-3 xl:grid-cols-[minmax(0,2.25fr)_minmax(350px,1.15fr)]">
         <main className="min-w-0 space-y-3">
           <section aria-label="Player stats workspace" className="overflow-hidden rounded-xl border border-[var(--dashboard-border)] bg-[var(--dashboard-surface)]">
             <MarketWorkspace embedded viewModel={viewModel} market={filteredMarket} periodKey={selectedPeriod.key} line={line} update={update} filters={filters} updateFilter={updateFilter} providerId={providerId} onProviderChange={setProviderId} />

@@ -23,29 +23,31 @@ interface StatSort {
 }
 const GOBLIN_ASSET = '/assets/green-goblin.png';
 const DEVIL_ASSET = '/assets/red-devil.png';
-const POSITIVE_HEAT = '102 255 51';
-const NEGATIVE_HEAT = '255 82 82';
+const POSITIVE_HEAT = '0 220 166';
+const NEGATIVE_HEAT = '224 46 52';
+const POSITIVE_STAT_TEXT = 'text-[#40f5d0]';
+const NEGATIVE_STAT_TEXT = 'text-[#ff817e]';
 
 const TYPE_STYLE: Record<LineType, string> = {
   regular: 'text-zinc-500',
-  goblin: 'text-[#66ff33]',
-  devil: 'text-[#ff5252]',
+  goblin: 'text-[#49e3aa]',
+  devil: 'text-[#ff7379]',
   alternate: 'text-sky-400',
 };
 
 function LineTypeMark({ lineType, compact = false }: { lineType: LineType; compact?: boolean }) {
   if (lineType === 'goblin') {
-    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-[#8aff66]" title="Provider-designated Goblin line">
-      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-green-950/70 ring-1 ring-inset ring-[#66ff33]/50', compact ? 'h-4 w-4' : 'h-5 w-5')}>
-        <img src={GOBLIN_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_5px_rgba(102,255,51,0.8)]" />
+    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-[#7af0c8]" title="Provider-designated Goblin line">
+      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-green-950/70 ring-1 ring-inset ring-[#49e3aa]/50', compact ? 'h-4 w-4' : 'h-5 w-5')}>
+        <img src={GOBLIN_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_5px_rgba(73,227,170,0.8)]" />
       </span>
       <span className={compact ? 'text-[8px]' : 'text-[9px]'}>Goblin</span>
     </span>;
   }
   if (lineType === 'devil') {
-    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-[#ff7a7a]" title="Provider-designated Devil line">
-      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-red-950/70 ring-1 ring-inset ring-[#ff5252]/50', compact ? 'h-4 w-4' : 'h-5 w-5')}>
-        <img src={DEVIL_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_5px_rgba(255,82,82,0.8)]" />
+    return <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-[#ff9a9f]" title="Provider-designated Devil line">
+      <span className={cn('relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-red-950/70 ring-1 ring-inset ring-[#ff7379]/50', compact ? 'h-4 w-4' : 'h-5 w-5')}>
+        <img src={DEVIL_ASSET} alt="" className="h-[115%] w-[115%] max-w-none object-contain drop-shadow-[0_0_5px_rgba(255,115,121,0.8)]" />
       </span>
       <span className={compact ? 'text-[8px]' : 'text-[9px]'}>Devil</span>
     </span>;
@@ -104,8 +106,10 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
     role="group"
     aria-label={`${selected.providerName} sportsbook offer, line ${selected.line}, over ${oddsLabel(selected.overOdds)}, under ${oddsLabel(selected.underOdds)}`}
     className={cn(
-      'relative grid h-8 max-w-full shrink-0 grid-cols-[minmax(0,1fr)_26px_46px_46px] items-center gap-0.5 rounded-md bg-white/[0.018] p-0.5',
-      compact ? 'w-[244px]' : 'w-[240px] sm:w-[244px]',
+      'relative grid max-w-full shrink-0 items-center rounded-md bg-white/[0.018]',
+      compact
+        ? 'h-10 w-[312px] grid-cols-[minmax(0,1fr)_32px_56px_56px] gap-1 p-1'
+        : 'h-8 w-[240px] grid-cols-[minmax(0,1fr)_26px_46px_46px] gap-0.5 p-0.5 sm:w-[244px]',
     )}
   >
     <button
@@ -113,34 +117,40 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
       onClick={() => setOpen((value) => !value)}
       aria-expanded={open}
       aria-label={`Choose sportsbook offer. ${selected.providerName}, ${side} ${oddsLabel(selectedOdds)}, line ${selected.line}`}
-      className="flex h-7 min-w-0 items-center gap-1 rounded px-0.5 text-left transition-colors hover:bg-white/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50"
+      className={cn(
+        'flex min-w-0 items-center rounded text-left transition-colors hover:bg-white/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50',
+        compact ? 'h-8 gap-1.5 px-1' : 'h-7 gap-1 px-0.5',
+      )}
     >
       <span className="flex min-w-0 flex-1 items-center gap-1">
         <span className="relative shrink-0">
-          <SportsbookLogo shortName={selected.providerShortName} compact className="w-5 rounded" />
+          <SportsbookLogo shortName={selected.providerShortName} compact className={cn('rounded', compact ? 'h-6 w-8' : 'w-5')} />
           {selected.lineType === 'goblin' && <img src={GOBLIN_ASSET} alt="Goblin line" className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#111] object-contain drop-shadow-[0_0_4px_rgba(34,197,94,0.45)]" />}
           {selected.lineType === 'devil' && <img src={DEVIL_ASSET} alt="Devil line" className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#111] object-contain drop-shadow-[0_0_4px_rgba(239,68,68,0.45)]" />}
         </span>
         <span className="flex min-w-0 flex-1 items-center gap-0.5">
-          <span className="min-w-0 truncate text-[9px] font-semibold text-zinc-100">{selected.providerName}</span>
+          <span className={cn('min-w-0 truncate font-semibold text-zinc-100', compact ? 'text-[10px]' : 'text-[9px]')}>{selected.providerName}</span>
           {otherOfferCount > 0 && <span
             data-other-offer-count={otherOfferCount}
             title={`${otherOfferCount} other sportsbook offers`}
-              className="inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-white/[0.09] bg-white/[0.07] px-1 text-[10px] font-bold leading-none tabular-nums text-zinc-200"
+              className={cn(
+                'inline-flex shrink-0 items-center justify-center rounded-full border border-white/[0.09] bg-white/[0.07] px-1 font-bold leading-none tabular-nums text-zinc-200',
+                compact ? 'h-7 min-w-7 text-[11px]' : 'h-6 min-w-6 text-[10px]',
+              )}
           >+{otherOfferCount}</span>}
         </span>
       </span>
-      <ChevronDown className="h-2 w-2 shrink-0 text-zinc-600" />
+      <ChevronDown className={cn('shrink-0 text-zinc-500', compact ? 'h-3 w-3' : 'h-2 w-2')} />
     </button>
 
-    <span aria-label={`Line ${selected.line}`} className="text-center text-[10px] font-semibold tabular-nums text-zinc-400">{selected.line}</span>
+    <span aria-label={`Line ${selected.line}`} className={cn('text-center font-semibold tabular-nums text-zinc-300', compact ? 'text-[12px]' : 'text-[10px]')}>{selected.line}</span>
     {(['over', 'under'] as Side[]).map((value) => <button
       key={value}
       type="button"
       onClick={() => onSideChange(value)}
       aria-label={`${value} ${oddsLabel(value === 'over' ? selected.overOdds : selected.underOdds)}`}
       aria-pressed={side === value}
-      className="h-6 min-w-0 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/60"
+      className={cn('min-w-0 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/60', compact ? 'h-8' : 'h-6')}
     ><OddsPriceCell
       side={value}
       odds={value === 'over' ? selected.overOdds : selected.underOdds}
@@ -149,10 +159,10 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
         : selected.underOdds !== null && selected.underOdds === bestUnderOdds}
       compact
       className={cn(
-        'w-full',
+        'w-full', compact && 'h-8 min-w-0 px-1.5 text-[10px]',
         side === value && (value === 'over'
-          ? 'border-[#8aff66]/75 bg-[#66ff33]/[0.18] shadow-[0_0_10px_rgba(102,255,51,0.24)]'
-          : 'border-[#ff7a7a]/75 bg-[#ff5252]/[0.18] shadow-[0_0_10px_rgba(255,82,82,0.24)]'),
+          ? 'border-[#7af0c8]/75 bg-[#49e3aa]/[0.18] shadow-[0_0_10px_rgba(73,227,170,0.24)]'
+          : 'border-[#ff9a9f]/75 bg-[#ff7379]/[0.18] shadow-[0_0_10px_rgba(255,115,121,0.24)]'),
       )}
     /></button>)}
 
@@ -167,8 +177,8 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
           className={cn(
             'mb-1 grid w-full grid-cols-[minmax(120px,1fr)_42px_58px_58px] items-center gap-1.5 overflow-hidden rounded-lg border border-transparent px-2 py-1.5 text-left last:mb-0',
             selected.id === offer.id ? 'bg-teal-500/[0.08]' : 'hover:bg-white/[0.035]',
-            offer.lineType === 'goblin' && 'border-[#66ff33]/25 bg-gradient-to-r from-[#66ff33]/[0.10] to-transparent',
-            offer.lineType === 'devil' && 'border-[#ff5252]/25 bg-gradient-to-r from-[#ff5252]/[0.10] to-transparent',
+            offer.lineType === 'goblin' && 'border-[#49e3aa]/25 bg-gradient-to-r from-[#49e3aa]/[0.10] to-transparent',
+            offer.lineType === 'devil' && 'border-[#ff7379]/25 bg-gradient-to-r from-[#ff7379]/[0.10] to-transparent',
             offer.status !== 'active' && 'cursor-not-allowed opacity-50',
           )}
         >
@@ -183,8 +193,8 @@ function OfferSelector({ row, selected, side, onChange, onSideChange, lineFilter
 }
 
 function percentTone(value: number) {
-  if (value >= 50) return 'text-[#66ff33]';
-  return 'text-[#ff5252]';
+  if (value >= 50) return POSITIVE_STAT_TEXT;
+  return NEGATIVE_STAT_TEXT;
 }
 
 function heatColor(value: number) {
@@ -212,7 +222,7 @@ function RateBox({ value, sample, title }: { value: number; sample?: string; tit
   return <div className={cn('mx-auto w-14 px-1 text-center tabular-nums', percentTone(value))} title={title}>
     <div className="flex items-baseline justify-center gap-1">
       <p className="text-[12px] font-semibold leading-none">{value}%</p>
-      {sample && <p className="text-[9px] leading-none text-zinc-500">{sample}</p>}
+      {sample && <p className="text-[9px] font-medium leading-none text-white/70">{sample}</p>}
     </div>
   </div>;
 }
@@ -221,10 +231,10 @@ function ConfidenceMeter({ score, grade }: { score: number; grade: string }) {
   return <div className="mx-auto w-16 text-center tabular-nums" title={`${grade} confidence · demo fixture`}>
     <div className="flex items-baseline justify-between px-0.5">
       <span className={cn('text-[12px] font-bold', percentTone(score))}>{score}</span>
-      <span className="text-[8px] font-semibold uppercase tracking-wide text-zinc-600">{grade.slice(0, 3)}</span>
+      <span className="text-[8px] font-semibold uppercase tracking-wide text-white/70">{grade.slice(0, 3)}</span>
     </div>
     <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/[0.07]">
-      <span className={cn('block h-full rounded-full', score >= 50 ? 'bg-[#66ff33]' : 'bg-[#ff5252]')} style={{ width: `${score}%` }} />
+      <span className={cn('block h-full rounded-full', score >= 50 ? 'bg-[#19e5bc]' : 'bg-[#ff7278]')} style={{ width: `${score}%` }} />
     </div>
   </div>;
 }
@@ -235,9 +245,9 @@ function ProjectionSignal({ projection, line, edge }: { projection: number | nul
   return <div className="mx-auto w-20 text-center tabular-nums" title={`Projection ${projection} versus line ${line}`}>
     <div className="flex items-baseline justify-center gap-1.5">
       <span className="text-[13px] font-bold text-zinc-100">{projection}</span>
-      <span className={cn('text-[9px] font-semibold', delta > 0 ? 'text-[#66ff33]' : delta < 0 ? 'text-[#ff5252]' : 'text-zinc-500')}>{delta > 0 ? '+' : ''}{delta.toFixed(1)}</span>
+      <span className={cn('text-[9px] font-semibold', delta > 0 ? POSITIVE_STAT_TEXT : delta < 0 ? NEGATIVE_STAT_TEXT : 'text-zinc-500')}>{delta > 0 ? '+' : ''}{delta.toFixed(1)}</span>
     </div>
-    <p className="mt-1 text-[8px] uppercase tracking-wide text-zinc-600">line {line}</p>
+    <p className="mt-1 text-[8px] font-medium uppercase tracking-wide text-white/70">line {line}</p>
   </div>;
 }
 
@@ -251,13 +261,13 @@ function MovementSparkline({ points }: { points: PropBoardRow['lineMovement'] })
   const latest = points.at(-1)!;
   const first = points[0];
   const changed = latest.line - first.line;
-  return <div className="mx-auto w-[62px] text-center" title={`Line history: ${values.join(' → ')}`}>
-    <svg viewBox="0 0 56 22" className="mx-auto h-[22px] w-14 overflow-visible" aria-hidden="true">
+  return <div className="mx-auto w-[72px] text-center" title={`Line history: ${values.join(' → ')}`}>
+    <svg viewBox="0 0 56 22" className="mx-auto h-6 w-16 overflow-visible" aria-hidden="true">
       <path d="M4 18H52" stroke="currentColor" className="text-white/[0.06]" strokeWidth="1" />
-      <polyline points={coordinates} fill="none" stroke="currentColor" className={changed > 0 ? 'text-[#66ff33]' : changed < 0 ? 'text-[#ff5252]' : 'text-zinc-500'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={52} cy={18 - ((latest.line - min) / range) * 12} r="2" fill="currentColor" className={changed > 0 ? 'text-[#66ff33]' : changed < 0 ? 'text-[#ff5252]' : 'text-zinc-500'} />
+      <polyline points={coordinates} fill="none" stroke="currentColor" className={changed > 0 ? 'text-[#49e3aa]' : changed < 0 ? 'text-[#ff7379]' : 'text-zinc-500'} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={52} cy={18 - ((latest.line - min) / range) * 12} r="2" fill="currentColor" className={changed > 0 ? 'text-[#49e3aa]' : changed < 0 ? 'text-[#ff7379]' : 'text-zinc-500'} />
     </svg>
-    <p className="text-[8px] tabular-nums text-zinc-500">{first.line} → <span className={changed > 0 ? 'text-[#66ff33]' : changed < 0 ? 'text-[#ff5252]' : 'text-zinc-400'}>{latest.line}</span></p>
+    <p className="mt-0.5 text-[10px] font-semibold leading-none tabular-nums text-zinc-400">{first.line} → <span className={changed > 0 ? 'text-[#49e3aa]' : changed < 0 ? 'text-[#ff7379]' : 'text-zinc-300'}>{latest.line}</span></p>
   </div>;
 }
 
@@ -328,8 +338,8 @@ function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChang
 
   return <article className={cn(
     'min-w-0 rounded-lg border bg-[#101010] p-2 shadow-sm',
-    selected.lineType === 'goblin' && 'border-[#66ff33]/45 shadow-[inset_2px_0_0_#66ff33]',
-    selected.lineType === 'devil' && 'border-[#ff5252]/45 shadow-[inset_2px_0_0_#ff5252]',
+    selected.lineType === 'goblin' && 'border-[#49e3aa]/45 shadow-[inset_2px_0_0_#49e3aa]',
+    selected.lineType === 'devil' && 'border-[#ff7379]/45 shadow-[inset_2px_0_0_#ff7379]',
     selected.lineType !== 'goblin' && selected.lineType !== 'devil' && 'border-[#202020]',
   )}>
     <div className="flex items-center justify-between gap-2">
@@ -356,8 +366,8 @@ function PropCard({ row, lineFilter, selectedOfferId, selectedSide, onOfferChang
       <div className="space-y-1.5 border-t border-[#202020] p-2">
         <div className="grid grid-cols-4 gap-1"><Metric label="L5" value={`${metrics.l5.pct}%`} percent={metrics.l5.pct} /><Metric label="L15" value={`${metrics.l15.pct}%`} percent={metrics.l15.pct} /><Metric label="Streak" value={`${metrics.streak.side === 'over' ? 'O' : 'U'}${metrics.streak.count}`} /><Metric label="Avg" value={String(metrics.average)} /></div>
         <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="text-zinc-600">Moneyline: </span>{moneyline?.playerTeamOdds === null || !moneyline ? 'Unavailable at selected book' : `${row.team} ${oddsLabel(moneyline.playerTeamOdds)} · ${row.opponent} ${oddsLabel(moneyline.opponentOdds)}`}</div>
-        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="inline-flex items-center gap-1 text-zinc-600">Movement {direction === 'up' ? <TrendingUp className="h-2.5 w-2.5 text-[#66ff33]" /> : direction === 'down' ? <TrendingDown className="h-2.5 w-2.5 text-[#ff5252]" /> : <Activity className="h-2.5 w-2.5" />}</span> {movement.map((point) => point.line).join(' → ') || 'Unavailable'}</div>
-        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="text-zinc-600">+EV: </span>{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Positive EV detected</span> : 'No positive EV signal' : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-semibold text-[#8aff66]' : ''}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}% · demo</span> : 'Unavailable'}</div>
+        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="inline-flex items-center gap-1 text-zinc-600">Movement {direction === 'up' ? <TrendingUp className="h-2.5 w-2.5 text-[#49e3aa]" /> : direction === 'down' ? <TrendingDown className="h-2.5 w-2.5 text-[#ff7379]" /> : <Activity className="h-2.5 w-2.5" />}</span> {movement.map((point) => point.line).join(' → ') || 'Unavailable'}</div>
+        <div className="rounded border border-[#222] p-1.5 text-[8px] text-zinc-400"><span className="text-zinc-600">+EV: </span>{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Positive EV detected</span> : 'No positive EV signal' : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-semibold text-[#7af0c8]' : ''}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}% · demo</span> : 'Unavailable'}</div>
       </div>
     </details>
 
@@ -409,7 +419,7 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
         <PlayerCutout name={row.playerName} src={row.headshotUrl} />
         <span className="relative min-w-0 flex-1">
           <span className="flex min-w-0 items-center gap-1.5"><span className="truncate text-[12px] font-semibold text-zinc-100">{row.playerName}</span><span className="rounded bg-white/[0.055] px-1 py-0.5 text-[8px] font-semibold text-zinc-500">{row.position}</span></span>
-          <span className="mt-0.5 flex items-center gap-1 truncate text-[9px] text-zinc-500"><span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', row.event.phase === 'live' ? 'bg-[#66ff33]' : 'bg-zinc-700')} />{row.team} vs {row.opponent} · {row.event.startTimeLabel}</span>
+          <span className="mt-0.5 flex items-center gap-1 truncate text-[9px] text-zinc-500"><span className={cn('h-1.5 w-1.5 shrink-0 rounded-full', row.event.phase === 'live' ? 'bg-[#49e3aa]' : 'bg-zinc-700')} />{row.team} vs {row.opponent} · {row.event.startTimeLabel}</span>
           <span className="mt-1 flex min-w-0 items-center gap-1.5"><span className="truncate text-[10px] font-semibold text-zinc-300">{row.market}</span><LineTypeMark lineType={selected.lineType} compact /></span>
         </span>
       </button>
@@ -426,10 +436,10 @@ function PropTableRow({ row, lineFilter, selectedOfferId, selectedSide, onOfferC
     <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2" style={heatStyle(metrics.l10.pct)}><RateBox value={metrics.l10.pct} sample={`${metrics.l10.hits}/${metrics.l10.total}`} title={`Last 10: ${metrics.l10.hits} of ${metrics.l10.total}`} /></td>
     <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2" style={heatStyle(metrics.l15.pct)}><RateBox value={metrics.l15.pct} sample={`${metrics.l15.hits}/${metrics.l15.total}`} title={`Last 15: ${metrics.l15.hits} of ${metrics.l15.total}`} /></td>
     <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2" style={heatStyle(metrics.h2h.pct)}><RateBox value={metrics.h2h.pct} sample={`${metrics.h2h.hits}/${metrics.h2h.total}`} title={`Head to head: ${metrics.h2h.hits} of ${metrics.h2h.total}`} /></td>
-    <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2 text-center" style={{ '--stat-heat': streakMatches ? POSITIVE_HEAT : NEGATIVE_HEAT } as CSSProperties} title={`Streak ${metrics.streak.side} ${metrics.streak.count}; ${streakMatches ? 'supports' : 'opposes'} selected ${side}`}><span className={cn('inline-flex min-w-10 items-center justify-center gap-1 text-[11px] font-semibold', streakMatches ? 'text-[#66ff33]' : 'text-[#ff5252]')}><span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />{metrics.streak.side === 'over' ? 'O' : 'U'}{metrics.streak.count}</span></td>
+    <td className="stat-heat-cell border-l border-white/[0.045] px-1 py-2 text-center" style={{ '--stat-heat': streakMatches ? POSITIVE_HEAT : NEGATIVE_HEAT } as CSSProperties} title={`Streak ${metrics.streak.side} ${metrics.streak.count}; ${streakMatches ? 'supports' : 'opposes'} selected ${side}`}><span className={cn('inline-flex min-w-10 items-center justify-center gap-1 text-[11px] font-semibold', streakMatches ? POSITIVE_STAT_TEXT : NEGATIVE_STAT_TEXT)}><span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />{metrics.streak.side === 'over' ? 'O' : 'U'}{metrics.streak.count}</span></td>
     <td className="border-l border-white/[0.045] px-1 py-2 text-center"><MovementSparkline points={movement} /></td>
-    <td className="border-l border-white/[0.045] px-1 py-2 text-center">
-      <span className="text-[9px]">{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="font-semibold text-amber-300">🔒 Detected</span> : <span className="text-zinc-700">—</span> : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-bold text-[#8aff66]' : 'text-[#ff7a7a]'}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}%</span> : <span className="text-zinc-700">—</span>}</span>
+    <td className="border-l border-white/[0.045] px-2 py-2 text-center">
+      <span className="text-[12px] font-semibold tabular-nums">{accessTier === 'tier1' ? ev.positiveEvDetected ? <span className="text-amber-300">🔒 Detected</span> : <span className="text-zinc-700">—</span> : ev.details ? <span className={ev.details.evPercent > 0 ? 'font-bold text-[#7af0c8]' : 'font-bold text-[#ff9a9f]'}>{ev.details.evPercent > 0 ? '+' : ''}{ev.details.evPercent}%</span> : <span className="text-zinc-700">—</span>}</span>
     </td>
     <td className={cn('sticky right-0 z-10 px-2 py-2 text-right transition-colors group-hover:bg-[#171b1a]', alternate ? 'bg-[#121515]' : 'bg-[#0d1010]')}>
       <button
@@ -474,21 +484,21 @@ function SortableStatHeader({ label, field, sort, onSort, className }: {
 
   return <th
     aria-sort={active ? (sort.direction === 'desc' ? 'descending' : 'ascending') : 'none'}
-    className={cn('px-1 py-2.5 text-center', className)}
+    className={cn('px-1 py-3 text-center', className)}
   >
     <button
       type="button"
       onClick={() => onSort(field)}
       aria-label={`Sort by ${label} ${nextDirection === 'desc' ? 'descending' : 'ascending'}`}
       className={cn(
-        'mx-auto inline-flex min-h-6 items-center justify-center gap-0.5 rounded px-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/60',
-        active ? 'bg-teal-500/[0.1] text-teal-300' : 'text-zinc-600 hover:bg-white/[0.035] hover:text-zinc-300',
+        'mx-auto inline-flex min-h-7 items-center justify-center gap-1 rounded px-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/60',
+        active ? 'bg-teal-500/[0.1] text-teal-200' : 'text-zinc-400 hover:bg-white/[0.035] hover:text-zinc-100',
       )}
     >
       {label}
       {active
-        ? sort.direction === 'desc' ? <ArrowDown className="h-2.5 w-2.5" /> : <ArrowUp className="h-2.5 w-2.5" />
-        : <ChevronsUpDown className="h-2.5 w-2.5 opacity-50" />}
+        ? sort.direction === 'desc' ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />
+        : <ChevronsUpDown className="h-3 w-3 opacity-65" />}
     </button>
   </th>;
 }
@@ -562,22 +572,22 @@ export function PropsPage() {
       <div className="grid grid-cols-1 gap-2 md:hidden">{visibleRows.slice(0, 40).map((row) => <PropCard key={`${row.id}:${lineType}:card`} row={row} lineFilter={lineType} selectedOfferId={selectedOfferIds[row.id]} selectedSide={selectedSides[row.id] ?? 'over'} onOfferChange={(offerId) => updateOffer(row.id, offerId)} onSideChange={(side) => updateSide(row.id, side)} />)}</div>
       <div className="hidden overflow-hidden rounded-xl border border-white/[0.055] bg-[#0d0f0f] shadow-[0_12px_40px_rgba(0,0,0,0.16)] md:block md:rounded-t-none">
         <div className="overflow-x-auto">
-          <table aria-label="Props research table" className="w-full min-w-[1090px] table-fixed border-collapse text-left">
+          <table aria-label="Props research table" className="w-full min-w-[1272px] table-fixed border-collapse text-left">
             <thead>
-              <tr className="border-b border-white/[0.055] bg-[#101212] text-[8px] font-medium uppercase tracking-[0.14em] text-zinc-600">
-                <th className="sticky left-0 z-20 w-[210px] bg-[#101212] px-3 py-2.5">Player · Prop</th>
-                <th className="w-[260px] px-2 py-2.5">Book · Line · Odds</th>
-                <SortableStatHeader label="Moneyline" field="moneyline" sort={statSort} onSort={updateStatSort} className="w-[70px]" />
-                <SortableStatHeader label="Projection" field="projection" sort={statSort} onSort={updateStatSort} className="w-[82px]" />
-                <SortableStatHeader label="Confidence" field="confidence" sort={statSort} onSort={updateStatSort} className="w-[72px]" />
-                <SortableStatHeader label="L5" field="l5" sort={statSort} onSort={updateStatSort} className="w-[62px]" />
-                <SortableStatHeader label="L10" field="l10" sort={statSort} onSort={updateStatSort} className="w-[62px]" />
-                <SortableStatHeader label="L15" field="l15" sort={statSort} onSort={updateStatSort} className="w-[62px]" />
-                <SortableStatHeader label="H2H" field="h2h" sort={statSort} onSort={updateStatSort} className="w-[62px]" />
-                <SortableStatHeader label="Streak" field="streak" sort={statSort} onSort={updateStatSort} className="w-[50px]" />
-                <th className="w-[78px] px-1 py-2.5 text-center">Movement</th>
-                <SortableStatHeader label="+EV" field="ev" sort={statSort} onSort={updateStatSort} className="w-[68px]" />
-                <th className="sticky right-0 z-20 w-[48px] bg-[#101212] px-2 py-2.5 text-center" aria-label="Builder"><ListPlus className="mx-auto h-3.5 w-3.5 text-zinc-700" /></th>
+              <tr className="border-b border-white/[0.07] bg-[#101212] text-[10px] font-semibold uppercase tracking-[0.1em] text-zinc-400">
+                <th className="sticky left-0 z-20 w-[210px] bg-[#101212] px-3 py-3">Player · Prop</th>
+                <th className="w-[330px] px-2 py-3">Book · Line · Odds</th>
+                <SortableStatHeader label="Moneyline" field="moneyline" sort={statSort} onSort={updateStatSort} className="w-[80px]" />
+                <SortableStatHeader label="Projection" field="projection" sort={statSort} onSort={updateStatSort} className="w-[94px]" />
+                <SortableStatHeader label="Confidence" field="confidence" sort={statSort} onSort={updateStatSort} className="w-[92px]" />
+                <SortableStatHeader label="L5" field="l5" sort={statSort} onSort={updateStatSort} className="w-[66px]" />
+                <SortableStatHeader label="L10" field="l10" sort={statSort} onSort={updateStatSort} className="w-[66px]" />
+                <SortableStatHeader label="L15" field="l15" sort={statSort} onSort={updateStatSort} className="w-[66px]" />
+                <SortableStatHeader label="H2H" field="h2h" sort={statSort} onSort={updateStatSort} className="w-[66px]" />
+                <SortableStatHeader label="Streak" field="streak" sort={statSort} onSort={updateStatSort} className="w-[62px]" />
+                <th className="w-[88px] px-1 py-3 text-center">Movement</th>
+                <SortableStatHeader label="+EV" field="ev" sort={statSort} onSort={updateStatSort} className="w-[84px]" />
+                <th className="sticky right-0 z-20 w-[48px] bg-[#101212] px-2 py-3 text-center" aria-label="Builder"><ListPlus className="mx-auto h-4 w-4 text-zinc-500" /></th>
               </tr>
             </thead>
             <tbody>{visibleRows.map((row, index) => <PropTableRow key={`${row.id}:${lineType}:row`} row={row} lineFilter={lineType} selectedOfferId={selectedOfferIds[row.id]} selectedSide={selectedSides[row.id] ?? 'over'} onOfferChange={(offerId) => updateOffer(row.id, offerId)} onSideChange={(side) => updateSide(row.id, side)} alternate={index % 2 === 1} />)}</tbody>
@@ -585,8 +595,8 @@ export function PropsPage() {
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-white/[0.045] px-3 py-2 text-[8px] text-zinc-600">
           <span className="font-semibold uppercase tracking-wider text-zinc-500">Percentage grade</span>
-          <span className="text-[#8aff66]">50% and above Green</span>
-          <span className="text-[#ff7a7a]">Below 50% Red</span>
+          <span className="text-[#7af0c8]">50% and above Green</span>
+          <span className="text-[#ff9a9f]">Below 50% Red</span>
         </div>
       </div>
     </> : <EmptyState title="No props match these filters." action={<button onClick={() => { setFilters(DEFAULT_FILTERS); setLineType('all'); setSport('All'); }} className="rounded border border-teal-500/40 px-3 py-1.5 text-xs text-teal-300">Clear filters</button>} />}

@@ -32,7 +32,9 @@ export function filterMarketSnapshot(market: MarketSnapshot, filters: ResearchFi
 
 export function usePlayerResearchFilters(market: MarketSnapshot, line: number) {
   const [filters, setFilters] = useState<ResearchFilters>(EMPTY_FILTERS);
-  const [providerId, setProviderId] = useState('all');
+  const defaultProviderId = market.offers.find((offer) => !offer.status || offer.status === 'active')?.id ?? 'all';
+  const [selectedProviderId, setProviderId] = useState(defaultProviderId);
+  const providerId = market.offers.some((offer) => offer.id === selectedProviderId && (!offer.status || offer.status === 'active')) ? selectedProviderId : defaultProviderId;
 
   const filteredMarket = useMemo(() => filterMarketSnapshot(market, filters, line), [filters, line, market]);
   const updateFilter = (key: keyof ResearchFilters, value: string) => setFilters((current) => ({ ...current, [key]: value }));

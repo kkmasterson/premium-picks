@@ -1,11 +1,34 @@
 # Arena Props Data Platform Documentation
 
+See [the implemented free-API phase](free-api-phase.md) for the NBA directory,
+artwork, controlled sportsbook collection, observed history and operating limits.
+
 This folder defines the data that Arena Props needs, how candidate sources
 are evaluated, and how accepted data is normalized and retained. It is the
 working contract between product, frontend, backend, data engineering and
 vendor procurement.
 
+## Real versus mock data tracker
+
+Use the [platform data status checklist](platform-data-status-checklist.md) to
+track every page, shared surface, all 12 sports and all 113 requirement IDs.
+It separates connected provider data, mock inputs, local browser actions,
+static configuration and unfinished services, with evidence-based checkboxes
+for each conversion. The verified starting point is the local NBA schedule;
+other datasets and hosted production readiness remain open.
+
+## NBA refresh policy
+
+See the [NBA field-by-field refresh outline](nba-data-refresh-plan.md) for the
+weekly schedule decision, separate statistics/odds/media intervals, complete
+requirement-ID crosswalk, free-plan gates and proposed Supabase job metadata.
+This is the current NBA timing specification; implementation gaps are explicit.
+
 ## The four documentation layers
+
+Start the current implementation work with the [NBA starter backend plan](nba-starter-backend.md):
+private key setup, free-plan coverage, local-to-hosted Supabase workflow, database gaps,
+capacity acceptance targets and the repeatable sport onboarding SOP.
 
 1. [Frontend data requirements](frontend-data-requirements.md) defines every
    field or record that the current dashboard needs and its freshness,

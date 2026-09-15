@@ -1,0 +1,66 @@
+.landing-page .arena-entrance-nav { background: #040b0dde; border-bottom-color: #ffffff05; margin-bottom: -84px; }
+.landing-page .arena-entrance-nav:has(#mobile-menu) { background: #071011; }
+.landing-page .arena-entrance-nav nav { max-width: 1408px; }
+.arena-entrance-wordmark { display: block; color: #edc366; font-size: 30px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; line-height: 1; }
+.arena-entrance-wordmark small { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 7px; font-size: 9px; letter-spacing: .55em; }
+.arena-entrance-wordmark i { width: 23px; height: 1px; background: #a27e32; }
+.arena-entrance-tagline { display: block; margin-top: 8px; color: #c6b58e; font-size: 9px; font-weight: 500; letter-spacing: .14em; line-height: 1; text-align: center; text-transform: none; }
+.arena-entrance { position: relative; isolation: isolate; height: calc(100svh - 1px); color: #f8f7ef; overflow: hidden; background: #040c0f; }
+.arena-entrance-scene { position: absolute; top: 50%; left: 50%; width: max(100%, calc((100svh - 1px) * 1.721757)); aspect-ratio: 1646 / 956; transform: translate(-50%, -50%); z-index: -2; }
+.arena-entrance-backdrop { display: block; width: 100%; height: 100%; max-width: none; }
+.arena-entrance::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(180deg, #02090d12 65%, #02090d38); }
+.arena-entrance-copy { position: absolute; top: 32%; left: 15%; width: 70%; text-align: center; }
+.arena-entrance h1 { font-size: clamp(52px, 5vw, 92px); line-height: 1.04; letter-spacing: -.047em; font-weight: 750; text-wrap: balance; }
+.arena-entrance h1 span { color: #ecc15f; }
+.arena-entrance-copy > p { margin: 17px auto 0; font-size: clamp(17px, 1.5vw, 27px); line-height: 1.5; color: #b0b5b4; }
+.arena-entrance-actions { display: flex; justify-content: center; gap: 22px; margin-top: 26px; }
+.landing-page .arena-entrance-actions a { min-width: 212px; min-height: 49px; font-size: 17px; }
+.landing-page .arena-entrance-actions .btn-primary,
+.landing-page .arena-entrance-nav .btn-primary { background: linear-gradient(110deg, #f3cb6d, #dfae4e); box-shadow: inset 0 1px #fff4cb50; }
+.landing-page .arena-entrance-actions .btn-secondary { border: 2px solid #2db2b5; color: #90dedc; background: #020b0d80; }
+.landing-page .arena-entrance-actions .btn-secondary:hover { background: #143537; }
+.arena-entrance-rating { display: flex; justify-content: center; margin-top: 30px; }
+.arena-entrance-rating svg { width: 34px; height: 66px; }
+.arena-court-example { position: absolute; top: 71%; right: 2%; width: 280px; color: #92d9d8; }
+.arena-court-example dl { display: flex; padding: 14px 0; border-block: 1px solid #53d1cd99; background: #03131799; }
+.arena-court-example dl > div { flex: 1; display: flex; flex-direction: column-reverse; align-items: center; }
+.arena-court-example dl > div + div { border-left: 1px solid #4d9799; }
+.arena-court-example dd { font-size: 18px; line-height: 1.1; }
+.arena-court-example dt { font-size: 9px; text-transform: uppercase; letter-spacing: .1em; margin-top: 5px; }
+.arena-court-example p { color: #a4b4b4; font-size: 10px; font-style: italic; text-align: right; margin: 8px 0 0; }
+.arena-entrance-footer { position: absolute; inset: auto 6% 0; height: 12%; border-top: 1px solid #a4b7ae40; display: flex; justify-content: center; align-items: center; }
+.arena-entrance-footer span { padding: 4px 4.5%; color: #d1d4ce; font-size: 11px; text-transform: uppercase; font-weight: 600; letter-spacing: .28em; }
+.arena-entrance-footer span + span { border-left: 1px solid #af8239; }
+@media (max-width: 1100px) {
+  .arena-entrance-copy { width: 86%; left: 7%; top: 32%; }
+  .arena-entrance h1 { font-size: clamp(44px, 6.2vw, 64px); }
+  .arena-court-example { top: 75%; }
+  .arena-entrance-footer span { font-size: 9px; letter-spacing: .18em; }
+}
+@media (min-width: 601px) and (max-height: 740px) {
+  .arena-entrance-copy { top: 29%; }
+  .arena-entrance h1 { font-size: clamp(36px, 8.5svh, 64px); }
+  .arena-entrance-copy > p { margin-top: 12px; font-size: 17px; }
+  .arena-entrance-actions { margin-top: 18px; }
+  .arena-entrance-rating { margin-top: 18px; }
+}
+@media (max-width: 600px) {
+  .landing-page .arena-entrance-nav nav { height: 72px; padding-inline: 24px; }
+  .landing-page .arena-entrance-nav { margin-bottom: -72px; }
+  .arena-entrance-wordmark { font-size: 24px; }
+  .arena-entrance-wordmark small { font-size: 7px; }
+  .arena-entrance { height: 940px; min-height: 100svh; max-height: none; }
+  .arena-entrance-scene { width: max(100%, calc(max(940px, 100svh) * 1.721757)); }
+  .arena-entrance-copy { top: 32%; width: calc(100% - 36px); left: 18px; }
+  .arena-entrance h1 { font-size: clamp(36px, 9.8vw, 56px); line-height: 1.08; }
+  .arena-entrance-copy > p { max-width: 350px; font-size: 16px; line-height: 1.65; margin-top: 20px; }
+  .arena-entrance-actions { flex-direction: column; gap: 12px; align-items: center; margin-top: 25px; }
+  .landing-page .arena-entrance-actions a { width: min(100%, 290px); font-size: 15px; }
+  .arena-entrance-rating { margin-top: 20px; }
+  .arena-entrance-rating svg { height: 52px; }
+  .arena-court-example { top: auto; bottom: 14%; width: 240px; right: calc(50% - 120px); }
+  .arena-court-example p { text-align: center; }
+  .arena-entrance-footer { inset-inline: 18px; height: 10%; }
+  .arena-entrance-footer span { flex: 1; text-align: center; padding-inline: 10px; font-size: 8px; line-height: 1.8; letter-spacing: .14em; }
+}
+

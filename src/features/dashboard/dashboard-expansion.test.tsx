@@ -187,12 +187,12 @@ describe('expanded dashboard destinations', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Sort by L5 descending' }));
     const highestL5 = within(within(table).getAllByRole('row')[1]).getByTitle(/Last 5:/);
     expect(highestL5).toHaveTextContent('100%');
-    expect(highestL5).toHaveClass('text-[#66ff33]');
+    expect(highestL5).toHaveClass('text-[#40f5d0]');
 
     fireEvent.click(screen.getByRole('button', { name: 'Sort by L5 ascending' }));
     const lowestL5 = within(within(table).getAllByRole('row')[1]).getByTitle(/Last 5:/);
     expect(lowestL5).toHaveTextContent('0%');
-    expect(lowestL5).toHaveClass('text-[#ff5252]');
+    expect(lowestL5).toHaveClass('text-[#ff817e]');
   }, 15_000);
 
   it('merges the old Projections destination into Props', async () => {

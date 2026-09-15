@@ -4,7 +4,7 @@ Arena Props is a single React application containing the public marketing site a
 
 ## Requirements
 
-- Node.js 20 or newer
+- Node.js 22.9 or newer (Node.js 24 LTS recommended)
 - npm
 
 ## Development
@@ -78,6 +78,9 @@ Production hosting must serve `index.html` as the fallback for dashboard URLs be
 
 ## Product documentation
 
+- [Live NBA setup and verification](docs/data-platform/nba-live-runbook.md)
+
+- [NBA backend setup, Supabase data map and sport onboarding SOP](docs/data-platform/nba-starter-backend.md)
 - [Landing page experience plan](docs/landing-page/experience-plan.md)
 - [Player UI catalog](docs/player-ui/README.md)
 - [Data platform documentation](docs/data-platform/README.md)

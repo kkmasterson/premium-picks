@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { Logo } from '@/features/landing/components/Logo'
 
 const navLinks = [
-  { label: 'Home', href: '#top' },
   { label: 'Product Tour', href: '#product-tour' },
   { label: 'Features', href: '#features' },
   { label: 'Sports', href: '#sports' },
   { label: 'Pricing', href: '#pricing' },
-  { label: 'FAQ', href: '#faq' },
 ]
 
 export function Navbar() {
@@ -31,7 +28,7 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`arena-entrance-nav sticky top-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'border-b border-line bg-ink-950/85 backdrop-blur-md'
           : 'border-b border-transparent bg-transparent'
@@ -39,7 +36,7 @@ export function Navbar() {
     >
       <nav className="container-site flex h-[68px] items-center justify-between" aria-label="Main navigation">
         <a href="#top" aria-label="Arena Props home" className="shrink-0">
-          <Logo size={42} />
+          <span className="arena-entrance-wordmark" aria-hidden="true">Arena<small><i />Props<i /></small><span className="arena-entrance-tagline">Premium Picks</span></span>
         </a>
 
         {/* Desktop links */}

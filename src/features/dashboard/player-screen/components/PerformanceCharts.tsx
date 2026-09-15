@@ -4,6 +4,11 @@ import type { MarketSnapshot, ResearchHistoryEntry } from '../types';
 
 type Range = 5 | 10 | 15 | 'season';
 
+const CHART_OVER = '#49e3aa';
+const CHART_OVER_SHADE = '#1f9c75';
+const CHART_UNDER = '#ff7379';
+const CHART_UNDER_SHADE = '#bd4148';
+
 function Chart({
   history,
   line,
@@ -26,8 +31,8 @@ function Chart({
     return componentBars && entry.components?.length ? entry.components.reduce((sum, item) => sum + item.value, 0) : value;
   }).filter((value): value is number => value !== null);
   const width = 760;
-  const height = 270;
-  const pad = { left: 10, right: 8, top: 20, bottom: 44 };
+  const height = 350;
+  const pad = { left: 10, right: 8, top: 24, bottom: 50 };
   const max = Math.max(1, ...values, line ?? 0) * 1.16;
   const baseline = height - pad.bottom;
   const chartHeight = baseline - pad.top;
@@ -49,10 +54,10 @@ function Chart({
 
   return (
     <div className="overflow-x-auto" onMouseLeave={() => setActiveId(null)}>
-      <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[650px]" role="img" aria-label={ariaLabel}>
+      <svg data-testid="performance-chart" viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[650px]" role="img" aria-label={ariaLabel}>
         <defs>
-          <linearGradient id="chartOver" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#34d399" /><stop offset="100%" stopColor="#147a5d" /></linearGradient>
-          <linearGradient id="chartUnder" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f87171" /><stop offset="100%" stopColor="#743434" /></linearGradient>
+          <linearGradient id="chartOver" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={CHART_OVER} /><stop offset="70%" stopColor={CHART_OVER} /><stop offset="100%" stopColor={CHART_OVER_SHADE} /></linearGradient>
+          <linearGradient id="chartUnder" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={CHART_UNDER} /><stop offset="70%" stopColor={CHART_UNDER} /><stop offset="100%" stopColor={CHART_UNDER_SHADE} /></linearGradient>
           <linearGradient id="chartNeutral" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#a1a1aa" /><stop offset="100%" stopColor="#3f3f46" /></linearGradient>
           <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#14b8a6" stopOpacity="0.075" /><stop offset="100%" stopColor="#14b8a6" stopOpacity="0" /></linearGradient>
         </defs>
@@ -78,16 +83,16 @@ function Chart({
                     const cumulative = previous + component.value;
                     const top = y(cumulative);
                     const bottom = y(previous);
-                    const componentFill = neutral ? (componentIndex === 0 ? '#71717a' : '#3f3f46') : over ? (componentIndex === 0 ? '#16a873' : '#0d6248') : componentIndex === 0 ? '#d65b5b' : '#763636';
+                    const componentFill = neutral ? (componentIndex === 0 ? '#71717a' : '#3f3f46') : over ? (componentIndex === 0 ? CHART_OVER : CHART_OVER_SHADE) : componentIndex === 0 ? CHART_UNDER : CHART_UNDER_SHADE;
                     return <g key={component.label}><rect x={x} y={top} width={barWidth} height={Math.max(2, bottom - top)} rx={componentIndex === entry.components!.length - 1 ? 4 : 0} fill={componentFill} stroke={activeBar ? '#5eead4' : 'transparent'} strokeWidth={activeBar ? 1.5 : 0} />{bottom - top > 18 && <text x={x + barWidth / 2} y={top + 12} textAnchor="middle" fontSize="7" fontWeight="800" fill="#f4f4f5">{component.label.split(' ')[0]} {component.value}</text>}</g>;
                   }) : <rect x={x} y={valueY} width={barWidth} height={Math.max(2, baseline - valueY)} rx={4} fill={neutral ? 'url(#chartNeutral)' : over ? 'url(#chartOver)' : 'url(#chartUnder)'} stroke={activeBar ? '#d5fffa' : 'transparent'} strokeWidth={activeBar ? 2 : 0} />}
-                  <text x={x + barWidth / 2} y={valueY - 6} textAnchor="middle" fontSize="10" fontWeight="700" fill={activeBar ? '#f4fffd' : '#d4d4d8'}>{displayValue}</text>
+                  <text x={x + barWidth / 2} y={valueY - 7} textAnchor="middle" fontSize="12" fontWeight="800" fill={activeBar ? '#f4fffd' : '#e4e4e7'}>{displayValue}</text>
                   {!neutral && <text x={x + barWidth / 2} y={valueY + 13} textAnchor="middle" fontSize="8" fontWeight="800" fill="#080808">{over ? 'O' : 'U'}</text>}
                 </>
               )}
               <rect x={x - band * 0.07} y={pad.top} width={band} height={chartHeight} fill="transparent" />
-              <text x={x + barWidth / 2} y={height - 23} textAnchor="middle" fontSize="8" fill={activeBar ? '#a1a1aa' : '#777'}>{entry.date}</text>
-              <text x={x + barWidth / 2} y={height - 9} textAnchor="middle" fontSize="8" fill={activeBar ? '#71717a' : '#555'}>{entry.home ? 'vs' : '@'} {entry.opponent}</text>
+              <text x={x + barWidth / 2} y={height - 27} textAnchor="middle" fontSize="10" fontWeight="700" fill={activeBar ? '#e4e4e7' : '#a1a1aa'}>{entry.date}</text>
+              <text x={x + barWidth / 2} y={height - 11} textAnchor="middle" fontSize="10" fontWeight="700" fill={activeBar ? '#d4d4d8' : '#8b8b94'}>{entry.home ? 'vs' : '@'} {entry.opponent}</text>
             </g>
           );
         })}
@@ -98,7 +103,7 @@ function Chart({
           <g pointerEvents="none" data-testid="chart-tooltip">
             <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="7" fill="#121616" stroke="#2dd4bf" strokeOpacity="0.65" />
             <text x={tooltipX + 10} y={tooltipY + 15} fontSize="9" fontWeight="700" fill="#f4f4f5">{active.entry.date} · {active.entry.home ? 'vs' : '@'} {active.entry.opponent}</text>
-            <text x={tooltipX + 10} y={tooltipY + 32} fontSize="13" fontWeight="800" fill={active.value === null ? '#a1a1aa' : active.over || neutral ? '#5eead4' : '#f87171'}>{active.displayValue ?? (active.entry.availability === 'dnp' ? 'DNP' : 'N/A')}</text>
+            <text x={tooltipX + 10} y={tooltipY + 32} fontSize="13" fontWeight="800" fill={active.value === null ? '#a1a1aa' : active.over || neutral ? (neutral ? '#5eead4' : CHART_OVER) : CHART_UNDER}>{active.displayValue ?? (active.entry.availability === 'dnp' ? 'DNP' : 'N/A')}</text>
             <text x={tooltipX + 52} y={tooltipY + 31} fontSize="9" fill="#a1a1aa">{active.value === null || line === undefined ? 'Recorded result' : `${active.over ? 'Over' : 'Under'} ${line}`}</text>
             <text x={tooltipX + 10} y={tooltipY + 48} fontSize="8" fill="#71717a">{active.entry.minutes ? `${active.entry.minutes} minutes · ` : ''}Click to keep details visible</text>
           </g>
@@ -111,18 +116,23 @@ function Chart({
 
 export function PerformanceChart({ market, line, embedded = false }: { market: MarketSnapshot; line: number; embedded?: boolean }) {
   const [range, setRange] = useState<Range>(15);
-  const history = useMemo(() => range === 'season' ? market.history : market.history.slice(0, range), [market.history, range]);
+  const history = useMemo(() => {
+    if (range === 'season') return market.history;
+    return market.history
+      .filter((entry) => entry.availability === 'played' && entry.value !== null)
+      .slice(0, range);
+  }, [market.history, range]);
   return (
     <section className={cn('border-t border-white/[0.06] bg-[#0f1111]', !embedded && 'overflow-hidden rounded-xl border border-white/[0.07]')}>
-      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.05] px-3 py-1.5">
-        <h2 className="text-[12px] font-semibold text-zinc-100">Recent {market.definition.market}</h2>
+      <header className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] px-3 py-2.5">
+        <h2 className="text-base font-bold text-white">Recent {market.definition.market}</h2>
           <div className="flex gap-0.5" role="group" aria-label="Performance range">
-          {([5, 10, 15, 'season'] as Range[]).map((item) => <button key={String(item)} onClick={() => setRange(item)} aria-pressed={range === item} className={cn('rounded px-1.5 py-1 text-[9px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', range === item ? 'bg-teal-400/15 text-teal-200' : 'text-zinc-500 hover:text-zinc-300')}>{item === 'season' ? 'Season' : `L${item}`}</button>)}
+          {([5, 10, 15, 'season'] as Range[]).map((item) => <button key={String(item)} onClick={() => setRange(item)} aria-pressed={range === item} className={cn('rounded-md px-3 py-2 text-xs font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', range === item ? 'bg-teal-400/20 text-teal-100' : 'text-zinc-300 hover:bg-white/[0.04] hover:text-white')}>{item === 'season' ? 'Season' : `L${item}`}</button>)}
           </div>
       </header>
       <div className={cn('pb-2 pt-1.5', embedded ? 'px-0' : 'px-3 sm:px-4')}>
         <Chart history={history} line={line} valueFor={(entry) => entry.value} componentBars={Boolean(market.definition.chartPreset && market.definition.chartPreset !== 'standard')} ariaLabel={`${market.definition.market} history compared with line ${line}`} />
-        <div className="mt-1 flex flex-wrap gap-3 border-t border-white/[0.04] px-3 pt-1.5 text-[8px] text-zinc-600"><span><span className="mr-1 inline-block h-1.5 w-1.5 rounded-sm bg-emerald-400" />Over line</span><span><span className="mr-1 inline-block h-1.5 w-1.5 rounded-sm bg-red-400" />Under line</span><span><span className="mr-1 inline-block h-1.5 w-1.5 rounded-sm border border-dashed border-zinc-500" />DNP / unavailable</span><span className="ml-auto">Fixed demo data · No live connection</span></div>
+        <div className="mt-1 flex flex-wrap gap-3 border-t border-white/[0.04] px-3 pt-2 text-[10px] font-medium text-zinc-400"><span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-[#49e3aa]" />Over line</span><span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-[#ff7379]" />Under line</span><span><span className="mr-1 inline-block h-2 w-2 rounded-sm border border-dashed border-zinc-500" />DNP / unavailable</span><span className="ml-auto">Fixed demo data · No live connection</span></div>
       </div>
     </section>
   );

@@ -212,28 +212,31 @@
 
 @layer components {
   .stat-heat-cell {
-    background-image: linear-gradient(
-      to top,
-      rgb(var(--stat-heat) / 0.28) 0,
-      rgb(var(--stat-heat) / 0.22) 42%,
-      rgb(var(--stat-heat) / 0.14) 72%,
-      rgb(var(--stat-heat) / 0.06) 90%,
-      transparent 100%
-    );
-    box-shadow: inset 0 -2px 0 rgb(var(--stat-heat) / 0.78);
+    /* Reference palette: dark teal/crimson tiles with a fine illuminated edge. */
+    background-color: #080e10;
+    background-image:
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 7px,
+        rgb(var(--stat-heat) / 0.065) 7px,
+        rgb(var(--stat-heat) / 0.22) 52%,
+        rgb(var(--stat-heat) / 0.38) 100%
+      );
+    background-clip: padding-box;
+    box-shadow: inset 0 -1px 0 rgb(var(--stat-heat) / 0.95);
   }
 
   .stat-heat-cell--soft {
     background-image: linear-gradient(
-      to top,
-      rgb(var(--stat-heat) / 0.2) 0,
-      rgb(var(--stat-heat) / 0.14) 55%,
-      rgb(var(--stat-heat) / 0.06) 84%,
-      transparent 100%
+      to bottom,
+      transparent 0,
+      transparent 7px,
+      rgb(var(--stat-heat) / 0.05) 7px,
+      rgb(var(--stat-heat) / 0.18) 52%,
+      rgb(var(--stat-heat) / 0.34) 100%
     );
-    box-shadow: inset 0 -2px 0 rgb(var(--stat-heat) / 0.58);
   }
-
   .btn-primary {
     @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-gold px-6 text-sm font-semibold text-ink-950 transition-all duration-200 hover:bg-gold-hover hover:shadow-gold-soft active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
   }

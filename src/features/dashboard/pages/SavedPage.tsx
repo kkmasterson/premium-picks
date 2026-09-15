@@ -1,4 +1,7 @@
 import { useState, type ReactNode } from 'react';
+import { useLiveSchedule } from '@/features/dashboard/live-schedule';
+import { isCanonicalGameId, scheduleMatchup } from '@/features/dashboard/matchup-view';
+import { MatchupRow } from '@/features/dashboard/components/MatchupRow';
 import { GAMES, bestBook, formatOdds, playerById, propById, teamName } from '@/features/dashboard/data';
 import { useDashboard } from '@/features/dashboard/DashboardProvider';
 import { DashboardPageHeader, EntityIdentity, MetricStrip, ResearchSurface, SegmentedControl } from '@/features/dashboard/components/dashboard-ui';
@@ -12,7 +15,23 @@ export function SavedPage() {
   const [filter, setFilter] = useState<SavedFilter>('All');
   const savedProps = saved.props.map(propById).filter(Boolean);
   const savedPlayers = saved.players.map(playerById).filter(Boolean);
-  const savedGames = saved.games.map((id) => GAMES.find((game) => game.id === id)).filter(Boolean);
+  const hasImportedGames = saved.games.some(isCanonicalGameId);
+  const { snapshot, loading, freshness, retry } = useLiveSchedule(hasImportedGames);
+  const importedGames = new Map(snapshot?.games.map((game) => [game.id, game]));
+  const savedGames = saved.games.map((id) => {
+    if (isCanonicalGameId(id)) {
+      const game = importedGames.get(id);
+      return { id, matchup: game ? scheduleMatchup(game) : null };
+    }
+    const game = GAMES.find((candidate) => candidate.id === id);
+    return { id, matchup: game ? {
+      id, sport: game.sport,
+      away: { abbreviation: game.awayTeam, name: teamName(game.awayTeam, game.sport) },
+      home: { abbreviation: game.homeTeam, name: teamName(game.homeTeam, game.sport) },
+      timing: `${game.time} · ${game.status} · Demo`,
+      counts: { props: null, players: null, books: null },
+    } : null };
+  });
   const total = savedProps.length + savedPlayers.length + savedGames.length;
   const show = (type: Exclude<SavedFilter, 'All'>) => filter === 'All' || filter === type;
 
@@ -22,7 +41,10 @@ export function SavedPage() {
     {total === 0 ? <div className="grid min-h-64 place-items-center rounded-xl border border-dashed border-[var(--dashboard-border-strong)] text-center"><div><Bookmark className="mx-auto h-7 w-7 text-zinc-700" /><p className="mt-3 text-xs font-medium text-zinc-300">No saved research yet</p><p className="mt-1 text-[10px] text-zinc-600">Bookmark props, players, or games to find them here.</p><button onClick={() => navigate('props')} className="mt-4 rounded-md border border-teal-500/35 bg-teal-500/10 px-3 py-1.5 text-xs font-semibold text-teal-300">Browse Props</button></div></div> : <ResearchSurface className="divide-y divide-[var(--dashboard-border)]">
       {show('Props') && savedProps.map((prop) => { const player = playerById(prop!.playerId)!; const best = bestBook(prop!, 'over'); return <div key={prop!.id} className="flex min-w-0 items-center gap-3 px-3 py-3 hover:bg-[var(--dashboard-surface-hover)] sm:px-4"><button className="min-w-0 flex-1 text-left" onClick={() => openDrawer(prop!.id)}><EntityIdentity name={player.name} meta={<span className="text-teal-300">{prop!.market} · Line {prop!.line}</span>} detail={`Best: ${best.book} ${formatOdds(best.over)}`} /></button><MetricStrip compact className="hidden w-52 sm:grid" metrics={[{ label: 'L10', value: `${prop!.l10}%`, sample: 'hit rate', tone: prop!.l10 >= 60 ? 'positive' : 'warning' }, { label: 'Diff', value: `${prop!.diff >= 0 ? '+' : ''}${prop!.diff.toFixed(1)}`, sample: 'vs line', tone: prop!.diff >= 0 ? 'positive' : 'negative' }]} /><RemoveButton label={`Remove ${player.name} ${prop!.market} from saved`} onClick={() => toggleSave('props', prop!.id)} /></div>; })}
       {show('Players') && savedPlayers.map((player) => <div key={player!.id} className="flex min-w-0 items-center gap-3 px-3 py-3 hover:bg-[var(--dashboard-surface-hover)] sm:px-4"><button className="min-w-0 flex-1 text-left" onClick={() => navigate('player', { playerId: player!.id, sport: player!.sport })}><EntityIdentity name={player!.name} meta={`${player!.team} · ${player!.pos} · ${player!.sport}`} detail={`${player!.home ? 'vs' : '@'} ${player!.opponent} · ${player!.gameTime}`} /></button><RemoveButton label={`Remove ${player!.name} from saved`} onClick={() => toggleSave('players', player!.id)} /></div>)}
-      {show('Games') && savedGames.map((game) => <div key={game!.id} className="flex min-w-0 items-center gap-3 px-3 py-3 hover:bg-[var(--dashboard-surface-hover)] sm:px-4"><button className="min-w-0 flex-1 text-left" onClick={() => navigate('game', { gameId: game!.id })}><span className="flex items-center gap-2.5"><Bookmark className="h-4 w-4 shrink-0 fill-current text-teal-300" /><span><span className="block text-xs font-semibold text-zinc-100">{game!.awayTeam} @ {game!.homeTeam}</span><span className="mt-0.5 block text-[10px] text-zinc-500">{teamName(game!.awayTeam, game!.sport)} at {teamName(game!.homeTeam, game!.sport)} · {game!.time}</span></span></span></button><RemoveButton label="Remove game from saved" onClick={() => toggleSave('games', game!.id)} /></div>)}
+      {show('Games') && hasImportedGames && <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 text-[10px] text-zinc-500" role="status"><span>{loading ? 'Loading saved game schedules…' : freshness === 'fresh' ? 'NBA schedules · Saved in this browser' : 'Saved game schedule is unavailable or overdue; bookmarks are retained.'}</span><button onClick={retry} disabled={loading} className="rounded px-2 py-1 text-teal-300 focus-visible:ring-2 focus-visible:ring-teal-500">Reload saved games</button></div>}
+      {show('Games') && savedGames.map(({ id, matchup }) => matchup
+        ? <MatchupRow key={id} matchup={matchup} isSaved onSave={() => toggleSave('games', id)} />
+        : <div key={id} className="flex items-center gap-3 px-4 py-3"><div className="min-w-0 flex-1"><p className="text-xs text-zinc-300">{loading && isCanonicalGameId(id) ? 'Loading saved game…' : 'Saved game unavailable'}</p><p className="mt-1 text-[10px] text-zinc-500">Your bookmark is retained. This game may be outside the imported season.</p></div><button onClick={() => navigate('game', { gameId: id })} className="text-xs text-teal-300">Open game</button><RemoveButton label="Remove unavailable game from saved" onClick={() => toggleSave('games', id)} /></div>)}
       {((filter === 'Props' && !savedProps.length) || (filter === 'Players' && !savedPlayers.length) || (filter === 'Games' && !savedGames.length)) && <div className="py-16 text-center text-xs text-zinc-500">No saved {filter.toLowerCase()} yet.</div>}
     </ResearchSurface>}
   </div>;

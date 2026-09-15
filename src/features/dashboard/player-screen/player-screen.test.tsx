@@ -6,6 +6,7 @@ import { playerById } from '@/features/dashboard/data';
 import { mockPlayerResearchAdapter } from './adapter';
 import { resolvePlayerScreenProfile } from './profiles';
 import { usePlayerScreenState } from './usePlayerScreenState';
+import { PerformanceChart } from './components/PerformanceCharts';
 
 function SelectionHarness() {
   const player = playerById('WNBA-a-ja-wilson')!;
@@ -54,16 +55,22 @@ describe('player-screen route state', () => {
     expect(within(profile).getByText('Game')).toBeInTheDocument();
 
     const statsWorkspace = screen.getByRole('region', { name: 'Player stats workspace' });
+    expect(statsWorkspace.closest('.grid')).toHaveClass('xl:grid-cols-[minmax(0,2.25fr)_minmax(350px,1.15fr)]');
     const marketWorkspace = within(statsWorkspace).getByRole('region', { name: 'Player market workspace' });
     const marketTabs = within(marketWorkspace).getByRole('tablist', { name: 'Player markets' });
     expect(within(marketTabs).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['MIN', 'PTS', 'REBS', 'O-REB', 'D-REB', 'ASTS', 'PA', 'PR', 'RA', 'PRA', 'BLKS', 'STL']);
+    expect(within(marketTabs).getByRole('tab', { name: 'PTS' })).toHaveClass('text-[13px]');
     expect(within(marketWorkspace).queryByRole('button', { name: 'More player markets' })).not.toBeInTheDocument();
     expect(within(marketWorkspace).getByRole('group', { name: 'Game period' })).toBeInTheDocument();
-    expect(within(marketWorkspace).getByLabelText('Hit-rate summary')).toHaveTextContent('L5');
-    expect(within(marketWorkspace).queryByLabelText('Player history filters')).not.toBeInTheDocument();
-    fireEvent.click(within(marketWorkspace).getByRole('button', { name: /^Filters/ }));
+    const hitRateSummary = within(marketWorkspace).getByLabelText('Hit-rate summary');
+    expect(hitRateSummary).toHaveTextContent('L5');
+    expect(within(hitRateSummary).getByText('40%')).toHaveClass('text-[15px]');
     expect(within(marketWorkspace).getByLabelText('Player history filters')).toHaveTextContent('Home/Away');
-    expect(within(statsWorkspace).getByRole('heading', { name: 'Recent Points' })).toBeInTheDocument();
+    expect(within(marketWorkspace).getByRole('button', { name: /^Filters/ })).toHaveAttribute('aria-expanded', 'true');
+    expect(within(statsWorkspace).getByRole('heading', { name: 'Recent Points' })).toHaveClass('text-base');
+    expect(within(statsWorkspace).getByTestId('performance-chart')).toHaveAttribute('viewBox', '0 0 760 350');
+    expect(within(marketWorkspace).getByText('Line source')).toBeInTheDocument();
+    expect(within(marketWorkspace).getByRole('combobox', { name: 'Sportsbook provider' })).toHaveTextContent(/DraftKings|FanDuel|BetMGM|Caesars|Fanatics|bet365/);
   });
 
   it('keeps secondary markets directly available in the market row', async () => {
@@ -91,7 +98,6 @@ describe('player-screen route state', () => {
     fireEvent.click(firstQuarter);
     await waitFor(() => expect(firstQuarter).toHaveAttribute('aria-pressed', 'true'));
 
-    fireEvent.click(screen.getByRole('button', { name: /^Filters/ }));
     const season = screen.getByRole('combobox', { name: 'Season' });
     fireEvent.change(season, { target: { value: 'previous' } });
     expect(season).toHaveValue('previous');
@@ -124,9 +130,26 @@ describe('player-screen route state', () => {
     expect(screen.getByTestId('chart-tooltip')).toHaveTextContent('Click to keep details visible');
   });
 
+  it('shows five played results when L5 is selected even when a DNP is newer', () => {
+    const player = playerById('NBA-jalen-brunson')!;
+    const model = mockPlayerResearchAdapter.getPlayerResearch(player, resolvePlayerScreenProfile(player.sport, player.pos));
+    const market = model.markets.find((item) => item.definition.key === 'pts')!;
+    const dnp = { ...market.history[0], id: 'forced-recent-dnp', availability: 'dnp' as const, value: null };
+
+    render(<PerformanceChart market={{ ...market, history: [dnp, ...market.history] }} line={23} />);
+    fireEvent.click(screen.getByRole('button', { name: 'L5' }));
+
+    const bars = screen.getAllByTestId(/^history-bar-/);
+    expect(bars).toHaveLength(5);
+    expect(bars.every((bar) => !bar.getAttribute('aria-label')?.includes('DNP'))).toBe(true);
+  });
+
   it('keeps overflowing prop history inside a horizontally scrollable region', async () => {
     render(<MemoryRouter initialEntries={['/dashboard/players/NFL-patrick-mahomes?market=pass-yds&period=full']}><App /></MemoryRouter>);
-    fireEvent.click(await screen.findByRole('button', { name: /Prop History/i }));
+    const contextRail = await screen.findByRole('complementary', { name: 'Contextual player analysis' });
+    expect(within(contextRail).getByRole('button', { name: /Line Movement/i })).toHaveClass('text-sm');
+    expect(contextRail.querySelector('[data-sportsbook-logo]')).toHaveClass('h-6', 'w-11');
+    fireEvent.click(within(contextRail).getByRole('button', { name: /Prop History/i }));
 
     const history = screen.getByRole('region', { name: 'Prop history results' });
     expect(history).toHaveClass('overflow-x-auto', 'max-w-full', 'pb-2');

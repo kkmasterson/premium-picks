@@ -71,7 +71,7 @@ function EditableLineInput({ line, onCommit }: { line: number; onCommit: (line: 
           event.currentTarget.blur();
         }
       }}
-      className="h-7 w-12 border-x border-white/[0.07] bg-transparent px-1 text-center text-sm font-bold tabular-nums text-white caret-teal-300 outline-none selection:bg-teal-400/40 selection:text-white hover:bg-white/[0.025] focus:bg-teal-400/[0.07] focus:ring-2 focus:ring-inset focus:ring-teal-400/70"
+      className="h-8 w-14 border-x border-white/[0.07] bg-transparent px-1 text-center text-[15px] font-bold tabular-nums text-white caret-teal-300 outline-none selection:bg-teal-400/40 selection:text-white hover:bg-white/[0.025] focus:bg-teal-400/[0.07] focus:ring-2 focus:ring-inset focus:ring-teal-400/70"
     />
   );
 }
@@ -97,7 +97,8 @@ function SportsbookOfferSelector({
   };
 
   return (
-    <div className="w-[132px] shrink-0">
+    <div className="w-[202px] shrink-0">
+      <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-300">Line source</span>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <button
@@ -107,14 +108,14 @@ function SportsbookOfferSelector({
             aria-controls="sportsbook-provider-options"
             aria-haspopup="listbox"
             className={cn(
-              'flex h-8 w-full items-center gap-1.5 rounded-md border bg-[#111313] px-2 text-left transition-colors hover:border-white/[0.18] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/70',
+              'flex h-11 w-full items-center gap-2 rounded-lg border bg-[#151818] px-2.5 text-left shadow-sm transition-colors hover:border-white/25 hover:bg-[#191d1d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/70',
               selectedType ? selectedType.surface : 'border-white/[0.1]',
             )}
           >
-            {selectedOffer ? <SportsbookLogo shortName={selectedOffer.shortName} compact /> : <span aria-hidden="true" className="grid h-5 w-8 place-items-center rounded bg-teal-500/10 text-[7px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">ALL</span>}
+            {selectedOffer ? <SportsbookLogo shortName={selectedOffer.shortName} /> : <span aria-hidden="true" className="grid h-7 w-11 place-items-center rounded bg-teal-500/10 text-[9px] font-bold text-teal-300 ring-1 ring-inset ring-teal-500/20">ALL</span>}
             <span className="min-w-0 flex-1">
-              <span className="flex min-w-0 items-center gap-1"><span className="truncate text-[9px] font-semibold leading-none text-zinc-100">{selectedOffer?.name ?? 'All Books'}</span>{selectedType && <span className={cn('inline-flex shrink-0 items-center gap-0.5 text-[7px] font-semibold', selectedType.color)}>{selectedType.asset && <img src={selectedType.asset} alt="" className="h-3.5 w-3.5 object-contain" />}{selectedType.label}</span>}</span>
-              {selectedOffer ? <span className="mt-0.5 flex items-center gap-1 text-[7px] leading-none tabular-nums"><span className="text-zinc-500">Line <strong className="text-zinc-200">{selectedOffer.line}</strong></span><span className="text-emerald-400">O {formatOdds(selectedOffer.overOdds)}</span><span className="text-red-400">U {formatOdds(selectedOffer.underOdds)}</span></span> : <span className="mt-0.5 block truncate text-[8px] leading-none text-zinc-500">{offers.length} available offers</span>}
+              <span className="flex min-w-0 items-center gap-1"><span className="truncate text-[13px] font-bold leading-none text-white">{selectedOffer?.name ?? 'Compare books'}</span>{selectedType && <span className={cn('inline-flex shrink-0 items-center gap-0.5 text-[10px] font-bold', selectedType.color)}>{selectedType.asset && <img src={selectedType.asset} alt="" className="h-4 w-4 object-contain" />}{selectedType.label}</span>}</span>
+              {selectedOffer ? <span className="mt-1 flex items-center gap-1.5 text-[10px] font-semibold leading-none tabular-nums"><span className="text-zinc-200">Line <strong className="text-white">{selectedOffer.line}</strong></span><span className="text-emerald-300">O {formatOdds(selectedOffer.overOdds)}</span><span className="text-red-300">U {formatOdds(selectedOffer.underOdds)}</span></span> : <span className="mt-1 block truncate text-[11px] leading-none text-zinc-200">{offers.length} available offers</span>}
             </span>
             <ChevronDown className={cn('h-3.5 w-3.5 shrink-0 text-zinc-500 transition-transform', open && 'rotate-180')} />
           </button>
@@ -207,7 +208,7 @@ export function MarketWorkspace({
 }) {
   const { saved, toggleSave } = useDashboard();
   const [group, setGroup] = useState(market.definition.group);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(true);
   const groupMarkets = viewModel.markets.filter((item) => item.definition.group === group);
   const propSaved = market.propId ? saved.props.includes(market.propId) : false;
   const playedCount = market.history.filter((entry) => entry.availability === 'played' && entry.value !== null).length;
@@ -221,23 +222,23 @@ export function MarketWorkspace({
   ], [line, market, playedCount]);
   const activeFilterCount = viewModel.profile.filters.filter((key) => filters[key] !== 'all').length;
 
-  const selectClass = 'h-7 rounded-md border border-white/[0.08] bg-[#111313] px-2 text-[10px] text-zinc-200 outline-none transition-colors hover:border-white/[0.14] focus:border-teal-500/60 focus:ring-1 focus:ring-teal-500/30';
+  const selectClass = 'h-11 min-w-28 rounded-lg border border-white/[0.14] bg-[#171a1a] px-3 text-sm font-semibold text-zinc-100 outline-none transition-colors hover:border-white/25 focus:border-teal-400/70 focus:ring-2 focus:ring-teal-500/30';
   const filterLabels: Record<PlayerFilterKey, string> = { opponent: 'Opponent', season: 'Season', homeAway: 'Home/Away', team: 'Team', event: 'Event', courtType: 'Court' };
 
   return (
     <section aria-label="Player market workspace" className={cn('w-full min-w-0 max-w-full overflow-hidden bg-[#0f1111]', !embedded && 'rounded-xl border border-white/[0.07]')}>
-      <div className="flex min-w-0 flex-nowrap items-center gap-1.5 border-b border-white/[0.06] px-3 py-1.5">
-          <div className="flex shrink-0 rounded-md border border-white/[0.08] bg-[#090a0a] p-0.5 text-[9px] font-semibold">
+      <div className="flex min-w-0 flex-wrap items-center gap-2 border-b border-white/[0.08] px-3 py-2.5">
+          <div className="flex shrink-0 rounded-lg border border-white/[0.12] bg-[#090a0a] p-1 text-sm font-bold">
             {(['primary', 'alternate'] as const).map((item) => (
-              <button key={item} onClick={() => setGroup(item)} aria-pressed={group === item} className={cn('rounded px-2 py-1 capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', group === item ? 'bg-teal-500/15 text-teal-300' : 'text-zinc-500 hover:text-zinc-200')}>
+              <button key={item} onClick={() => setGroup(item)} aria-pressed={group === item} className={cn('rounded-md px-3 py-2 capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', group === item ? 'bg-teal-500/20 text-teal-200' : 'text-zinc-400 hover:bg-white/[0.04] hover:text-white')}>
                 {item}
               </button>
             ))}
           </div>
-        <div className="min-w-0 flex-1 overflow-hidden">
-          <div className="no-scrollbar flex min-w-0 overflow-x-auto whitespace-nowrap" role="tablist" aria-label="Player markets">
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-wrap gap-0.5" role="tablist" aria-label="Player markets">
             {groupMarkets.map((item) => (
-              <button key={item.definition.key} role="tab" disabled={!item.available} aria-selected={market.definition.key === item.definition.key} onClick={() => update({ marketKey: item.definition.key })} title={item.available ? item.definition.market : `${item.definition.market} is unavailable`} className={cn('relative shrink-0 px-2 py-1.5 text-[10px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', market.definition.key === item.definition.key ? 'text-teal-300 after:absolute after:inset-x-1.5 after:bottom-0 after:h-px after:bg-teal-400' : 'text-zinc-500 hover:text-zinc-200', !item.available && 'cursor-not-allowed opacity-35')}>
+              <button key={item.definition.key} role="tab" disabled={!item.available} aria-selected={market.definition.key === item.definition.key} onClick={() => update({ marketKey: item.definition.key })} title={item.available ? item.definition.market : `${item.definition.market} is unavailable`} className={cn('relative shrink-0 rounded-md px-3 py-2.5 text-[13px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', market.definition.key === item.definition.key ? 'bg-teal-500/10 text-teal-100 after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:bg-teal-400' : 'text-zinc-300 hover:bg-white/[0.04] hover:text-white', !item.available && 'cursor-not-allowed opacity-40')}>
                 {item.definition.label}
               </button>
             ))}
@@ -245,25 +246,25 @@ export function MarketWorkspace({
         </div>
       </div>
 
-      <div className="no-scrollbar flex min-w-0 items-center gap-1.5 overflow-x-auto border-b border-white/[0.06] px-3 py-1.5">
-            <div className="w-[86px] shrink-0 border-r border-white/[0.065] pr-2">
-              <p className="text-[7px] font-semibold uppercase tracking-[0.14em] text-zinc-600">Selected prop</p>
-              <h2 className="truncate text-[12px] font-bold leading-tight text-zinc-100">{market.definition.market}</h2>
+      <div className="flex min-w-0 flex-wrap items-end gap-3 border-b border-white/[0.08] px-3 py-3">
+            <div className="w-[96px] shrink-0 border-r border-white/[0.065] pr-2.5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-300">Selected prop</p>
+              <h2 className="truncate text-base font-bold leading-tight text-white">{market.definition.market}</h2>
             </div>
 
-            <div className="flex h-8 shrink-0 gap-0.5 rounded-md border border-white/[0.07] bg-[#111313] p-0.5" role="group" aria-label="Game period">
+            <div className="flex h-10 shrink-0 gap-0.5 rounded-lg border border-white/[0.12] bg-[#151818] p-1" role="group" aria-label="Game period">
               {viewModel.profile.periods.map((period) => (
-                <button key={period.key} onClick={() => update({ periodKey: period.key })} aria-pressed={periodKey === period.key} className={cn('shrink-0 rounded px-1.5 py-1 text-[9px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', periodKey === period.key ? 'bg-teal-400/[0.12] text-teal-200' : 'text-zinc-500 hover:text-zinc-200')}>
+                <button key={period.key} onClick={() => update({ periodKey: period.key })} aria-pressed={periodKey === period.key} className={cn('shrink-0 rounded-md px-2.5 py-1 text-[13px] font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', periodKey === period.key ? 'bg-teal-400/[0.16] text-teal-100' : 'text-zinc-300 hover:text-white')}>
                   {period.label}
                 </button>
               ))}
             </div>
 
-            <div className="flex h-8 shrink-0 items-center rounded-md border border-white/[0.1] bg-[#111313]">
-              <span className="pl-2 text-[7px] font-semibold uppercase tracking-[0.12em] text-zinc-600">Line</span>
-              <button onClick={() => update({ line: Math.max(0, line - market.definition.step) })} aria-label="Decrease line" className="ml-0.5 grid h-7 w-7 place-items-center text-zinc-500 hover:text-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400"><Minus className="h-3 w-3" /></button>
+            <div className="flex h-9 shrink-0 items-center rounded-md border border-white/[0.1] bg-[#111313]">
+              <span className="pl-2.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-zinc-400">Line</span>
+              <button onClick={() => update({ line: Math.max(0, line - market.definition.step) })} aria-label="Decrease line" className="ml-0.5 grid h-8 w-8 place-items-center text-zinc-500 hover:text-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400"><Minus className="h-3.5 w-3.5" /></button>
               <EditableLineInput line={line} onCommit={(nextLine) => update({ line: nextLine })} />
-              <button onClick={() => update({ line: line + market.definition.step })} aria-label="Increase line" className="grid h-7 w-7 place-items-center text-zinc-500 hover:text-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400"><Plus className="h-3 w-3" /></button>
+              <button onClick={() => update({ line: line + market.definition.step })} aria-label="Increase line" className="grid h-8 w-8 place-items-center text-zinc-500 hover:text-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-teal-400"><Plus className="h-3.5 w-3.5" /></button>
             </div>
 
             <SportsbookOfferSelector
@@ -275,24 +276,24 @@ export function MarketWorkspace({
               }}
             />
 
-            <button disabled={!market.propId} onClick={() => market.propId && toggleSave('props', market.propId)} aria-label={propSaved ? 'Remove prop from saved' : 'Save prop'} aria-pressed={propSaved} className={cn('inline-flex h-8 shrink-0 items-center justify-center gap-1 rounded-md border px-2 text-[9px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', propSaved ? 'border-teal-400/40 bg-teal-400/10 text-teal-300' : 'border-white/[0.1] text-zinc-500 hover:text-teal-300')}>
-              <Bookmark className={cn('h-3 w-3', propSaved && 'fill-teal-300')} />{propSaved ? 'Saved' : 'Save'}
+            <button disabled={!market.propId} onClick={() => market.propId && toggleSave('props', market.propId)} aria-label={propSaved ? 'Remove prop from saved' : 'Save prop'} aria-pressed={propSaved} className={cn('inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md border px-3 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', propSaved ? 'border-teal-400/40 bg-teal-400/10 text-teal-300' : 'border-white/[0.1] text-zinc-400 hover:text-teal-300')}>
+              <Bookmark className={cn('h-3.5 w-3.5', propSaved && 'fill-teal-300')} />{propSaved ? 'Saved' : 'Save'}
             </button>
-            <button type="button" onClick={() => setFiltersOpen((current) => !current)} aria-expanded={filtersOpen} aria-controls="player-history-filters" className={cn('inline-flex h-8 shrink-0 items-center gap-1 rounded-md border px-2 text-[9px] font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', filtersOpen || activeFilterCount > 0 ? 'border-teal-400/35 bg-teal-400/[0.08] text-teal-300' : 'border-white/[0.1] text-zinc-500 hover:text-teal-300')}>
-              <SlidersHorizontal className="h-3 w-3" />Filters{activeFilterCount > 0 && <span className="rounded bg-teal-400/15 px-1 text-[8px] tabular-nums">{activeFilterCount}</span>}<ChevronDown className={cn('h-3 w-3 transition-transform', filtersOpen && 'rotate-180')} />
+            <button type="button" onClick={() => setFiltersOpen((current) => !current)} aria-expanded={filtersOpen} aria-controls="player-history-filters" className={cn('inline-flex h-10 shrink-0 items-center gap-1.5 rounded-md border px-3 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400', filtersOpen || activeFilterCount > 0 ? 'border-teal-400/35 bg-teal-400/[0.08] text-teal-300' : 'border-white/[0.1] text-zinc-400 hover:text-teal-300')}>
+              <SlidersHorizontal className="h-3.5 w-3.5" />Filters{activeFilterCount > 0 && <span className="rounded bg-teal-400/15 px-1 text-[9px] tabular-nums">{activeFilterCount}</span>}<ChevronDown className={cn('h-3.5 w-3.5 transition-transform', filtersOpen && 'rotate-180')} />
             </button>
       </div>
 
-      {filtersOpen && <div id="player-history-filters" className="no-scrollbar flex min-w-0 items-center gap-1.5 overflow-x-auto border-b border-white/[0.06] bg-black/10 px-3 py-1.5" aria-label="Player history filters">
-          {viewModel.profile.filters.map((key) => <label key={key} className="flex shrink-0 items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.1em] text-zinc-600"><span>{filterLabels[key]}</span><select aria-label={filterLabels[key]} value={filters[key]} onChange={(event) => updateFilter(key, event.target.value)} className={selectClass}>{(viewModel.filterOptions[key] ?? [{ value: 'all', label: 'All' }]).map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>)}
-          <button onClick={() => viewModel.profile.filters.forEach((key) => updateFilter(key, 'all'))} aria-label="Reset filters" title="Reset filters" className="inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-white/[0.08] px-2 text-[9px] font-semibold text-zinc-500 hover:text-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"><SlidersHorizontal className="h-3 w-3" />Reset</button>
+      {filtersOpen && <div id="player-history-filters" className="flex min-w-0 flex-wrap items-end gap-3 border-b border-white/[0.08] bg-black/10 px-3 py-3" aria-label="Player history filters">
+          {viewModel.profile.filters.map((key) => <label key={key} className="grid shrink-0 gap-1 text-[11px] font-bold uppercase tracking-[0.12em] text-zinc-300"><span>{filterLabels[key]}</span><select aria-label={filterLabels[key]} value={filters[key]} onChange={(event) => updateFilter(key, event.target.value)} className={selectClass}>{(viewModel.filterOptions[key] ?? [{ value: 'all', label: 'All' }]).map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>)}
+          <button onClick={() => viewModel.profile.filters.forEach((key) => updateFilter(key, 'all'))} aria-label="Reset filters" title="Reset filters" className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-white/[0.08] px-3 text-xs font-semibold text-zinc-400 hover:text-teal-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"><SlidersHorizontal className="h-3.5 w-3.5" />Reset</button>
       </div>}
 
       <div className="overflow-x-auto border-b border-white/[0.06]" aria-label="Hit-rate summary">
           <div className="grid min-w-[500px] grid-cols-5 divide-x divide-white/[0.065]">
           {hitRates.map((item) => {
             const hits = item.value === null ? null : Math.round((item.value / 100) * item.sample);
-            return <div key={item.label} className="flex min-w-0 items-baseline justify-center gap-1.5 px-2 py-1.5 text-center"><p className="text-[8px] font-semibold uppercase tracking-[0.1em] text-zinc-600">{item.label}</p><p className={cn('text-[12px] font-bold tabular-nums', gradeClass(item.value))}>{item.value === null ? '—' : `${item.value}%`}</p><p className="text-[8px] font-medium text-zinc-600">{item.value === null ? 'No sample' : `${hits}/${item.sample}`}</p></div>;
+            return <div key={item.label} className="flex min-w-0 items-baseline justify-center gap-2.5 px-2 py-2.5 text-center"><p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-zinc-400">{item.label}</p><p className={cn('text-[15px] font-bold tabular-nums', gradeClass(item.value))}>{item.value === null ? '—' : `${item.value}%`}</p><p className="text-[10px] font-medium text-zinc-400">{item.value === null ? 'No sample' : `${hits}/${item.sample}`}</p></div>;
           })}
           </div>
       </div>

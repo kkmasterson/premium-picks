@@ -1,0 +1,7 @@
+# Restored arena detail
+
+Asset: arena-entrance-flags-sharp.png. Edited with the built-in imagegen tool using the approved flag layout and the original clean background as a detail reference. Requested dimensions in the prompt are guidance, not a verified output size.
+
+## Final prompt
+
+High-resolution photographic restoration, not redesign. Image 1 is the approved arena background with precisely placed sports/esports logos on flags: KEEP THE LOGOS, their shapes, placement, spacing, colors and perspective EXACTLY AS IMAGE 1. Image 2 is the original sharper background, use it as the authoritative reference for recovering realistic detail outside the flags. Restore crisp fine gold metal grain on arch, sharply defined trusses and arena seats, natural fine rough reflective court texture, clean teal line edges and clear reflections. Remove the smeared painterly/melted surfaces and generational blur in image 1. Preserve exact scene composition, camera, crop, lighting, colors, central negative space and all architecture. Keep atmospheric darkness, do not introduce extra fog, sharpen halos, artificial noise or exaggerated contrast. Flags remain as approved in image1. Output a genuinely high detail 4K landscape image approximately 3840 x 2232 pixels preserving the source aspect ratio 1645:956, suitable for crisp full-width desktop website rendering. Only the background artwork, absolutely no website headline, navigation, buttons or added text. Do not change logo layout.

@@ -15,14 +15,21 @@ The governing rule is:
 ## Current state
 
 - The React/Vite application, dashboard routes and product screens exist.
-- Dashboard data and community behavior are still mock/local-browser state.
-- Provider contracts and the canonical data model are specifications, not
-  production migrations or running integrations.
+- NBA Matchups now uses the locally verified live schedule pipeline. Player research, props and community behavior remain demo/local-browser state.
+- A fixture-backed Fastify API, ingestion interfaces, a TheSportsDB client and
+  Supabase migrations exist; they are not a working live database integration.
 - The NBA reference-implementation contract was frozen on `2026-08-27`.
-- No backend, database, queue, cache, authentication or billing implementation
-  should be treated as approved or production-ready yet.
+- On `2026-09-08`, the owner authorized starter backend work and reaffirmed
+  Supabase as the database destination. The [NBA starter backend plan](../data-platform/nba-starter-backend.md)
+  defines the current local-development sequence, key setup and data gaps.
+- The [live NBA runbook](../data-platform/nba-live-runbook.md) records the verified local integration. Production capacity and public deployment remain unproven.
 
 ## Phase gates
+
+The table below is the original production gate snapshot. The infrastructure
+direction was subsequently approved (see `infrastructure-decisions.md`), and
+the starter plan above now governs local backend work. Production exit evidence
+remains required; these historical blocked labels do not block authorized local work.
 
 | Phase | Objective | Status | Required exit evidence |
 | --- | --- | --- | --- |

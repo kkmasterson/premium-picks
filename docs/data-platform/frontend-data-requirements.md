@@ -1,5 +1,12 @@
 # Frontend Data Requirements
 
+## Current NBA timing override
+
+The [NBA refresh outline](nba-data-refresh-plan.md) supersedes this document's
+older NBA live-polling intervals and live-clock requirement. Every requirement
+ID is mapped there to an explicit dataset policy or deferred state. The field
+inventory and non-timing requirements below remain in effect.
+
 ## Purpose
 
 This is the field-level contract for every data-backed Arena Props dashboard
